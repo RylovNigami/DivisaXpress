@@ -1,1 +1,62 @@
 // app global css in SCSS form
+.hero-image {
+  /* Use "linear-gradient" to add a darken background effect to the image (photographer.jpg). This will make the text easier to read */
+  background-image:
+    linear-gradient(rgba(0, 0, 0, 0.5), rgba(2, 0, 0, 0.5)),
+    url('/public/istockphoto-826661764-640x640.jpg');
+
+  /* Set a specific height */
+  height: 100%;
+
+  /* Position and center the image to scale nicely on all screens */
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
+  position: relative;
+}
+
+.q-field__control {
+	color: var(--q-accent);
+	height: 56px;
+	max-width: 100%;
+	//outline: none;
+  background: rgba(251, 251, 251, 0.088);
+}
+
+.q-field__bottom {
+	font-size: 12px;
+	min-height: 20px;
+	line-height: 1;
+	color: rgb(255, 254, 254);
+	padding: 8px 12px 0;
+	backface-visibility: hidden;
+}
+
+.q-field {
+	font-size: 24px;
+}
+
+.q-field__marginal {
+	color: rgb(255, 255, 255);
+	font-size: 24px;
+}
+
+.q-field__native, .q-field__prefix, .q-field__suffix, .q-field__input {
+	font-weight: 400;
+	line-height: 28px;
+	letter-spacing: 0.00937em;
+	text-decoration: inherit;
+	text-transform: inherit;
+	//background: rgba(251, 251, 251, 0.57);
+	color: rgba(254, 254, 254, 0.87);
+	outline: 0;
+	padding: 6px 0;
+}
+
+.font-color {
+  color: white;
+}
+
+.q-item__label--caption {
+  color: rgba(251, 251, 251, 0.54);
+}
