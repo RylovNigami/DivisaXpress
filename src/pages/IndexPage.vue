@@ -7,7 +7,7 @@
     </div>
     <div class="q-pa-md" >
 
-      <q-expansion-item>
+      <q-expansion-item @click="returnToZeroBcv()">
         <template v-slot:header>
           <q-item-section avatar>
             <q-avatar style="font-size: 80px;">
@@ -28,7 +28,9 @@
             v-model.trim="amountBcv"
             dense="dense"
             hint="Inserte valor $"
-            @keypress="isNumber($event)">
+            inputmode="numeric"
+            type="tel"
+            >
               <template v-slot:after>
                 <q-btn round dense flat icon="send" @click="returnBcvValue()"/>
               </template>
@@ -41,7 +43,7 @@
           </q-card-section>
         </q-card>
       </q-expansion-item>
-      <q-expansion-item>
+      <q-expansion-item @click="returnToZeroParallel()">
         <template v-slot:header>
           <q-item-section avatar>
             <q-avatar style="font-size: 80px;">
@@ -61,7 +63,8 @@
             v-model.trim="amountParallel"
             dense="dense"
             hint="Inserte valor $"
-            @keypress="isNumber($event)"
+            inputmode="numeric"
+            type="tel"
             >
               <template v-slot:after>
                 <q-btn round dense flat icon="send" @click="returnParallelValue()"/>
@@ -98,11 +101,21 @@ const resultBcv = ref();
 const resultParallel = ref();
 
 function returnBcvValue() {
-  resultBcv.value = OfficialValue.value * amountBcv.value;
+  resultBcv.value = (OfficialValue.value * amountBcv.value).toFixed(2);
 };
 
 function returnParallelValue() {
-  resultParallel.value = ParallelValue.value * amountParallel.value;
+  resultParallel.value = (ParallelValue.value * amountParallel.value).toFixed(2);
+};
+
+function returnToZeroBcv() {
+  amountBcv.value = 0;
+  resultBcv.value = 0;
+};
+
+function returnToZeroParallel() {
+  amountParallel.value = 0;
+  resultParallel.value = 0;
 };
 
 export default defineComponent({
@@ -112,11 +125,8 @@ export default defineComponent({
   setup() {
 
     return {
-      isNumber(e) {
-        let char = String.fromCharCode(e.keyCode); // Get the character
-        if (/^[0-9]+$/i.test(char)) return true; // Match with regex
-        else e.preventDefault(); // If not match, don't add to input text
-      },
+      returnToZeroBcv,
+      returnToZeroParallel,
       returnBcvValue,
       returnParallelValue,
       consultDate,
@@ -135,11 +145,6 @@ export default defineComponent({
       let fecha_raw = ref()
       fecha_raw.value = new Date(response.data[0].fechaActualizacion)
       consultDate.value = fecha_raw.value.toDateString()
-      console.log(consultDate.value.slice(0,3))
-      console.log(consultDate.value.slice(4,7))
-      console.log(consultDate.value.slice(8))
-      console.log(consultDate.value.slice(8,10))
-      console.log(consultDate.value.slice(11))
 
 
       switch (consultDate.value.slice(0,3)) {
@@ -425,12 +430,8 @@ export default defineComponent({
         break;
       }
       consultHour.value = fecha_raw.value.toTimeString()
-      OfficialValue.value = response.data[0].promedio
+      OfficialValue.value = response.data[0].promedio.toFixed(2)
       ParallelValue.value = response.data[1].promedio
-      console.log(consultDate.value)
-      console.log(consultHour.value)
-      console.log(OfficialValue.value)
-      console.log(ParallelValue.value)
     })
   },
 })
