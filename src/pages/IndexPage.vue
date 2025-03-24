@@ -109,13 +109,13 @@ function returnParallelValue() {
 };
 
 function returnToZeroBcv() {
-  amountBcv.value = 0;
-  resultBcv.value = 0;
+  amountBcv.value = null;
+  resultBcv.value = null;
 };
 
 function returnToZeroParallel() {
-  amountParallel.value = 0;
-  resultParallel.value = 0;
+  amountParallel.value = null;
+  resultParallel.value = null;
 };
 
 export default defineComponent({
