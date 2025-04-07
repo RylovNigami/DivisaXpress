@@ -8,7 +8,7 @@
         <template v-slot:header>
           <q-item-section avatar>
             <q-avatar style="font-size: 80px;">
-              <img src='public\BcvDolarPNG.png'>
+              <img src="/BcvDolarPNG.png">
             </q-avatar>
           </q-item-section>
 
@@ -44,7 +44,7 @@
         <template v-slot:header>
           <q-item-section avatar>
             <q-avatar style="font-size: 80px;">
-              <img src='public\monitorDolarPng.png'>
+              <img src="/monitorDolarPng.png">
             </q-avatar>
           </q-item-section>
 
