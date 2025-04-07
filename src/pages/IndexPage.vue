@@ -8,7 +8,7 @@
         <template v-slot:header>
           <q-item-section avatar>
             <q-avatar style="font-size: 80px;">
-              <img src="/BcvDolarPNG.png" >
+              <img src='public\BcvDolarPNG.png'>
             </q-avatar>
           </q-item-section>
 
@@ -44,7 +44,7 @@
         <template v-slot:header>
           <q-item-section avatar>
             <q-avatar style="font-size: 80px;">
-              <img src="/monitorDolarPng.png" >
+              <img src='public\monitorDolarPng.png'>
             </q-avatar>
           </q-item-section>
 
@@ -119,10 +119,18 @@ const symbolBcv = ref('');
 const symbolParallel = ref('');
 
 function returnBcvValue() {
+  if (amountBcv.value.includes(",") === true)
+  {
+    amountBcv.value = amountBcv.value.replace(",",".")
+  }
   resultBcv.value = (OfficialValue.value * amountBcv.value).toFixed(2);
 };
 
 function returnParallelValue() {
+  if (amountParallel.value.includes(",") === true)
+  {
+    amountParallel.value = amountParallel.value.replace(",",".")
+  }
   resultParallel.value = (ParallelValue.value * amountParallel.value).toFixed(2);
 };
 
