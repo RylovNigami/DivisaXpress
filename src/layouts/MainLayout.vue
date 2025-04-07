@@ -5,6 +5,7 @@
         <q-btn flat dense round icon="menu" aria-label="Menu" @click="toggleLeftDrawer" />
 
         <q-toolbar-title> VES to $ App </q-toolbar-title>
+        <p class="q-pt-md">V.1.4</p>
       </q-toolbar>
     </q-header>
 

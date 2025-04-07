@@ -1,12 +1,9 @@
 <template>
   <q-page class="hero-image font-color">
-    <div class="row q-mx-lg flex-center">
-      <p>Fecha: {{ consultDateFixed }}</p>
-      <br />
-      <p>Hora: {{ consultHour }}</p>
+    <div class="q-pt-md row flex-center font-color">
+      <q-btn outline rounded label="Actualizar" @click="showLoading()"/>
     </div>
-    <div class="q-pa-md" >
-
+    <div class="q-px-sm q-pb-xl">
       <q-expansion-item @click="returnToZeroBcv()">
         <template v-slot:header>
           <q-item-section avatar>
@@ -16,7 +13,7 @@
           </q-item-section>
 
           <q-item-section>
-            <h5>Oficial: {{ OfficialValue }}</h5>
+            <h6>Oficial: {{ OfficialValue }} <q-icon :color=colorBcv :name="symbolBcv"/><br><div class="text-caption">{{ consultHourBcv }}</div></h6>
           </q-item-section>
         </template>
 
@@ -52,7 +49,7 @@
           </q-item-section>
 
           <q-item-section>
-            <h5>Paralelo: {{ ParallelValue }}</h5>
+            <h6>Paralelo: {{ ParallelValue }} <q-icon :color=colorParallel :name='symbolParallel'/><br><div class="text-caption">{{ consultHourParallel }}</div></h6>
           </q-item-section>
         </template>
 
@@ -78,27 +75,48 @@
           </q-card-section>
         </q-card>
       </q-expansion-item>
-  </div>
-
-    <div class="row flex-center">RylovTech ©</div>
-    <div class="row flex-center">2025 · Venezuela</div>
+    </div>
+    <div class="q-pb-md q-pt-xl">
+      <div class="row flex-center">RylovTech ©</div>
+      <div class="row flex-center">2025 · Venezuela</div>
+    </div>
   </q-page>
 </template>
 
 <script>
-import { defineComponent } from 'vue'
-import axios from 'axios'
-import { ref } from 'vue'
+import { defineComponent } from 'vue';
+import { useQuasar } from "quasar";
+import { onBeforeUnmount } from "vue";
+import axios from 'axios';
+import { ref/*, watch */} from 'vue';
 
+/*watch(amountBcv, async (newAmount, oldAmount) => {
+  if (newAmount.includes(',')) {
+
+    answer.value = 'Thinking...'
+  }
+})
+;*/
+
+const parallelData = [];
+const bcvData = [];
 const consultDate = ref('');
-const consultDateFixed = ref('')
-const consultHour = ref('');
+const consultHourBcv = ref('');
+const consultHourParallel = ref('');
 const OfficialValue = ref();
 const ParallelValue = ref();
 const amountBcv = ref();
 const amountParallel = ref();
 const resultBcv = ref();
 const resultParallel = ref();
+const colorBcv = ref('');
+const colorParallel = ref('');
+const changeBcv = ref();
+const percentBcv = ref();
+const changeParallel = ref();
+const percentParallel = ref();
+const symbolBcv = ref('');
+const symbolParallel = ref('');
 
 function returnBcvValue() {
   resultBcv.value = (OfficialValue.value * amountBcv.value).toFixed(2);
@@ -118,321 +136,164 @@ function returnToZeroParallel() {
   resultParallel.value = null;
 };
 
+async function showCharge(){
+  const $q = useQuasar()
+    let timer
+
+    onBeforeUnmount(() => {
+      if (timer !== void 0) {
+        clearTimeout(timer)
+        $q.loading.hide()
+      }
+    })
+
+    $q.loading.show()
+
+    await axios.get('https://pydolarve.org/api/v1/dollar?page=bcv').then(function (response) {
+      bcvData.value=response.data
+    })
+    await axios.get('https://pydolarve.org/api/v1/dollar?monitor=enparalelovzla').then(function (response) {
+      parallelData.value = response.data;
+    })
+
+    consultDate.value = bcvData.value.datetime.date;
+    //Data BCV
+      consultHourBcv.value = bcvData.value.monitors.usd.last_update;
+      OfficialValue.value = bcvData.value.monitors.usd.price.toFixed(2);
+      percentBcv.value = bcvData.value.monitors.usd.percent;
+      colorBcv.value = bcvData.value.monitors.usd.color;
+      switch (colorBcv.value) {
+        case 'green':
+          symbolBcv.value = 'mdi-arrow-up'
+        break;
+        case 'red':
+          symbolBcv.value = 'mdi-arrow-down'
+        break;
+        case 'neutral':
+          symbolBcv.value = 'mdi-minus'
+        break;
+      };
+
+      //Data Paralelo
+      consultHourParallel.value = parallelData.value.last_update;
+      ParallelValue.value = parallelData.value.price.toFixed(2);
+      percentParallel.value = parallelData.value.percent;
+      colorParallel.value = parallelData.value.color;
+      switch (colorParallel.value) {
+        case 'green':
+          symbolParallel.value = 'mdi-arrow-up'
+        break;
+        case 'red':
+          symbolParallel.value = 'mdi-arrow-down'
+        break;
+        case 'neutral':
+          symbolParallel.value = 'mdi-minus'
+        break;
+      };
+
+    // hiding in 3s
+    timer = setTimeout(() => {
+      $q.loading.hide()
+      timer = void 0
+    }, 1000)
+}
+
+
 export default defineComponent({
   name: 'IndexPage',
-  components: {},
+  components: {
+  },
 
   setup() {
 
+    const $q = useQuasar()
+    let timer
+
+    onBeforeUnmount(() => {
+      if (timer !== void 0) {
+        clearTimeout(timer)
+        $q.loading.hide()
+      }
+    })
+
     return {
+      async showLoading () {
+        $q.loading.show()
+
+        await axios.get('https://pydolarve.org/api/v1/dollar?page=bcv').then(function (response) {
+      bcvData.value=response.data
+    })
+    await axios.get('https://pydolarve.org/api/v1/dollar?monitor=enparalelovzla').then(function (response) {
+      parallelData.value = response.data;
+    })
+
+    consultDate.value = bcvData.value.datetime.date;
+    //Data BCV
+      consultHourBcv.value = bcvData.value.monitors.usd.last_update;
+      OfficialValue.value = bcvData.value.monitors.usd.price.toFixed(2);
+      percentBcv.value = bcvData.value.monitors.usd.percent;
+      colorBcv.value = bcvData.value.monitors.usd.color;
+      switch (colorBcv.value) {
+        case 'green':
+          symbolBcv.value = 'mdi-arrow-up'
+        break;
+        case 'red':
+          symbolBcv.value = 'mdi-arrow-down'
+        break;
+        case 'neutral':
+          symbolBcv.value = 'mdi-minus'
+        break;
+      };
+
+      //Data Paralelo
+      consultHourParallel.value = parallelData.value.last_update;
+      ParallelValue.value = parallelData.value.price.toFixed(2);
+      percentParallel.value = parallelData.value.percent;
+      colorParallel.value = parallelData.value.color;
+      switch (colorParallel.value) {
+        case 'green':
+          symbolParallel.value = 'mdi-arrow-up'
+        break;
+        case 'red':
+          symbolParallel.value = 'mdi-arrow-down'
+        break;
+        case 'neutral':
+          symbolParallel.value = 'mdi-minus'
+        break;
+      };
+
+        // hiding in 2s
+        timer = setTimeout(() => {
+          $q.loading.hide()
+          timer = void 0
+        }, 1000)
+      },
+      showCharge,
       returnToZeroBcv,
       returnToZeroParallel,
       returnBcvValue,
       returnParallelValue,
       consultDate,
-      consultDateFixed,
-      consultHour,
       OfficialValue,
       ParallelValue,
       amountBcv,
       amountParallel,
       resultBcv,
-      resultParallel
+      resultParallel,
+      colorParallel,
+      changeBcv,
+      percentBcv,
+      changeParallel,
+      percentParallel,
+      colorBcv,
+      symbolParallel,
+      symbolBcv,
+      consultHourParallel,
+      consultHourBcv
     }
   },
-  beforeMount() {
-    axios.get('https://ve.dolarapi.com/v1/dolares').then(function (response) {
-      let fecha_raw = ref()
-      fecha_raw.value = new Date(response.data[0].fechaActualizacion)
-      consultDate.value = fecha_raw.value.toDateString()
-
-
-      switch (consultDate.value.slice(0,3)) {
-        case 'Sun':
-          switch (consultDate.value.slice(4,7)) {
-          case 'Jan':
-            consultDateFixed.value= 'Domingo ' + consultDate.value.slice(8,10) + ', Enero' + consultDate.value.slice(11)
-          break;
-          case 'Feb':
-            consultDateFixed.value= 'Domingo ' + consultDate.value.slice(8,10) + ', Febrero ' + consultDate.value.slice(11)
-          break;
-          case 'Mar':
-            consultDateFixed.value= 'Domingo ' + consultDate.value.slice(8,10) + ', Marzo ' + consultDate.value.slice(11)
-          break;
-          case 'Apr':
-            consultDateFixed.value= 'Domingo ' + consultDate.value.slice(8,10) + ', Abril ' + consultDate.value.slice(11)
-          break;
-          case 'May':
-            consultDateFixed.value= 'Domingo ' + consultDate.value.slice(8,10) + ', Mayo ' + consultDate.value.slice(11)
-          break;
-          case 'Jun':
-            consultDateFixed.value= 'Domingo ' + consultDate.value.slice(8,10) + ', Junio ' + consultDate.value.slice(11)
-          break;
-          case 'Jul':
-            consultDateFixed.value= 'Domingo ' + consultDate.value.slice(8,10) + ', Julio ' + consultDate.value.slice(11)
-          break;
-            case 'Aug':
-            consultDateFixed.value= 'Domingo ' + consultDate.value.slice(8,10) + ', Agosto ' + consultDate.value.slice(11)
-          break;
-          case 'Sep':
-            consultDateFixed.value= 'Domingo ' + consultDate.value.slice(8,10) + ', Septiembre ' + consultDate.value.slice(11)
-          break;
-          case 'Oct':
-            consultDateFixed.value= 'Domingo ' + consultDate.value.slice(8,10) + ', Octubre ' + consultDate.value.slice(11)
-          break;
-          case 'Nov':
-            consultDateFixed.value= 'Domingo ' + consultDate.value.slice(8,10) + ', Noviembre ' + consultDate.value.slice(11)
-          break;
-          case 'Dec':
-            consultDateFixed.value= 'Domingo ' + consultDate.value.slice(8,10) + ', Diciembre ' + consultDate.value.slice(11)
-          break;
-          }
-        break;
-        case 'Mon':
-          switch (consultDate.value.slice(4,7)) {
-            case 'Jan':
-            consultDateFixed.value= 'Lunes ' + consultDate.value.slice(8,10) + ', Enero' + consultDate.value.slice(11)
-          break;
-          case 'Feb':
-            consultDateFixed.value= 'Lunes ' + consultDate.value.slice(8,10) + ', Febrero ' + consultDate.value.slice(11)
-          break;
-          case 'Mar':
-            consultDateFixed.value= 'Lunes ' + consultDate.value.slice(8,10) + ', Marzo ' + consultDate.value.slice(11)
-          break;
-          case 'Apr':
-            consultDateFixed.value= 'Lunes ' + consultDate.value.slice(8,10) + ', Abril ' + consultDate.value.slice(11)
-          break;
-          case 'May':
-            consultDateFixed.value= 'Lunes ' + consultDate.value.slice(8,10) + ', Mayo ' + consultDate.value.slice(11)
-          break;
-          case 'Jun':
-            consultDateFixed.value= 'Lunes ' + consultDate.value.slice(8,10) + ', Junio ' + consultDate.value.slice(11)
-          break;
-          case 'Jul':
-            consultDateFixed.value= 'Lunes ' + consultDate.value.slice(8,10) + ', Julio ' + consultDate.value.slice(11)
-          break;
-            case 'Aug':
-            consultDateFixed.value= 'Lunes ' + consultDate.value.slice(8,10) + ', Agosto ' + consultDate.value.slice(11)
-          break;
-          case 'Sep':
-            consultDateFixed.value= 'Lunes ' + consultDate.value.slice(8,10) + ', Septiembre ' + consultDate.value.slice(11)
-          break;
-          case 'Oct':
-            consultDateFixed.value= 'Lunes ' + consultDate.value.slice(8,10) + ', Octubre ' + consultDate.value.slice(11)
-          break;
-          case 'Nov':
-            consultDateFixed.value= 'Lunes ' + consultDate.value.slice(8,10) + ', Noviembre ' + consultDate.value.slice(11)
-          break;
-          case 'Dec':
-            consultDateFixed.value= 'Lunes ' + consultDate.value.slice(8,10) + ', Diciembre ' + consultDate.value.slice(11)
-          break;
-          }
-        break;
-        case 'Tue':
-          switch (consultDate.value.slice(4,7)) {
-            case 'Jan':
-            consultDateFixed.value= 'Martes ' + consultDate.value.slice(8,10) + ', Enero' + consultDate.value.slice(11)
-          break;
-          case 'Feb':
-            consultDateFixed.value= 'Martes ' + consultDate.value.slice(8,10) + ', Febrero ' + consultDate.value.slice(11)
-          break;
-          case 'Mar':
-            consultDateFixed.value= 'Martes ' + consultDate.value.slice(8,10) + ', Marzo ' + consultDate.value.slice(11)
-          break;
-          case 'Apr':
-            consultDateFixed.value= 'Martes ' + consultDate.value.slice(8,10) + ', Abril ' + consultDate.value.slice(11)
-          break;
-          case 'May':
-            consultDateFixed.value= 'Martes ' + consultDate.value.slice(8,10) + ', Mayo ' + consultDate.value.slice(11)
-          break;
-          case 'Jun':
-            consultDateFixed.value= 'Martes ' + consultDate.value.slice(8,10) + ', Junio ' + consultDate.value.slice(11)
-          break;
-          case 'Jul':
-            consultDateFixed.value= 'Martes ' + consultDate.value.slice(8,10) + ', Julio ' + consultDate.value.slice(11)
-          break;
-            case 'Aug':
-            consultDateFixed.value= 'Martes ' + consultDate.value.slice(8,10) + ', Agosto ' + consultDate.value.slice(11)
-          break;
-          case 'Sep':
-            consultDateFixed.value= 'Martes ' + consultDate.value.slice(8,10) + ', Septiembre ' + consultDate.value.slice(11)
-          break;
-          case 'Oct':
-            consultDateFixed.value= 'Martes ' + consultDate.value.slice(8,10) + ', Octubre ' + consultDate.value.slice(11)
-          break;
-          case 'Nov':
-            consultDateFixed.value= 'Martes ' + consultDate.value.slice(8,10) + ', Noviembre ' + consultDate.value.slice(11)
-          break;
-          case 'Dec':
-            consultDateFixed.value= 'Martes ' + consultDate.value.slice(8,10) + ', Diciembre ' + consultDate.value.slice(11)
-          break;
-          }
-        break;
-        case 'Wed':
-          switch (consultDate.value.slice(4,7)) {
-            case 'Jan':
-            consultDateFixed.value= 'Miércoles ' + consultDate.value.slice(8,10) + ', Enero' + consultDate.value.slice(11)
-          break;
-          case 'Feb':
-            consultDateFixed.value= 'Miércoles ' + consultDate.value.slice(8,10) + ', Febrero ' + consultDate.value.slice(11)
-          break;
-          case 'Mar':
-            consultDateFixed.value= 'Miércoles ' + consultDate.value.slice(8,10) + ', Marzo ' + consultDate.value.slice(11)
-          break;
-          case 'Apr':
-            consultDateFixed.value= 'Miércoles ' + consultDate.value.slice(8,10) + ', Abril ' + consultDate.value.slice(11)
-          break;
-          case 'May':
-            consultDateFixed.value= 'Miércoles ' + consultDate.value.slice(8,10) + ', Mayo ' + consultDate.value.slice(11)
-          break;
-          case 'Jun':
-            consultDateFixed.value= 'Miércoles ' + consultDate.value.slice(8,10) + ', Junio ' + consultDate.value.slice(11)
-          break;
-          case 'Jul':
-            consultDateFixed.value= 'Miércoles ' + consultDate.value.slice(8,10) + ', Julio ' + consultDate.value.slice(11)
-          break;
-            case 'Aug':
-            consultDateFixed.value= 'Miércoles ' + consultDate.value.slice(8,10) + ', Agosto ' + consultDate.value.slice(11)
-          break;
-          case 'Sep':
-            consultDateFixed.value= 'Miércoles ' + consultDate.value.slice(8,10) + ', Septiembre ' + consultDate.value.slice(11)
-          break;
-          case 'Oct':
-            consultDateFixed.value= 'Miércoles ' + consultDate.value.slice(8,10) + ', Octubre ' + consultDate.value.slice(11)
-          break;
-          case 'Nov':
-            consultDateFixed.value= 'Miércoles ' + consultDate.value.slice(8,10) + ', Noviembre ' + consultDate.value.slice(11)
-          break;
-          case 'Dec':
-            consultDateFixed.value= 'Miércoles ' + consultDate.value.slice(8,10) + ', Diciembre ' + consultDate.value.slice(11)
-          break;
-          }
-        break;
-        case 'Thu':
-          switch (consultDate.value.slice(4,7)) {
-            case 'Jan':
-            consultDateFixed.value= 'Jueves ' + consultDate.value.slice(8,10) + ', Enero' + consultDate.value.slice(11)
-          break;
-          case 'Feb':
-            consultDateFixed.value= 'Jueves ' + consultDate.value.slice(8,10) + ', Febrero ' + consultDate.value.slice(11)
-          break;
-          case 'Mar':
-            consultDateFixed.value= 'Jueves ' + consultDate.value.slice(8,10) + ', Marzo ' + consultDate.value.slice(11)
-          break;
-          case 'Apr':
-            consultDateFixed.value= 'Jueves ' + consultDate.value.slice(8,10) + ', Abril ' + consultDate.value.slice(11)
-          break;
-          case 'May':
-            consultDateFixed.value= 'Jueves ' + consultDate.value.slice(8,10) + ', Mayo ' + consultDate.value.slice(11)
-          break;
-          case 'Jun':
-            consultDateFixed.value= 'Jueves ' + consultDate.value.slice(8,10) + ', Junio ' + consultDate.value.slice(11)
-          break;
-          case 'Jul':
-            consultDateFixed.value= 'Jueves ' + consultDate.value.slice(8,10) + ', Julio ' + consultDate.value.slice(11)
-          break;
-            case 'Aug':
-            consultDateFixed.value= 'Jueves ' + consultDate.value.slice(8,10) + ', Agosto ' + consultDate.value.slice(11)
-          break;
-          case 'Sep':
-            consultDateFixed.value= 'Jueves ' + consultDate.value.slice(8,10) + ', Septiembre ' + consultDate.value.slice(11)
-          break;
-          case 'Oct':
-            consultDateFixed.value= 'Jueves ' + consultDate.value.slice(8,10) + ', Octubre ' + consultDate.value.slice(11)
-          break;
-          case 'Nov':
-            consultDateFixed.value= 'Jueves ' + consultDate.value.slice(8,10) + ', Noviembre ' + consultDate.value.slice(11)
-          break;
-          case 'Dec':
-            consultDateFixed.value= 'Jueves ' + consultDate.value.slice(8,10) + ', Diciembre ' + consultDate.value.slice(11)
-          break;
-          }
-        break;
-        case 'Fri':
-          switch (consultDate.value.slice(4,7)) {
-            case 'Jan':
-            consultDateFixed.value= 'Viernes ' + consultDate.value.slice(8,10) + ', Enero' + consultDate.value.slice(11)
-          break;
-          case 'Feb':
-            consultDateFixed.value= 'Viernes ' + consultDate.value.slice(8,10) + ', Febrero ' + consultDate.value.slice(11)
-          break;
-          case 'Mar':
-            consultDateFixed.value= 'Viernes ' + consultDate.value.slice(8,10) + ', Marzo ' + consultDate.value.slice(11)
-          break;
-          case 'Apr':
-            consultDateFixed.value= 'Viernes ' + consultDate.value.slice(8,10) + ', Abril ' + consultDate.value.slice(11)
-          break;
-          case 'May':
-            consultDateFixed.value= 'Viernes ' + consultDate.value.slice(8,10) + ', Mayo ' + consultDate.value.slice(11)
-          break;
-          case 'Jun':
-            consultDateFixed.value= 'Viernes ' + consultDate.value.slice(8,10) + ', Junio ' + consultDate.value.slice(11)
-          break;
-          case 'Jul':
-            consultDateFixed.value= 'Viernes ' + consultDate.value.slice(8,10) + ', Julio ' + consultDate.value.slice(11)
-          break;
-            case 'Aug':
-            consultDateFixed.value= 'Viernes ' + consultDate.value.slice(8,10) + ', Agosto ' + consultDate.value.slice(11)
-          break;
-          case 'Sep':
-            consultDateFixed.value= 'Viernes ' + consultDate.value.slice(8,10) + ', Septiembre ' + consultDate.value.slice(11)
-          break;
-          case 'Oct':
-            consultDateFixed.value= 'Viernes ' + consultDate.value.slice(8,10) + ', Octubre ' + consultDate.value.slice(11)
-          break;
-          case 'Nov':
-            consultDateFixed.value= 'Viernes ' + consultDate.value.slice(8,10) + ', Noviembre ' + consultDate.value.slice(11)
-          break;
-          case 'Dec':
-            consultDateFixed.value= 'Viernes ' + consultDate.value.slice(8,10) + ', Diciembre ' + consultDate.value.slice(11)
-          break;
-          }
-        break;
-        case 'Sat':
-          switch (consultDate.value.slice(4,7)) {
-            case 'Jan':
-            consultDateFixed.value= 'Sabado ' + consultDate.value.slice(8,10) + ', Enero' + consultDate.value.slice(11)
-          break;
-          case 'Feb':
-            consultDateFixed.value= 'Sabado ' + consultDate.value.slice(8,10) + ', Febrero ' + consultDate.value.slice(11)
-          break;
-          case 'Mar':
-            consultDateFixed.value= 'Sabado ' + consultDate.value.slice(8,10) + ', Marzo ' + consultDate.value.slice(11)
-          break;
-          case 'Apr':
-            consultDateFixed.value= 'Sabado ' + consultDate.value.slice(8,10) + ', Abril ' + consultDate.value.slice(11)
-          break;
-          case 'May':
-            consultDateFixed.value= 'Sabado ' + consultDate.value.slice(8,10) + ', Mayo ' + consultDate.value.slice(11)
-          break;
-          case 'Jun':
-            consultDateFixed.value= 'Sabado ' + consultDate.value.slice(8,10) + ', Junio ' + consultDate.value.slice(11)
-          break;
-          case 'Jul':
-            consultDateFixed.value= 'Sabado ' + consultDate.value.slice(8,10) + ', Julio ' + consultDate.value.slice(11)
-          break;
-            case 'Aug':
-            consultDateFixed.value= 'Sabado ' + consultDate.value.slice(8,10) + ', Agosto ' + consultDate.value.slice(11)
-          break;
-          case 'Sep':
-            consultDateFixed.value= 'Sabado ' + consultDate.value.slice(8,10) + ', Septiembre ' + consultDate.value.slice(11)
-          break;
-          case 'Oct':
-            consultDateFixed.value= 'Sabado ' + consultDate.value.slice(8,10) + ', Octubre ' + consultDate.value.slice(11)
-          break;
-          case 'Nov':
-            consultDateFixed.value= 'Sabado ' + consultDate.value.slice(8,10) + ', Noviembre ' + consultDate.value.slice(11)
-          break;
-          case 'Dec':
-            consultDateFixed.value= 'Sabado ' + consultDate.value.slice(8,10) + ', Diciembre ' + consultDate.value.slice(11)
-          break;
-          }
-        break;
-      }
-      consultHour.value = fecha_raw.value.toTimeString()
-      OfficialValue.value = response.data[0].promedio.toFixed(2)
-      ParallelValue.value = response.data[1].promedio
-    })
+  async beforeMount() {
+    showCharge();
   },
 })
 </script>
