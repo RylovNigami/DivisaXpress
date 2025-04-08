@@ -1,6 +1,6 @@
 <template>
   <q-page class="hero-image font-color">
-    <div class="q-pt-md row flex-center font-color">
+    <div class="q-pt-md q-pb-md row flex-center font-color">
       <q-btn outline rounded label="Actualizar" @click="showLoading()"/>
     </div>
     <div class="q-px-sm q-pb-xl">
