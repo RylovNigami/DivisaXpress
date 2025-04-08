@@ -75,6 +75,41 @@
           </q-card-section>
         </q-card>
       </q-expansion-item>
+      <q-expansion-item @click="returnToZeroPromedio()">
+        <template v-slot:header>
+          <q-item-section avatar>
+            <q-avatar style="font-size: 80px;">
+              <img src="/promedio.png">
+            </q-avatar>
+          </q-item-section>
+
+          <q-item-section>
+            <h6>Promedio: {{ promedioValue }}</h6>
+          </q-item-section>
+        </template>
+
+        <q-card class="transparent">
+          <q-card-section>
+            <q-input class="col q-pb-xl"
+            outlined
+            v-model.trim="amountPromedio"
+            dense="dense"
+            hint="Inserte valor $"
+            inputmode="numeric"
+            type="tel"
+            >
+              <template v-slot:after>
+                <q-btn round dense flat icon="send" @click="returnPromedioValue()"/>
+              </template>
+            </q-input>
+            <q-input class="col" outlined dense="dense" hint="Calculo" readonly>
+                <template v-slot:prepend>
+                  {{ resultPromedio }}
+                </template>
+            </q-input>
+          </q-card-section>
+        </q-card>
+      </q-expansion-item>
     </div>
     <div class="q-pb-md q-pt-xl">
       <div class="row flex-center">RylovTech ©</div>
@@ -97,26 +132,24 @@ import { ref/*, watch */} from 'vue';
   }
 })
 ;*/
-
 const parallelData = [];
 const bcvData = [];
-const consultDate = ref('');
 const consultHourBcv = ref('');
 const consultHourParallel = ref('');
 const OfficialValue = ref();
 const ParallelValue = ref();
+const promedioValue = ref();
 const amountBcv = ref();
 const amountParallel = ref();
+const amountPromedio = ref();
 const resultBcv = ref();
 const resultParallel = ref();
+const resultPromedio = ref();
 const colorBcv = ref('');
 const colorParallel = ref('');
-const changeBcv = ref();
-const percentBcv = ref();
-const changeParallel = ref();
-const percentParallel = ref();
 const symbolBcv = ref('');
 const symbolParallel = ref('');
+
 
 function returnBcvValue() {
   if (amountBcv.value.includes(",") === true)
@@ -134,6 +167,14 @@ function returnParallelValue() {
   resultParallel.value = (ParallelValue.value * amountParallel.value).toFixed(2);
 };
 
+function returnPromedioValue() {
+  if (amountPromedio.value.includes(",") === true)
+  {
+    amountPromedio.value = amountPromedio.value.replace(",",".")
+  }
+  resultPromedio.value = (promedioValue.value * amountPromedio.value).toFixed(2);
+};
+
 function returnToZeroBcv() {
   amountBcv.value = null;
   resultBcv.value = null;
@@ -142,6 +183,11 @@ function returnToZeroBcv() {
 function returnToZeroParallel() {
   amountParallel.value = null;
   resultParallel.value = null;
+};
+
+function returnToZeroPromedio() {
+  amountPromedio.value = null;
+  resultPromedio.value = null;
 };
 
 async function showCharge(){
@@ -164,11 +210,12 @@ async function showCharge(){
       parallelData.value = response.data;
     })
 
-    consultDate.value = bcvData.value.datetime.date;
+    promedioValue.value = ((bcvData.value.monitors.usd.price + parallelData.value.price)/2).toFixed(2);
+    console.log(promedioValue.value)
+
     //Data BCV
       consultHourBcv.value = bcvData.value.monitors.usd.last_update;
       OfficialValue.value = bcvData.value.monitors.usd.price.toFixed(2);
-      percentBcv.value = bcvData.value.monitors.usd.percent;
       colorBcv.value = bcvData.value.monitors.usd.color;
       switch (colorBcv.value) {
         case 'green':
@@ -185,7 +232,6 @@ async function showCharge(){
       //Data Paralelo
       consultHourParallel.value = parallelData.value.last_update;
       ParallelValue.value = parallelData.value.price.toFixed(2);
-      percentParallel.value = parallelData.value.percent;
       colorParallel.value = parallelData.value.color;
       switch (colorParallel.value) {
         case 'green':
@@ -225,6 +271,28 @@ export default defineComponent({
     })
 
     return {
+      resultPromedio,
+      amountPromedio,
+      promedioValue,
+      showCharge,
+      returnToZeroBcv,
+      returnToZeroParallel,
+      returnToZeroPromedio,
+      returnBcvValue,
+      returnParallelValue,
+      returnPromedioValue,
+      OfficialValue,
+      ParallelValue,
+      amountBcv,
+      amountParallel,
+      resultBcv,
+      resultParallel,
+      colorParallel,
+      colorBcv,
+      symbolParallel,
+      symbolBcv,
+      consultHourParallel,
+      consultHourBcv,
       async showLoading () {
         $q.loading.show()
 
@@ -235,11 +303,9 @@ export default defineComponent({
       parallelData.value = response.data;
     })
 
-    consultDate.value = bcvData.value.datetime.date;
     //Data BCV
       consultHourBcv.value = bcvData.value.monitors.usd.last_update;
       OfficialValue.value = bcvData.value.monitors.usd.price.toFixed(2);
-      percentBcv.value = bcvData.value.monitors.usd.percent;
       colorBcv.value = bcvData.value.monitors.usd.color;
       switch (colorBcv.value) {
         case 'green':
@@ -256,7 +322,6 @@ export default defineComponent({
       //Data Paralelo
       consultHourParallel.value = parallelData.value.last_update;
       ParallelValue.value = parallelData.value.price.toFixed(2);
-      percentParallel.value = parallelData.value.percent;
       colorParallel.value = parallelData.value.color;
       switch (colorParallel.value) {
         case 'green':
@@ -275,29 +340,7 @@ export default defineComponent({
           $q.loading.hide()
           timer = void 0
         }, 1000)
-      },
-      showCharge,
-      returnToZeroBcv,
-      returnToZeroParallel,
-      returnBcvValue,
-      returnParallelValue,
-      consultDate,
-      OfficialValue,
-      ParallelValue,
-      amountBcv,
-      amountParallel,
-      resultBcv,
-      resultParallel,
-      colorParallel,
-      changeBcv,
-      percentBcv,
-      changeParallel,
-      percentParallel,
-      colorBcv,
-      symbolParallel,
-      symbolBcv,
-      consultHourParallel,
-      consultHourBcv
+      }
     }
   },
   async beforeMount() {
