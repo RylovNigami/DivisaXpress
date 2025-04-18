@@ -24,16 +24,22 @@
             outlined
             v-model.trim="amountBcv"
             dense="dense"
-            hint="Inserte valor $"
+            hint="Inserte valor $ (USD)"
             inputmode="numeric"
             type="tel"
             >
+              <template v-slot:append>
+                <div style="font-size:large;"> $ </div >
+              </template>
               <template v-slot:after>
                 <q-btn round dense flat icon="send" @click="returnBcvValue()"/>
               </template>
             </q-input>
-            <q-input class="col" outlined dense="dense" hint="Calculo" readonly>
-                <template v-slot:prepend>
+            <q-input class="col" outlined dense="dense" hint="Calculo (Bs.)" readonly>
+              <template v-slot:append>
+                <div style="font-size:large;"> Bs. </div >
+              </template>
+              <template v-slot:prepend>
                   {{ resultBcv }}
                 </template>
             </q-input>
@@ -47,7 +53,6 @@
               <img src="/monitorDolarPng.png">
             </q-avatar>
           </q-item-section>
-
           <q-item-section>
             <h6>Paralelo: {{ ParallelValue }} <q-icon :color=colorParallel :name='symbolParallel'/><br><div class="text-caption">{{ consultHourParallel }}</div></h6>
           </q-item-section>
@@ -59,18 +64,24 @@
             outlined
             v-model.trim="amountParallel"
             dense="dense"
-            hint="Inserte valor $"
+            hint="Inserte valor $ (USD)"
             inputmode="numeric"
             type="tel"
             >
+              <template v-slot:append>
+                <div style="font-size:large;"> $ </div >
+              </template>
               <template v-slot:after>
                 <q-btn round dense flat icon="send" @click="returnParallelValue()"/>
               </template>
             </q-input>
-            <q-input class="col" outlined dense="dense" hint="Calculo" readonly>
-                <template v-slot:prepend>
-                  {{ resultParallel }}
-                </template>
+            <q-input class="col" outlined dense="dense" hint="Calculo (Bs.)" readonly>
+              <template v-slot:append>
+                <div style="font-size:large;"> Bs. </div >
+              </template>
+              <template v-slot:prepend>
+                {{ resultParallel }}
+              </template>
             </q-input>
           </q-card-section>
         </q-card>
@@ -84,7 +95,7 @@
           </q-item-section>
 
           <q-item-section>
-            <h6>Promedio: {{ promedioValue }}</h6>
+            <h6>Promedio: {{ promedioValue }} <br><div class="text-caption">{{ consultHourParallel }}</div></h6>
           </q-item-section>
         </template>
 
@@ -94,16 +105,22 @@
             outlined
             v-model.trim="amountPromedio"
             dense="dense"
-            hint="Inserte valor $"
+            hint="Inserte valor $ (USD)"
             inputmode="numeric"
             type="tel"
             >
+              <template v-slot:append>
+                <div style="font-size:large;"> $ </div >
+              </template>
               <template v-slot:after>
                 <q-btn round dense flat icon="send" @click="returnPromedioValue()"/>
               </template>
             </q-input>
-            <q-input class="col" outlined dense="dense" hint="Calculo" readonly>
-                <template v-slot:prepend>
+            <q-input class="col" outlined dense="dense" hint="Calculo (Bs.)" readonly>
+              <template v-slot:append>
+                <div style="font-size:large;"> Bs. </div >
+              </template>
+              <template v-slot:prepend>
                   {{ resultPromedio }}
                 </template>
             </q-input>
@@ -119,19 +136,10 @@
 </template>
 
 <script>
-import { defineComponent } from 'vue';
+import { defineComponent, ref } from 'vue';
 import { useQuasar } from "quasar";
-import { onBeforeUnmount } from "vue";
 import axios from 'axios';
-import { ref/*, watch */} from 'vue';
 
-/*watch(amountBcv, async (newAmount, oldAmount) => {
-  if (newAmount.includes(',')) {
-
-    answer.value = 'Thinking...'
-  }
-})
-;*/
 const parallelData = [];
 const bcvData = [];
 const consultHourBcv = ref('');
@@ -149,7 +157,6 @@ const colorBcv = ref('');
 const colorParallel = ref('');
 const symbolBcv = ref('');
 const symbolParallel = ref('');
-
 
 function returnBcvValue() {
   if (amountBcv.value.includes(",") === true)
@@ -192,64 +199,138 @@ function returnToZeroPromedio() {
 
 async function showCharge(){
   const $q = useQuasar()
-    let timer
 
-    onBeforeUnmount(() => {
-      if (timer !== void 0) {
-        clearTimeout(timer)
+  $q.loading.show()
+
+  await axios.get('https://pydolarve.org/api/v1/dollar?page=bcv')
+  .then(function (response) {
+    if(response.status == 200){
+      bcvData.value=response.data
+      console.log("Status de consulta bcv",response.status);
+    }
+  })
+  .catch(function (error) {
+    if (error.response) {
+      // The request was made and the server responded with a status code
+      // that falls out of the range of 2xx
+      console.log(error.response.data);
+      console.log(error.response.status);
+      console.log(error.response.headers);
+
+      $q.loading.hide()
+      $q.notify({
+        message: 'No se puso contactar con el servidor',
+        color: 'negative',
+        position: 'center',
+      })
+
+    } else if (error.request) {
+      // The request was made but no response was received
+      // `error.request` is an instance of XMLHttpRequest in the browser
+      // and an instance of http.ClientRequest in node.js
+      console.log(error.request.status);
+
+      $q.loading.hide()
+      $q.notify({
+        message: 'Error de conexión',
+        color: 'negative',
+        position: 'center',
+      })
+    } else {
+      // Something happened in setting up the request that triggered an Error
+      console.log('Error', error.message);
+
+      $q.loading.hide()
+      $q.notify({
+        message: 'Error desconocido',
+        color: 'negative',
+        position: 'center',
+      })
+    }
+  });
+
+  await axios.get('https://pydolarve.org/api/v1/dollar?monitor=enparalelovzla')
+  .then(function (response) {
+    if(response.status==200){
+        parallelData.value = response.data;
+        console.log("Status de consulta paralelo",response.status)
         $q.loading.hide()
       }
-    })
+  })
+  .catch(function (error) {
+    if (error.response) {
+      // The request was made and the server responded with a status code
+      // that falls out of the range of 2xx
+      console.log(error.response.data);
+      console.log(error.response.status);
+      console.log(error.response.headers);
 
-    $q.loading.show()
+      $q.loading.hide()
+      $q.notify({
+        message: 'No se puso contactar con el servidor',
+        color: 'negative',
+        position: 'center',
+      })
 
-    await axios.get('https://pydolarve.org/api/v1/dollar?page=bcv').then(function (response) {
-      bcvData.value=response.data
-    })
-    await axios.get('https://pydolarve.org/api/v1/dollar?monitor=enparalelovzla').then(function (response) {
-      parallelData.value = response.data;
-    })
+    } else if (error.request) {
+      // The request was made but no response was received
+      // `error.request` is an instance of XMLHttpRequest in the browser
+      // and an instance of http.ClientRequest in node.js
+      console.log(error.request.status);
+
+      $q.loading.hide()
+      $q.notify({
+        message: 'Error de conexión',
+        color: 'negative',
+        position: 'center',
+      })
+    } else {
+      // Something happened in setting up the request that triggered an Error
+      console.log('Error', error.message);
+
+      $q.loading.hide()
+      $q.notify({
+        message: 'Error desconocido',
+        color: 'negative',
+        position: 'center',
+      })
+    }
+  });
 
     promedioValue.value = ((bcvData.value.monitors.usd.price + parallelData.value.price)/2).toFixed(2);
     console.log(promedioValue.value)
 
     //Data BCV
-      consultHourBcv.value = bcvData.value.monitors.usd.last_update;
-      OfficialValue.value = bcvData.value.monitors.usd.price.toFixed(2);
-      colorBcv.value = bcvData.value.monitors.usd.color;
-      switch (colorBcv.value) {
-        case 'green':
-          symbolBcv.value = 'mdi-arrow-up'
-        break;
-        case 'red':
-          symbolBcv.value = 'mdi-arrow-down'
-        break;
-        case 'neutral':
-          symbolBcv.value = 'mdi-minus'
-        break;
-      };
+    consultHourBcv.value = bcvData.value.monitors.usd.last_update;
+    OfficialValue.value = bcvData.value.monitors.usd.price.toFixed(2);
+    colorBcv.value = bcvData.value.monitors.usd.color;
+    switch (colorBcv.value) {
+      case 'green':
+        symbolBcv.value = 'mdi-arrow-up'
+      break;
+      case 'red':
+        symbolBcv.value = 'mdi-arrow-down'
+      break;
+      case 'neutral':
+        symbolBcv.value = 'mdi-minus'
+      break;
+    };
 
-      //Data Paralelo
-      consultHourParallel.value = parallelData.value.last_update;
-      ParallelValue.value = parallelData.value.price.toFixed(2);
-      colorParallel.value = parallelData.value.color;
-      switch (colorParallel.value) {
-        case 'green':
-          symbolParallel.value = 'mdi-arrow-up'
-        break;
-        case 'red':
-          symbolParallel.value = 'mdi-arrow-down'
-        break;
-        case 'neutral':
-          symbolParallel.value = 'mdi-minus'
-        break;
-      };
-
-    // hiding in 3s
-    timer = setTimeout(() => {
-      $q.loading.hide()
-      timer = void 0
-    }, 1000)
+    //Data Paralelo
+    consultHourParallel.value = parallelData.value.last_update;
+    ParallelValue.value = parallelData.value.price.toFixed(2);
+    colorParallel.value = parallelData.value.color;
+    switch (colorParallel.value) {
+      case 'green':
+        symbolParallel.value = 'mdi-arrow-up'
+      break;
+      case 'red':
+        symbolParallel.value = 'mdi-arrow-down'
+      break;
+      case 'neutral':
+        symbolParallel.value = 'mdi-minus'
+      break;
+    };
 }
 
 
@@ -259,16 +340,7 @@ export default defineComponent({
   },
 
   setup() {
-
-    const $q = useQuasar()
-    let timer
-
-    onBeforeUnmount(() => {
-      if (timer !== void 0) {
-        clearTimeout(timer)
-        $q.loading.hide()
-      }
-    })
+    const $q = useQuasar();
 
     return {
       resultPromedio,
@@ -294,52 +366,144 @@ export default defineComponent({
       consultHourParallel,
       consultHourBcv,
       async showLoading () {
+        amountBcv.value = null;
+        resultBcv.value = null;
+
+        amountParallel.value = null;
+        resultParallel.value = null;
+
+        amountPromedio.value = null;
+        resultPromedio.value = null;
         $q.loading.show()
 
-        await axios.get('https://pydolarve.org/api/v1/dollar?page=bcv').then(function (response) {
-      bcvData.value=response.data
-    })
-    await axios.get('https://pydolarve.org/api/v1/dollar?monitor=enparalelovzla').then(function (response) {
-      parallelData.value = response.data;
-    })
+        await axios.get('https://pydolarve.org/api/v1/dollar?page=bcv')
+        .then(function (response) {
+          if(response.status == 200){
+            bcvData.value=response.data;
+            console.log("Status de consulta bcv",response.status);
+          }
+        })
+        .catch(function (error) {
+    if (error.response) {
+      // The request was made and the server responded with a status code
+      // that falls out of the range of 2xx
+      console.log(error.response.data);
+      console.log(error.response.status);
+      console.log(error.response.headers);
 
-    //Data BCV
-      consultHourBcv.value = bcvData.value.monitors.usd.last_update;
-      OfficialValue.value = bcvData.value.monitors.usd.price.toFixed(2);
-      colorBcv.value = bcvData.value.monitors.usd.color;
-      switch (colorBcv.value) {
-        case 'green':
-          symbolBcv.value = 'mdi-arrow-up'
-        break;
-        case 'red':
-          symbolBcv.value = 'mdi-arrow-down'
-        break;
-        case 'neutral':
-          symbolBcv.value = 'mdi-minus'
-        break;
-      };
+      $q.loading.hide()
+      $q.notify({
+        message: 'No se puso contactar con el servidor',
+        color: 'negative',
+        position: 'center',
+      })
 
-      //Data Paralelo
-      consultHourParallel.value = parallelData.value.last_update;
-      ParallelValue.value = parallelData.value.price.toFixed(2);
-      colorParallel.value = parallelData.value.color;
-      switch (colorParallel.value) {
-        case 'green':
-          symbolParallel.value = 'mdi-arrow-up'
-        break;
-        case 'red':
-          symbolParallel.value = 'mdi-arrow-down'
-        break;
-        case 'neutral':
-          symbolParallel.value = 'mdi-minus'
-        break;
-      };
+    } else if (error.request) {
+      // The request was made but no response was received
+      // `error.request` is an instance of XMLHttpRequest in the browser
+      // and an instance of http.ClientRequest in node.js
+      console.log(error.request.status);
 
-        // hiding in 2s
-        timer = setTimeout(() => {
-          $q.loading.hide()
-          timer = void 0
-        }, 1000)
+      $q.loading.hide()
+      $q.notify({
+        message: 'Error de conexión',
+        color: 'negative',
+        position: 'center',
+      })
+    } else {
+      // Something happened in setting up the request that triggered an Error
+      console.log('Error', error.message);
+
+      $q.loading.hide()
+      $q.notify({
+        message: 'Error desconocido',
+        color: 'negative',
+        position: 'center',
+      })
+    }
+  });
+        await axios.get('https://pydolarve.org/api/v1/dollar?monitor=enparalelovzla')
+        .then(function (response) {
+          if(response.status==200){
+            parallelData.value = response.data;
+            console.log("Status de consulta paralelo",response.status)
+            $q.loading.hide()
+          }
+        })
+        .catch(function (error) {
+    if (error.response) {
+      // The request was made and the server responded with a status code
+      // that falls out of the range of 2xx
+      console.log(error.response.data);
+      console.log(error.response.status);
+      console.log(error.response.headers);
+
+      $q.loading.hide()
+      $q.notify({
+        message: 'No se puso contactar con el servidor',
+        color: 'negative',
+        position: 'center',
+      })
+
+    } else if (error.request) {
+      // The request was made but no response was received
+      // `error.request` is an instance of XMLHttpRequest in the browser
+      // and an instance of http.ClientRequest in node.js
+      console.log(error.request.status);
+
+      $q.loading.hide()
+      $q.notify({
+        message: 'Error de conexión',
+        color: 'negative',
+        position: 'center',
+      })
+    } else {
+      // Something happened in setting up the request that triggered an Error
+      console.log('Error', error.message);
+
+      $q.loading.hide()
+      $q.notify({
+        message: 'Error desconocido',
+        color: 'negative',
+        position: 'center',
+      })
+    }
+  });
+
+        promedioValue.value = ((bcvData.value.monitors.usd.price + parallelData.value.price)/2).toFixed(2);
+        console.log(promedioValue.value)
+
+        //Data BCV
+        consultHourBcv.value = bcvData.value.monitors.usd.last_update;
+        OfficialValue.value = bcvData.value.monitors.usd.price.toFixed(2);
+        colorBcv.value = bcvData.value.monitors.usd.color;
+        switch (colorBcv.value) {
+          case 'green':
+            symbolBcv.value = 'mdi-arrow-up'
+          break;
+          case 'red':
+            symbolBcv.value = 'mdi-arrow-down'
+          break;
+          case 'neutral':
+            symbolBcv.value = 'mdi-minus'
+          break;
+        };
+
+        //Data Paralelo
+        consultHourParallel.value = parallelData.value.last_update;
+        ParallelValue.value = parallelData.value.price.toFixed(2);
+        colorParallel.value = parallelData.value.color;
+        switch (colorParallel.value) {
+          case 'green':
+            symbolParallel.value = 'mdi-arrow-up'
+          break;
+          case 'red':
+            symbolParallel.value = 'mdi-arrow-down'
+          break;
+          case 'neutral':
+            symbolParallel.value = 'mdi-minus'
+          break;
+        };
       }
     }
   },

@@ -3,7 +3,15 @@ const routes = [
     path: '/',
     component: () => import('layouts/MainLayout.vue'),
     children: [
-      { path: '', component: () => import('pages/IndexPage.vue') }
+      { path: '', component: () => import('pages/IndexPage.vue') },
+      {
+        path: "anotherCurrencies",
+        component: () => import('pages/anotherCurrencies.vue'),
+      },
+      {
+        path: "ComparativeFinance",
+        component: () => import('pages/ComparativeFinance.vue'),
+      },
     ]
   },
 
@@ -13,6 +21,6 @@ const routes = [
     path: '/:catchAll(.*)*',
     component: () => import('pages/ErrorNotFound.vue')
   }
-]
+];
 
-export default routes
+export default routes;

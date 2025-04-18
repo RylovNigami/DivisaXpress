@@ -4,8 +4,8 @@
       <q-toolbar>
         <q-btn flat dense round icon="menu" aria-label="Menu" @click="toggleLeftDrawer" />
 
-        <q-toolbar-title> VES to $ App </q-toolbar-title>
-        <p class="q-pt-md">V.1.6</p>
+        <q-toolbar-title> VES to $ </q-toolbar-title>
+        <p class="q-pt-md">V.3.0</p>
       </q-toolbar>
     </q-header>
 
@@ -16,8 +16,10 @@
       class="font-color"
     >
       <q-list>
-        <q-item-label header> Referencias </q-item-label>
+        <q-item-label header> Secciones </q-item-label>
+        <EssentialLink v-for="link in linkListSections" :key="link.title" v-bind="link" />
 
+        <q-item-label header> Referencias </q-item-label>
         <EssentialLink v-for="link in linksList" :key="link.title" v-bind="link" />
       </q-list>
     </q-drawer>
@@ -45,7 +47,28 @@ const linksList = [
     icon: 'mdi-currency-usd',
     link: 'https://www.instagram.com/monitordollarvzlar/',
   },
-]
+];
+
+const linkListSections = [
+{
+    title: 'Calculo de $',
+    caption: 'Verifique el valor de sus divisas',
+    icon: 'mdi-currency-usd',
+    link: '/',
+  },
+  {
+    title: 'Calculo de otras divisas BCV',
+    caption: 'Verifique el valor de sus divisas',
+    icon: 'mdi-currency-eur',
+    link: '/anotherCurrencies',
+  },
+  {
+    title: 'Comparativa de bolivares en $',
+    caption: 'Verifique el valor sus bolivares',
+    icon: 'mdi-currency-usd',
+    link: '/ComparativeFinance',
+  },
+];
 
 const leftDrawerOpen = ref(false)
 
