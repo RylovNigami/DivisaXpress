@@ -1,7 +1,7 @@
 {
   "name": "org.cordova.quasar.app",
-  "displayName": "VEStoDollar",
-  "version": "1.0.0",
+  "displayName": "DivisaXpress",
+  "version": "4.0.0",
   "description": "A sample Apache Cordova application that responds to the deviceready event.",
   "main": "index.js",
   "scripts": {

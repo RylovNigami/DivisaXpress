@@ -1,8 +1,8 @@
 {
-  "name": "vestodollar",
+  "name": "DivisaXpress",
   "version": "0.0.1",
   "description": "Easier way to count your Bs",
-  "productName": "VEStoDollar",
+  "productName": "DivisaXpress",
   "author": "RylovNigami <mendezr1700@gmail.com>",
   "type": "module",
   "private": true,

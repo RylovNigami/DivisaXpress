@@ -1,4 +1,4 @@
-# VEStoDollar (vestodollar)
+# DivisaXpress (DivisaXpress)
 
 Easier way to count your Bs
 
