@@ -5,12 +5,16 @@ const routes = [
     children: [
       { path: '', component: () => import('pages/IndexPage.vue') },
       {
-        path: "anotherCurrencies",
-        component: () => import('pages/anotherCurrencies.vue'),
+        path: "AnotherCurrenciesComponent",
+        component: () => import('components/AnotherCurrenciesComponent.vue'),
       },
       {
-        path: "ComparativeFinance",
-        component: () => import('pages/ComparativeFinance.vue'),
+        path: "ComparativeFinanceComponent",
+        component: () => import('components/ComparativeFinanceComponent.vue'),
+      },
+      {
+        path: "IndexComponent",
+        component: () => import('components/IndexComponent.vue'),
       },
     ]
   },

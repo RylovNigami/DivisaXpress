@@ -1,10 +1,8 @@
 // app global css in SCSS form
 .hero-image {
   /* Use "linear-gradient" to add a darken background effect to the image (photographer.jpg). This will make the text easier to read */
-  background-image:
-    linear-gradient(rgba(0, 0, 0, 0.5), rgba(2, 0, 0, 0.5)),
-    url('/public/istockphoto-826661764-640x640.jpg');
-
+  background: #030000;
+background: linear-gradient(180deg,rgba(3, 0, 0, 1) 33%, rgba(9, 9, 121, 1) 66%, rgba(0, 55, 255, 1) 100%);
   /* Set a specific height */
   height: 100%;
 

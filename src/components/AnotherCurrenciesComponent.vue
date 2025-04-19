@@ -1,9 +1,8 @@
 <template>
-  <q-page class="hero-image font-color">
-    <div class="q-pt-md q-pb-md row flex-center font-color">
+    <div class="q-pt-md row flex-center font-color">
       <q-btn outline rounded label="Actualizar" @click="showLoading()"/>
     </div>
-    <div class="q-px-sm q-pb-xl">
+    <div class="">
       <q-expansion-item @click="EURreturnToZeroBcv()">
         <template v-slot:header>
           <q-item-section avatar>
@@ -169,11 +168,6 @@
         </q-card>
       </q-expansion-item>
     </div>
-    <div class="q-pb-md q-pt-xl">
-      <div class="row flex-center">RylovTech ©</div>
-      <div class="row flex-center">2025 · Venezuela</div>
-    </div>
-  </q-page>
 </template>
 
 <script>
@@ -378,7 +372,7 @@ async function showCharge(){
 
 
 export default defineComponent({
-  name: "anotherCurrencies, App",
+  name: "AnotherCurrenciesComponent, App",
   setup() {
     const $q = useQuasar()
 

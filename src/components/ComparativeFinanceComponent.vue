@@ -1,8 +1,8 @@
 <template>
-  <q-page class="hero-image font-color">
     <div class="q-pt-md q-pb-md row flex-center font-color">
       <q-btn outline rounded label="Actualizar" @click="showLoading()"/>
     </div>
+    <div>
       <q-input
         class="col q-pb-xl q-px-md"
         outlined
@@ -19,60 +19,56 @@
           <q-btn round dense flat icon="send" @click="returnValues()"/>
         </template>
       </q-input>
+    </div>
 
-    <div class="q-pt-md q-pb-md row justify-center font-color">
-        <div class="row justify-center q-ml-md">
+    <div class="q-pt-md q-pb-md row font-color">
+
+      <div class="row justify-center q-ml-md q-pb-lg">
           <q-avatar style="font-size: 30px;" class="q-ma-xs">
             <img src="/BcvDolarPNG.png">
           </q-avatar>
-          <h6 class="row justify-center q-mt-none">Oficial: {{ OfficialValue }}</h6>
-          <q-input class="col q-px-md" outlined dense="dense" readonly>
+          <h6 class="row justify-center q-mt-none q-mb-none">Oficial:</h6>
+          <q-input class="col q-px-md" outlined dense="dense" :hint="BcvHint" readonly>
             <template v-slot:append>
               <div style="font-size:large;"> $ </div >
             </template>
             <template v-slot:prepend>
-                {{ resultBcv }}
+              <div class="">{{ resultBcv }}</div>
               </template>
           </q-input>
+          <br>
       </div>
 
-        <div class="row justify-center q-ml-md">
-          <q-avatar style="font-size: 30px;" class="q-ma-xs">
-            <img src="/monitorDolarPng.png">
-          </q-avatar>
-          <h6 class="row justify-center q-mt-none">Paralelo: {{ ParallelValue }} </h6>
-          <q-input class="col q-px-md" outlined dense="dense" readonly>
-            <template v-slot:append>
-              <div style="font-size:large;"> $ </div >
+      <div class="row justify-center q-ml-md q-pb-lg">
+        <q-avatar style="font-size: 30px;" class="q-ma-xs">
+          <img src="/monitorDolarPng.png">
+        </q-avatar>
+        <h6 class="row justify-center q-mt-none q-mb-none">Paralelo:</h6>
+        <q-input class="col q-px-md" outlined dense="dense" :hint="ParallelHint" readonly>
+          <template v-slot:append>
+            <div style="font-size:large;"> $ </div >
+          </template>
+          <template v-slot:prepend>
+            <div class="">{{ resultParallel }}</div>
             </template>
-            <template v-slot:prepend>
-                {{ resultParallel }}
-              </template>
-          </q-input>
+        </q-input>
       </div>
 
-        <div class="row justify-center q-ml-md">
-          <q-avatar style="font-size: 30px;" class="q-ma-xs">
-            <img src="/promedio.png">
-          </q-avatar>
-          <h6 class="row justify-center q-mt-none">promedio: {{ promedioValue }} </h6>
-          <q-input class="col q-px-md" outlined dense="dense" readonly>
-            <template v-slot:append>
-              <div style="font-size:large;"> $ </div >
+      <div class="row justify-center q-ml-md q-pb-lg">
+        <q-avatar style="font-size: 30px;" class="q-ma-xs">
+          <img src="/promedio.png">
+        </q-avatar>
+        <h6 class="row justify-center q-mt-none q-mb-none">promedio:</h6>
+        <q-input class="col q-px-md" outlined dense="dense" :hint=PromedioHint readonly>
+          <template v-slot:append>
+            <div style="font-size:large;"> $ </div >
+          </template>
+          <template v-slot:prepend>
+            <div class="">{{ resultPromedio }}</div>
             </template>
-            <template v-slot:prepend>
-                {{ resultPromedio }}
-              </template>
-          </q-input>
-        </div>
-
+        </q-input>
+      </div>
     </div>
-
-    <div class="q-pb-md q-pt-xl">
-      <div class="row flex-center">RylovTech ©</div>
-      <div class="row flex-center">2025 · Venezuela</div>
-    </div>
-  </q-page>
 </template>
 
 <script>
@@ -97,6 +93,10 @@ const colorBcv = ref('');
 const colorParallel = ref('');
 const symbolBcv = ref('');
 const symbolParallel = ref('');
+const BcvHint = ref('');
+const ParallelHint = ref('');
+const PromedioHint = ref('');
+
 
 function returnValues() {
   if (amountBcv.value.includes(",") === true)
@@ -129,6 +129,11 @@ async function showCharge(){
       console.log(error.response.headers);
 
       $q.loading.hide()
+      $q.notify({
+        message: 'No se puso contactar con el servidor',
+        color: 'negative',
+        position: 'center',
+      })
 
     } else if (error.request) {
       // The request was made but no response was received
@@ -137,13 +142,21 @@ async function showCharge(){
       console.log(error.request.status);
 
       $q.loading.hide()
-
+      $q.notify({
+        message: 'Error de conexión',
+        color: 'negative',
+        position: 'center',
+      })
     } else {
       // Something happened in setting up the request that triggered an Error
       console.log('Error', error.message);
 
       $q.loading.hide()
-
+      $q.notify({
+        message: 'Error desconocido',
+        color: 'negative',
+        position: 'center',
+      })
     }
   });
 
@@ -164,18 +177,10 @@ async function showCharge(){
       console.log(error.response.headers);
 
       $q.loading.hide()
-      $q.dialog({
-        dark: true,
-        title: 'Error al consultar datos',
-        message: '¿Actualizar?',
-        ok: {
-          push: true,
-          color:'positive'
-        },
-        persistent: true
-      }).onOk(() => {
-        // console.log('>>>> OK')
-        showCharge();
+      $q.notify({
+        message: 'No se puso contactar con el servidor',
+        color: 'negative',
+        position: 'center',
       })
 
     } else if (error.request) {
@@ -185,38 +190,20 @@ async function showCharge(){
       console.log(error.request.status);
 
       $q.loading.hide()
-      $q.dialog({
-        dark: true,
-        title: 'Error al consultar datos',
-        message: '¿Actualizar?',
-        ok: {
-          push: true,
-          color:'positive'
-        },
-        persistent: true
-      }).onOk(() => {
-        // console.log('>>>> OK')
-        showCharge();
+      $q.notify({
+        message: 'Error de conexión',
+        color: 'negative',
+        position: 'center',
       })
-
-
     } else {
       // Something happened in setting up the request that triggered an Error
       console.log('Error', error.message);
 
       $q.loading.hide()
-      $q.dialog({
-        dark: true,
-        title: 'Error al consultar datos',
-        message: '¿Actualizar?',
-        ok: {
-          push: true,
-          color:'positive'
-        },
-        persistent: true
-      }).onOk(() => {
-        // console.log('>>>> OK')
-        showCharge();
+      $q.notify({
+        message: 'Error desconocido',
+        color: 'negative',
+        position: 'center',
       })
     }
   });
@@ -255,18 +242,23 @@ async function showCharge(){
         symbolParallel.value = 'mdi-minus'
       break;
     };
+
+    BcvHint.value = 'Calculo a: '+ OfficialValue.value;
+    ParallelHint.value = 'Calculo a: '+ ParallelValue.value;
+    PromedioHint.value = 'Calculo a: '+ promedioValue.value;
 }
 
 
 export default defineComponent({
-  name: 'IndexPage',
-  components: {
-  },
+  name: 'ComparativeFinanceComponent, App',
 
   setup() {
     const $q = useQuasar();
 
     return {
+      BcvHint,
+      ParallelHint,
+      PromedioHint,
       resultPromedio,
       amountPromedio,
       promedioValue,
@@ -296,33 +288,44 @@ export default defineComponent({
           }
         })
         .catch(function (error) {
-          if (error.response) {
-            // The request was made and the server responded with a status code
-            // that falls out of the range of 2xx
-            console.log(error.response.data);
-            console.log(error.response.status);
-            console.log(error.response.headers);
+    if (error.response) {
+      // The request was made and the server responded with a status code
+      // that falls out of the range of 2xx
+      console.log(error.response.data);
+      console.log(error.response.status);
+      console.log(error.response.headers);
 
-            $q.loading.hide()
+      $q.loading.hide()
+      $q.notify({
+        message: 'No se puso contactar con el servidor',
+        color: 'negative',
+        position: 'center',
+      })
 
+    } else if (error.request) {
+      // The request was made but no response was received
+      // `error.request` is an instance of XMLHttpRequest in the browser
+      // and an instance of http.ClientRequest in node.js
+      console.log(error.request.status);
 
-          } else if (error.request) {
-            // The request was made but no response was received
-            // `error.request` is an instance of XMLHttpRequest in the browser
-            // and an instance of http.ClientRequest in node.js
-            console.log(error.request.status);
+      $q.loading.hide()
+      $q.notify({
+        message: 'Error de conexión',
+        color: 'negative',
+        position: 'center',
+      })
+    } else {
+      // Something happened in setting up the request that triggered an Error
+      console.log('Error', error.message);
 
-            $q.loading.hide()
-
-
-          } else {
-            // Something happened in setting up the request that triggered an Error
-            console.log('Error', error.message);
-
-            $q.loading.hide()
-
-          }
-        });
+      $q.loading.hide()
+      $q.notify({
+        message: 'Error desconocido',
+        color: 'negative',
+        position: 'center',
+      })
+    }
+  });
 
         await axios.get('https://pydolarve.org/api/v1/dollar?monitor=enparalelovzla')
         .then(function (response) {
@@ -333,69 +336,44 @@ export default defineComponent({
           }
         })
         .catch(function (error) {
-          if (error.response) {
-            // The request was made and the server responded with a status code
-            // that falls out of the range of 2xx
-            console.log(error.response.data);
-            console.log(error.response.status);
-            console.log(error.response.headers);
+    if (error.response) {
+      // The request was made and the server responded with a status code
+      // that falls out of the range of 2xx
+      console.log(error.response.data);
+      console.log(error.response.status);
+      console.log(error.response.headers);
 
-            $q.loading.hide()
-            $q.dialog({
-              dark: true,
-              title: 'Error al consultar datos',
-              message: '¿Actualizar?',
-              ok: {
-                push: true,
-                color:'positive'
-              },
-              persistent: true
-            }).onOk(() => {
-              // console.log('>>>> OK')
-              showCharge();
-            })
+      $q.loading.hide()
+      $q.notify({
+        message: 'No se puso contactar con el servidor',
+        color: 'negative',
+        position: 'center',
+      })
 
-          } else if (error.request) {
-            // The request was made but no response was received
-            // `error.request` is an instance of XMLHttpRequest in the browser
-            // and an instance of http.ClientRequest in node.js
-            console.log(error.request.status);
+    } else if (error.request) {
+      // The request was made but no response was received
+      // `error.request` is an instance of XMLHttpRequest in the browser
+      // and an instance of http.ClientRequest in node.js
+      console.log(error.request.status);
 
-            $q.loading.hide()
-            $q.dialog({
-              dark: true,
-              title: 'Error al consultar datos',
-              message: '¿Actualizar?',
-              ok: {
-                push: true,
-                color:'positive'
-              },
-              persistent: true
-            }).onOk(() => {
-              // console.log('>>>> OK')
-              showCharge();
-            })
+      $q.loading.hide()
+      $q.notify({
+        message: 'Error de conexión',
+        color: 'negative',
+        position: 'center',
+      })
+    } else {
+      // Something happened in setting up the request that triggered an Error
+      console.log('Error', error.message);
 
-          } else {
-            // Something happened in setting up the request that triggered an Error
-            console.log('Error', error.message);
-
-            $q.loading.hide()
-            $q.dialog({
-              dark: true,
-              title: 'Error al consultar datos',
-              message: '¿Actualizar?',
-              ok: {
-                push: true,
-                color:'positive'
-              },
-              persistent: true
-            }).onOk(() => {
-              // console.log('>>>> OK')
-              showCharge();
-            })
-          }
-        });
+      $q.loading.hide()
+      $q.notify({
+        message: 'Error desconocido',
+        color: 'negative',
+        position: 'center',
+      })
+    }
+  });
 
         promedioValue.value = ((bcvData.value.monitors.usd.price + parallelData.value.price)/2).toFixed(2);
         console.log(promedioValue.value)
@@ -431,6 +409,10 @@ export default defineComponent({
             symbolParallel.value = 'mdi-minus'
           break;
         };
+
+        BcvHint.value = 'Calculo a: '+ OfficialValue.value;
+        ParallelHint.value = 'Calculo a: '+ ParallelValue.value;
+        PromedioHint.value = 'Calculo a: '+ promedioValue.value;
       }
     }
   },
