@@ -3,8 +3,11 @@
     <q-header elevated style="background-color: black">
       <q-toolbar>
         <q-btn flat dense round icon="menu" aria-label="Menu" @click="toggleLeftDrawer" />
-
+        <q-avatar class="q-ml-sm">
+          <img src="public\4966321.png">
+        </q-avatar>
         <q-toolbar-title>DivisaExpress</q-toolbar-title>
+
         <p class="q-pt-md">V.4.0</p>
       </q-toolbar>
     </q-header>
