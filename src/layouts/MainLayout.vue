@@ -4,11 +4,11 @@
       <q-toolbar>
         <q-btn flat dense round icon="menu" aria-label="Menu" @click="toggleLeftDrawer" />
         <q-avatar class="q-ml-sm">
-          <img src="\4966321.png">
+          <img src="\MainLogo.png">
         </q-avatar>
-        <q-toolbar-title>DivisaExpress</q-toolbar-title>
+        <q-toolbar-title>DivisaXpress</q-toolbar-title>
 
-        <p class="q-pt-md">V.4.0</p>
+        <p class="q-pt-md">V.5.0</p>
       </q-toolbar>
     </q-header>
 

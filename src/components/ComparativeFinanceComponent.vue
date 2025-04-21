@@ -4,7 +4,7 @@
     </div>
     <div>
       <q-input
-        class="col q-pb-xl q-px-md"
+        class="col q-pb-xl q-px-md q-pt-md"
         outlined
         v-model.trim="amountBcv"
         dense="dense"
@@ -23,12 +23,12 @@
 
     <div class="q-pt-md q-pb-md row font-color">
 
-      <div class="row justify-center q-ml-md q-pb-lg">
+      <div class="row justify-center q-ml-md q-pb-xl">
           <q-avatar style="font-size: 30px;" class="q-ma-xs">
             <img src="/BcvDolarPNG.png">
           </q-avatar>
-          <h6 class="row justify-center q-mt-none q-mb-none">Oficial:</h6>
-          <q-input class="col q-px-md" outlined dense="dense" :hint="BcvHint" readonly>
+          <h6 class="row justify-center q-mt-none q-mb-none">Oficial ($):</h6>
+          <q-input class="col q-pr-md q-pl-sm" outlined dense :hint="BcvHint" readonly>
             <template v-slot:append>
               <div style="font-size:large;"> $ </div >
             </template>
@@ -39,12 +39,12 @@
           <br>
       </div>
 
-      <div class="row justify-center q-ml-md q-pb-lg">
+      <div class="row justify-center q-ml-md q-pb-xl">
         <q-avatar style="font-size: 30px;" class="q-ma-xs">
           <img src="/monitorDolarPng.png">
         </q-avatar>
-        <h6 class="row justify-center q-mt-none q-mb-none">Paralelo:</h6>
-        <q-input class="col q-px-md" outlined dense="dense" :hint="ParallelHint" readonly>
+        <h6 class="row justify-center q-mt-none q-mb-none">Paralelo ($):</h6>
+        <q-input class="col q-pr-md q-pl-sm" outlined dense :hint="ParallelHint" readonly>
           <template v-slot:append>
             <div style="font-size:large;"> $ </div >
           </template>
@@ -54,12 +54,12 @@
         </q-input>
       </div>
 
-      <div class="row justify-center q-ml-md q-pb-lg">
+      <div class="row justify-center q-ml-md q-pb-xl">
         <q-avatar style="font-size: 30px;" class="q-ma-xs">
           <img src="/promedio.png">
         </q-avatar>
-        <h6 class="row justify-center q-mt-none q-mb-none">promedio:</h6>
-        <q-input class="col q-px-md" outlined dense="dense" :hint=PromedioHint readonly>
+        <h6 class="row justify-center q-mt-none q-mb-none">Promedio ($):</h6>
+        <q-input class="col q-pr-md q-pl-sm" outlined dense :hint=PromedioHint readonly>
           <template v-slot:append>
             <div style="font-size:large;"> $ </div >
           </template>
@@ -67,6 +67,22 @@
             <div class="">{{ resultPromedio }}</div>
             </template>
         </q-input>
+      </div>
+
+      <div class="row justify-center q-ml-md q-pb-xl">
+          <q-avatar style="font-size: 30px;" class="q-ma-xs">
+            <img src="/BcvDolarPNG.png">
+          </q-avatar>
+          <h6 class="row justify-center q-mt-none q-mb-none">Oficial (€):</h6>
+          <q-input class="col q-pr-md q-pl-sm" outlined dense :hint="BcvHintEuro" readonly>
+            <template v-slot:append>
+              <div style="font-size:large;"> € </div >
+            </template>
+            <template v-slot:prepend>
+              <div class="">{{ resultEuroBcv }}</div>
+              </template>
+          </q-input>
+          <br>
       </div>
     </div>
 </template>
@@ -84,16 +100,13 @@ const OfficialValue = ref();
 const ParallelValue = ref();
 const promedioValue = ref();
 const amountBcv = ref();
-const amountParallel = ref();
-const amountPromedio = ref();
 const resultBcv = ref();
 const resultParallel = ref();
 const resultPromedio = ref();
-const colorBcv = ref('');
-const colorParallel = ref('');
-const symbolBcv = ref('');
-const symbolParallel = ref('');
 const BcvHint = ref('');
+const BcvHintEuro = ref('');
+const OfficialEuroValue = ref();
+const resultEuroBcv = ref();
 const ParallelHint = ref('');
 const PromedioHint = ref('');
 
@@ -106,6 +119,7 @@ function returnValues() {
   resultBcv.value = (amountBcv.value / OfficialValue.value).toFixed(3);
   resultParallel.value = (amountBcv.value / ParallelValue.value).toFixed(3);
   resultPromedio.value = (amountBcv.value / promedioValue.value).toFixed(3);
+  resultEuroBcv.value = (amountBcv.value / OfficialEuroValue.value).toFixed(3);
 };
 
 async function showCharge(){
@@ -214,38 +228,16 @@ async function showCharge(){
     //Data BCV
     consultHourBcv.value = bcvData.value.monitors.usd.last_update;
     OfficialValue.value = bcvData.value.monitors.usd.price.toFixed(2);
-    colorBcv.value = bcvData.value.monitors.usd.color;
-    switch (colorBcv.value) {
-      case 'green':
-        symbolBcv.value = 'mdi-arrow-up'
-      break;
-      case 'red':
-        symbolBcv.value = 'mdi-arrow-down'
-      break;
-      case 'neutral':
-        symbolBcv.value = 'mdi-minus'
-      break;
-    };
+    OfficialEuroValue.value = bcvData.value.monitors.eur.price.toFixed(2);
 
     //Data Paralelo
     consultHourParallel.value = parallelData.value.last_update;
     ParallelValue.value = parallelData.value.price.toFixed(2);
-    colorParallel.value = parallelData.value.color;
-    switch (colorParallel.value) {
-      case 'green':
-        symbolParallel.value = 'mdi-arrow-up'
-      break;
-      case 'red':
-        symbolParallel.value = 'mdi-arrow-down'
-      break;
-      case 'neutral':
-        symbolParallel.value = 'mdi-minus'
-      break;
-    };
 
     BcvHint.value = 'Calculo a: '+ OfficialValue.value;
     ParallelHint.value = 'Calculo a: '+ ParallelValue.value;
     PromedioHint.value = 'Calculo a: '+ promedioValue.value;
+    BcvHintEuro.value = 'Calculo a: ' + OfficialEuroValue.value;
 }
 
 
@@ -260,23 +252,25 @@ export default defineComponent({
       ParallelHint,
       PromedioHint,
       resultPromedio,
-      amountPromedio,
       promedioValue,
       showCharge,
       returnValues,
       OfficialValue,
       ParallelValue,
       amountBcv,
-      amountParallel,
       resultBcv,
       resultParallel,
       consultHourParallel,
       consultHourBcv,
+      BcvHintEuro,
+      resultEuroBcv,
+      OfficialEuroValue,
       async showLoading () {
         amountBcv.value = null;
         resultBcv.value = null;
         resultParallel.value = null;
         resultPromedio.value = null;
+        resultEuroBcv.value = null;
 
         $q.loading.show()
 
@@ -375,44 +369,22 @@ export default defineComponent({
     }
   });
 
-        promedioValue.value = ((bcvData.value.monitors.usd.price + parallelData.value.price)/2).toFixed(2);
-        console.log(promedioValue.value)
+  promedioValue.value = ((bcvData.value.monitors.usd.price + parallelData.value.price)/2).toFixed(2);
+    console.log(promedioValue.value)
 
-        //Data BCV
-        consultHourBcv.value = bcvData.value.monitors.usd.last_update;
-        OfficialValue.value = bcvData.value.monitors.usd.price.toFixed(2);
-        colorBcv.value = bcvData.value.monitors.usd.color;
-        switch (colorBcv.value) {
-          case 'green':
-            symbolBcv.value = 'mdi-arrow-up'
-          break;
-          case 'red':
-            symbolBcv.value = 'mdi-arrow-down'
-          break;
-          case 'neutral':
-            symbolBcv.value = 'mdi-minus'
-          break;
-        };
+    //Data BCV
+    consultHourBcv.value = bcvData.value.monitors.usd.last_update;
+    OfficialValue.value = bcvData.value.monitors.usd.price.toFixed(2);
+    OfficialEuroValue.value = bcvData.value.monitors.eur.price.toFixed(2);
 
-        //Data Paralelo
-        consultHourParallel.value = parallelData.value.last_update;
-        ParallelValue.value = parallelData.value.price.toFixed(2);
-        colorParallel.value = parallelData.value.color;
-        switch (colorParallel.value) {
-          case 'green':
-            symbolParallel.value = 'mdi-arrow-up'
-          break;
-          case 'red':
-            symbolParallel.value = 'mdi-arrow-down'
-          break;
-          case 'neutral':
-            symbolParallel.value = 'mdi-minus'
-          break;
-        };
+    //Data Paralelo
+    consultHourParallel.value = parallelData.value.last_update;
+    ParallelValue.value = parallelData.value.price.toFixed(2);
 
-        BcvHint.value = 'Calculo a: '+ OfficialValue.value;
-        ParallelHint.value = 'Calculo a: '+ ParallelValue.value;
-        PromedioHint.value = 'Calculo a: '+ promedioValue.value;
+    BcvHint.value = 'Calculo a: '+ OfficialValue.value;
+    ParallelHint.value = 'Calculo a: '+ ParallelValue.value;
+    PromedioHint.value = 'Calculo a: '+ promedioValue.value;
+    BcvHintEuro.value = 'calculo a: ' + OfficialEuroValue.value;
       }
     }
   },

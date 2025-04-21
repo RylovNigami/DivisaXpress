@@ -5,8 +5,8 @@
     <div class="">
       <q-expansion-item @click="EURreturnToZeroBcv()">
         <template v-slot:header>
-          <q-item-section avatar>
-            <q-avatar style="font-size: 80px;">
+          <q-item-section avatar class="q-pr-sm">
+            <q-avatar style="font-size: 75px;">
               <img src="/BcvDolarPNG.png">
             </q-avatar>
           </q-item-section>
@@ -47,8 +47,8 @@
       </q-expansion-item>
       <q-expansion-item @click="CNYreturnToZeroBcv()">
         <template v-slot:header>
-          <q-item-section avatar>
-            <q-avatar style="font-size: 80px;">
+          <q-item-section avatar class="q-pr-sm">
+            <q-avatar style="font-size: 75px;">
               <img src="/BcvDolarPNG.png">
             </q-avatar>
           </q-item-section>
@@ -87,8 +87,8 @@
       </q-expansion-item>
       <q-expansion-item @click="RUBreturnToZeroBcv()">
         <template v-slot:header>
-          <q-item-section avatar>
-            <q-avatar style="font-size: 80px;">
+          <q-item-section avatar class="q-pr-sm">
+            <q-avatar style="font-size: 75px;">
               <img src="/BcvDolarPNG.png">
             </q-avatar>
           </q-item-section>
@@ -128,8 +128,8 @@
       </q-expansion-item>
       <q-expansion-item @click="TRYreturnToZeroBcv()">
         <template v-slot:header>
-          <q-item-section avatar>
-            <q-avatar style="font-size: 80px;">
+          <q-item-section avatar class="q-pr-sm">
+            <q-avatar style="font-size: 75px;">
               <img src="/BcvDolarPNG.png">
             </q-avatar>
           </q-item-section>

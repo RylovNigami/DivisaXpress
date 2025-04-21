@@ -5,14 +5,14 @@
     <div>
       <q-expansion-item @click="returnToZeroBcv()">
         <template v-slot:header>
-          <q-item-section avatar>
-            <q-avatar style="font-size: 80px;">
+          <q-item-section avatar class="q-pr-sm">
+            <q-avatar style="font-size: 75px;">
               <img src="/BcvDolarPNG.png">
             </q-avatar>
           </q-item-section>
 
           <q-item-section>
-            <h6>Oficial: {{ OfficialValue }} <q-icon :color=colorBcv :name="symbolBcv"/><br><div class="text-caption">{{ consultHourBcv }}</div></h6>
+            <h6>Oficial ($): {{ OfficialValue }} <q-icon :color=colorBcv :name="symbolBcv"/><br><div class="text-caption">{{ consultHourBcv }}</div></h6>
           </q-item-section>
         </template>
 
@@ -47,13 +47,13 @@
       </q-expansion-item>
       <q-expansion-item @click="returnToZeroParallel()">
         <template v-slot:header>
-          <q-item-section avatar>
-            <q-avatar style="font-size: 80px;">
+          <q-item-section avatar class="q-pr-sm">
+            <q-avatar style="font-size: 75px;">
               <img src="/monitorDolarPng.png">
             </q-avatar>
           </q-item-section>
           <q-item-section>
-            <h6>Paralelo: {{ ParallelValue }} <q-icon :color=colorParallel :name='symbolParallel'/><br><div class="text-caption">{{ consultHourParallel }}</div></h6>
+            <h6>Paralelo ($): {{ ParallelValue }} <q-icon :color=colorParallel :name='symbolParallel'/><br><div class="text-caption">{{ consultHourParallel }}</div></h6>
           </q-item-section>
         </template>
 
@@ -87,14 +87,14 @@
       </q-expansion-item>
       <q-expansion-item @click="returnToZeroPromedio()">
         <template v-slot:header>
-          <q-item-section avatar>
-            <q-avatar style="font-size: 80px;">
+          <q-item-section avatar class="q-pr-sm">
+            <q-avatar style="font-size: 75px;">
               <img src="/promedio.png">
             </q-avatar>
           </q-item-section>
 
           <q-item-section>
-            <h6>Promedio: {{ promedioValue }} <br><div class="text-caption">{{ consultHourParallel }}</div></h6>
+            <h6>Promedio ($): {{ promedioValue }} <br><div class="text-caption">{{ consultHourParallel }}</div></h6>
           </q-item-section>
         </template>
 
