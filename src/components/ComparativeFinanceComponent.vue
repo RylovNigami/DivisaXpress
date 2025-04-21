@@ -1,8 +1,5 @@
 <template>
-    <div class="q-pt-md q-pb-md row flex-center font-color">
-      <q-btn outline rounded label="Actualizar" @click="showLoading()"/>
-    </div>
-    <div>
+    <div class="q-px-xl q-pt-lg">
       <q-input
         class="col q-pb-xl q-px-md q-pt-md"
         outlined
@@ -21,14 +18,14 @@
       </q-input>
     </div>
 
-    <div class="q-pt-md q-pb-md row font-color">
+    <div class="q-pt-xs q-pb-md row flex-center font-color">
 
       <div class="row justify-center q-ml-md q-pb-xl">
-          <q-avatar style="font-size: 30px;" class="q-ma-xs">
+          <q-avatar style="font-size: 70px;" class="q-ma-xs">
             <img src="BcvDolarPNG.png">
           </q-avatar>
-          <h6 class="row justify-center q-mt-none q-mb-none">Oficial ($):</h6>
-          <q-input class="col q-pr-md q-pl-sm" outlined dense :hint="BcvHint" readonly>
+          <h5 class="q-mt-lg q-mb-none">Oficial ($):</h5>
+          <q-input class="col q-pr-md q-pl-sm q-mt-lg q-mb-none" outlined dense :hint="BcvHint" readonly>
             <template v-slot:append>
               <div style="font-size:large;"> $ </div >
             </template>
@@ -40,11 +37,11 @@
       </div>
 
       <div class="row justify-center q-ml-md q-pb-xl">
-        <q-avatar style="font-size: 30px;" class="q-ma-xs">
+        <q-avatar style="font-size: 70px;" class="q-ma-xs">
           <img src="monitorDolarPng.png">
         </q-avatar>
-        <h6 class="row justify-center q-mt-none q-mb-none">Paralelo ($):</h6>
-        <q-input class="col q-pr-md q-pl-sm" outlined dense :hint="ParallelHint" readonly>
+        <h5 class="q-mt-lg q-mb-none">Paralelo ($):</h5>
+        <q-input class="col q-pr-md q-pl-sm q-mt-lg q-mb-none" outlined dense :hint="ParallelHint" readonly>
           <template v-slot:append>
             <div style="font-size:large;"> $ </div >
           </template>
@@ -55,11 +52,11 @@
       </div>
 
       <div class="row justify-center q-ml-md q-pb-xl">
-        <q-avatar style="font-size: 30px;" class="q-ma-xs">
+        <q-avatar style="font-size: 70px;" class="q-ma-xs">
           <img src="promedio.png">
         </q-avatar>
-        <h6 class="row justify-center q-mt-none q-mb-none">Promedio ($):</h6>
-        <q-input class="col q-pr-md q-pl-sm" outlined dense :hint=PromedioHint readonly>
+        <h5 class=" q-mt-lg q-mb-none">Promedio ($):</h5>
+        <q-input class="col q-pr-md q-pl-sm q-mt-lg q-mb-none" outlined dense :hint=PromedioHint readonly>
           <template v-slot:append>
             <div style="font-size:large;"> $ </div >
           </template>
@@ -69,12 +66,12 @@
         </q-input>
       </div>
 
-      <div class="row justify-center q-ml-md q-pb-xl">
-          <q-avatar style="font-size: 30px;" class="q-ma-xs">
+      <div class="row justify-center q-ml-md q-pb-md">
+          <q-avatar style="font-size: 70px;" class="q-ma-xs">
             <img src="BcvDolarPNG.png">
           </q-avatar>
-          <h6 class="row justify-center q-mt-none q-mb-none">Oficial (€):</h6>
-          <q-input class="col q-pr-md q-pl-sm" outlined dense :hint="BcvHintEuro" readonly>
+          <h5 class="q-mt-lg q-mb-none">Oficial (€):</h5>
+          <q-input class="col q-pr-md q-pl-sm q-mt-lg q-mb-none" outlined dense :hint="BcvHintEuro" readonly>
             <template v-slot:append>
               <div style="font-size:large;"> € </div >
             </template>
@@ -84,6 +81,9 @@
           </q-input>
           <br>
       </div>
+    </div>
+    <div class="q-pt-md q-mx-xl row justify-end font-color">
+      <q-btn outline rounded label="Actualizar" @click="showLoading()"/>
     </div>
 </template>
 
@@ -123,6 +123,13 @@ function returnValues() {
 };
 
 async function showCharge(){
+
+  amountBcv.value = null;
+  resultBcv.value = null;
+  resultParallel.value = null;
+  resultPromedio.value = null;
+  resultEuroBcv.value = null;
+
   const $q = useQuasar();
 
   $q.loading.show()

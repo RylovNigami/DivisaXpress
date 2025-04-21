@@ -1,18 +1,15 @@
 <template>
-    <div class="q-pt-md row flex-center font-color">
-      <q-btn outline rounded label="Actualizar" @click="showLoading()"/>
-    </div>
     <div class="">
-      <q-expansion-item @click="EURreturnToZeroBcv()">
+      <q-expansion-item class="q-px-xl q-mt-xl" @click="EURreturnToZeroBcv()">
         <template v-slot:header>
           <q-item-section avatar class="q-pr-sm">
-            <q-avatar style="font-size: 75px;">
+            <q-avatar style="font-size: 90px;">
               <img src="BcvDolarPNG.png">
             </q-avatar>
           </q-item-section>
 
           <q-item-section>
-            <h6>Euro (€): {{ EUROfficialBcv }} <q-icon :color=EURColorBcv :name="EURSymbolBcv"/><br><div class="text-caption">{{ consultHourBcv }}</div></h6>
+            <h5>Euro (€): {{ EUROfficialBcv }} <q-icon :color=EURColorBcv :name="EURSymbolBcv"/><br><div class="text-caption">{{ consultHourBcv }}</div></h5>
           </q-item-section>
         </template>
 
@@ -45,15 +42,15 @@
           </q-card-section>
         </q-card>
       </q-expansion-item>
-      <q-expansion-item @click="CNYreturnToZeroBcv()">
+      <q-expansion-item class="q-px-xl" @click="CNYreturnToZeroBcv()">
         <template v-slot:header>
           <q-item-section avatar class="q-pr-sm">
-            <q-avatar style="font-size: 75px;">
+            <q-avatar style="font-size: 90px;">
               <img src="BcvDolarPNG.png">
             </q-avatar>
           </q-item-section>
           <q-item-section>
-            <h6>Yuan (¥): {{ CNYOfficialBcv }} <q-icon :color=CNYColorBcv :name='CNYSymbolBcv'/><br><div class="text-caption">{{ consultHourBcv }}</div></h6>
+            <h5>Yuan (¥): {{ CNYOfficialBcv }} <q-icon :color=CNYColorBcv :name='CNYSymbolBcv'/><br><div class="text-caption">{{ consultHourBcv }}</div></h5>
           </q-item-section>
         </template>
 
@@ -85,16 +82,16 @@
           </q-card-section>
         </q-card>
       </q-expansion-item>
-      <q-expansion-item @click="RUBreturnToZeroBcv()">
+      <q-expansion-item class="q-px-xl" @click="RUBreturnToZeroBcv()">
         <template v-slot:header>
           <q-item-section avatar class="q-pr-sm">
-            <q-avatar style="font-size: 75px;">
+            <q-avatar style="font-size: 90px;">
               <img src="BcvDolarPNG.png">
             </q-avatar>
           </q-item-section>
 
           <q-item-section>
-            <h6>Rublo (₽): {{ RUBOfficialBcv }} <q-icon :color=RUBColorBcv :name='RUBSymbolBcv'/><br><div class="text-caption">{{ consultHourBcv }}</div></h6>
+            <h5>Rublo (₽): {{ RUBOfficialBcv }} <q-icon :color=RUBColorBcv :name='RUBSymbolBcv'/><br><div class="text-caption">{{ consultHourBcv }}</div></h5>
           </q-item-section>
         </template>
 
@@ -126,16 +123,16 @@
           </q-card-section>
         </q-card>
       </q-expansion-item>
-      <q-expansion-item @click="TRYreturnToZeroBcv()">
+      <q-expansion-item class="q-px-xl" @click="TRYreturnToZeroBcv()">
         <template v-slot:header>
           <q-item-section avatar class="q-pr-sm">
-            <q-avatar style="font-size: 75px;">
+            <q-avatar style="font-size: 90px;">
               <img src="BcvDolarPNG.png">
             </q-avatar>
           </q-item-section>
 
           <q-item-section>
-            <h6>Lira (₺): {{ TRYOfficialBcv }} <q-icon :color=TRYColorBcv :name='TRYSymbolBcv'/><br><div class="text-caption">{{ consultHourBcv }}</div></h6>
+            <h5>Lira (₺): {{ TRYOfficialBcv }} <q-icon :color=TRYColorBcv :name='TRYSymbolBcv'/><br><div class="text-caption">{{ consultHourBcv }}</div></h5>
           </q-item-section>
         </template>
 
@@ -167,6 +164,9 @@
           </q-card-section>
         </q-card>
       </q-expansion-item>
+    </div>
+    <div class="q-pt-md q-mx-xl row justify-end font-color">
+      <q-btn outline rounded label="Actualizar" @click="showLoading()"/>
     </div>
 </template>
 

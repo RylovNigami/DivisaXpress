@@ -1,18 +1,15 @@
 <template>
-    <div class="q-pt-md row flex-center font-color">
-      <q-btn outline rounded label="Actualizar" @click="showLoading()"/>
-    </div>
     <div>
-      <q-expansion-item @click="returnToZeroBcv()">
+      <q-expansion-item class="q-px-xl q-mt-xl" @click="returnToZeroBcv()">
         <template v-slot:header>
           <q-item-section avatar class="q-pr-sm">
-            <q-avatar style="font-size: 75px;">
+            <q-avatar style="font-size: 90px;">
               <img src="BcvDolarPNG.png">
             </q-avatar>
           </q-item-section>
 
           <q-item-section>
-            <h6>Oficial ($): {{ OfficialValue }} <q-icon :color=colorBcv :name="symbolBcv"/><br><div class="text-caption">{{ consultHourBcv }}</div></h6>
+            <h5>Oficial ($): {{ OfficialValue }} <q-icon :color=colorBcv :name="symbolBcv"/><br><div class="text-caption">{{ consultHourBcv }}</div></h5>
           </q-item-section>
         </template>
 
@@ -45,15 +42,15 @@
           </q-card-section>
         </q-card>
       </q-expansion-item>
-      <q-expansion-item @click="returnToZeroParallel()">
+      <q-expansion-item class="q-px-xl" @click="returnToZeroParallel()">
         <template v-slot:header>
           <q-item-section avatar class="q-pr-sm">
-            <q-avatar style="font-size: 75px;">
+            <q-avatar style="font-size: 90px;">
               <img src="monitorDolarPng.png">
             </q-avatar>
           </q-item-section>
           <q-item-section>
-            <h6>Paralelo ($): {{ ParallelValue }} <q-icon :color=colorParallel :name='symbolParallel'/><br><div class="text-caption">{{ consultHourParallel }}</div></h6>
+            <h5>Paralelo ($): {{ ParallelValue }} <q-icon :color=colorParallel :name='symbolParallel'/><br><div class="text-caption">{{ consultHourParallel }}</div></h5>
           </q-item-section>
         </template>
 
@@ -85,16 +82,16 @@
           </q-card-section>
         </q-card>
       </q-expansion-item>
-      <q-expansion-item @click="returnToZeroPromedio()">
+      <q-expansion-item class="q-px-xl" @click="returnToZeroPromedio()">
         <template v-slot:header>
           <q-item-section avatar class="q-pr-sm">
-            <q-avatar style="font-size: 75px;">
+            <q-avatar style="font-size: 90px;">
               <img src="promedio.png">
             </q-avatar>
           </q-item-section>
 
           <q-item-section>
-            <h6>Promedio ($): {{ promedioValue }} <br><div class="text-caption">{{ consultHourParallel }}</div></h6>
+            <h5>Promedio ($): {{ promedioValue }} <br><div class="text-caption">{{ consultHourParallel }}</div></h5>
           </q-item-section>
         </template>
 
@@ -126,6 +123,9 @@
           </q-card-section>
         </q-card>
       </q-expansion-item>
+    </div>
+    <div class="q-pt-md q-mx-xl row justify-end font-color">
+      <q-btn outline rounded label="Actualizar" @click="showLoading()"/>
     </div>
 </template>
 
