@@ -4,7 +4,7 @@
       <q-toolbar>
         <q-btn flat dense round icon="menu" aria-label="Menu" @click="toggleLeftDrawer" />
         <q-avatar class="q-ml-sm">
-          <img src="C:\Users\dragu\Documents\Proyectos Programacion\VEStoDollar\public\MainLogo.png">
+          <img src="MainLogo.png">
         </q-avatar>
         <q-toolbar-title>DivisaXpress</q-toolbar-title>
 

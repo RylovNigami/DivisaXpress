@@ -25,7 +25,7 @@
 
       <div class="row justify-center q-ml-md q-pb-xl">
           <q-avatar style="font-size: 30px;" class="q-ma-xs">
-            <img src="C:\Users\dragu\Documents\Proyectos Programacion\VEStoDollar\public\BcvDolarPNG.png">
+            <img src="BcvDolarPNG.png">
           </q-avatar>
           <h6 class="row justify-center q-mt-none q-mb-none">Oficial ($):</h6>
           <q-input class="col q-pr-md q-pl-sm" outlined dense :hint="BcvHint" readonly>
@@ -41,7 +41,7 @@
 
       <div class="row justify-center q-ml-md q-pb-xl">
         <q-avatar style="font-size: 30px;" class="q-ma-xs">
-          <img src="C:\Users\dragu\Documents\Proyectos Programacion\VEStoDollar\public\monitorDolarPng.png">
+          <img src="monitorDolarPng.png">
         </q-avatar>
         <h6 class="row justify-center q-mt-none q-mb-none">Paralelo ($):</h6>
         <q-input class="col q-pr-md q-pl-sm" outlined dense :hint="ParallelHint" readonly>
@@ -56,7 +56,7 @@
 
       <div class="row justify-center q-ml-md q-pb-xl">
         <q-avatar style="font-size: 30px;" class="q-ma-xs">
-          <img src="C:\Users\dragu\Documents\Proyectos Programacion\VEStoDollar\public\promedio.png">
+          <img src="promedio.png">
         </q-avatar>
         <h6 class="row justify-center q-mt-none q-mb-none">Promedio ($):</h6>
         <q-input class="col q-pr-md q-pl-sm" outlined dense :hint=PromedioHint readonly>
@@ -71,7 +71,7 @@
 
       <div class="row justify-center q-ml-md q-pb-xl">
           <q-avatar style="font-size: 30px;" class="q-ma-xs">
-            <img src="C:\Users\dragu\Documents\Proyectos Programacion\VEStoDollar\public\BcvDolarPNG.png">
+            <img src="BcvDolarPNG.png">
           </q-avatar>
           <h6 class="row justify-center q-mt-none q-mb-none">Oficial (€):</h6>
           <q-input class="col q-pr-md q-pl-sm" outlined dense :hint="BcvHintEuro" readonly>
