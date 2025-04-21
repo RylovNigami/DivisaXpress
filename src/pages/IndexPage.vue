@@ -10,9 +10,9 @@
       narrow-indicator
       style="background-color: black;"
     >
-      <q-tab name="$ a Bs." label="$ a Bs." />
-      <q-tab name="Otras" label="Otras" />
-      <q-tab name="Bs. en $" label="Bs. en $" />
+      <q-tab name="$ a Bs." label="$$$ a Bs." />
+      <q-tab name="Otras" label="Otras Divisas" />
+      <q-tab name="Bs. en $" label="Bs. en Divisas" />
     </q-tabs>
     <q-tab-panels v-model="tab" animated class="hero-image font-color">
       <q-tab-panel name="$ a Bs." class="q-pa-none">
