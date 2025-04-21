@@ -7,7 +7,7 @@
         <template v-slot:header>
           <q-item-section avatar class="q-pr-sm">
             <q-avatar style="font-size: 75px;">
-              <img src="/BcvDolarPNG.png">
+              <img src="C:\Users\dragu\Documents\Proyectos Programacion\VEStoDollar\public\BcvDolarPNG.png">
             </q-avatar>
           </q-item-section>
 
@@ -49,7 +49,7 @@
         <template v-slot:header>
           <q-item-section avatar class="q-pr-sm">
             <q-avatar style="font-size: 75px;">
-              <img src="/monitorDolarPng.png">
+              <img src="C:\Users\dragu\Documents\Proyectos Programacion\VEStoDollar\public\monitorDolarPng.png">
             </q-avatar>
           </q-item-section>
           <q-item-section>
@@ -89,7 +89,7 @@
         <template v-slot:header>
           <q-item-section avatar class="q-pr-sm">
             <q-avatar style="font-size: 75px;">
-              <img src="/promedio.png">
+              <img src="C:\Users\dragu\Documents\Proyectos Programacion\VEStoDollar\public\promedio.png">
             </q-avatar>
           </q-item-section>
 
