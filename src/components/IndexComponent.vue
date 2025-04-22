@@ -152,30 +152,6 @@ const colorParallel = ref('');
 const symbolBcv = ref('');
 const symbolParallel = ref('');
 
-function returnBcvValue() {
-  if (amountBcv.value.includes(",") === true)
-  {
-    amountBcv.value = amountBcv.value.replace(",",".")
-  }
-  resultBcv.value = (OfficialValue.value * amountBcv.value).toFixed(2);
-};
-
-function returnParallelValue() {
-  if (amountParallel.value.includes(",") === true)
-  {
-    amountParallel.value = amountParallel.value.replace(",",".")
-  }
-  resultParallel.value = (ParallelValue.value * amountParallel.value).toFixed(2);
-};
-
-function returnPromedioValue() {
-  if (amountPromedio.value.includes(",") === true)
-  {
-    amountPromedio.value = amountPromedio.value.replace(",",".")
-  }
-  resultPromedio.value = (promedioValue.value * amountPromedio.value).toFixed(2);
-};
-
 function returnToZeroBcv() {
   amountBcv.value = null;
   resultBcv.value = null;
@@ -200,17 +176,10 @@ async function showCharge(){
   .then(function (response) {
     if(response.status == 200){
       bcvData.value=response.data
-      console.log("Status de consulta bcv",response.status);
     }
   })
   .catch(function (error) {
     if (error.response) {
-      // The request was made and the server responded with a status code
-      // that falls out of the range of 2xx
-      console.log(error.response.data);
-      console.log(error.response.status);
-      console.log(error.response.headers);
-
       $q.loading.hide()
       $q.notify({
         message: 'No se puso contactar con el servidor',
@@ -219,24 +188,16 @@ async function showCharge(){
       })
 
     } else if (error.request) {
-      // The request was made but no response was received
-      // `error.request` is an instance of XMLHttpRequest in the browser
-      // and an instance of http.ClientRequest in node.js
-      console.log(error.request.status);
-
       $q.loading.hide()
       $q.notify({
-        message: 'Error de conexión',
+        message: 'Error de conexión, por favor, presione "Actualizar"',
         color: 'negative',
         position: 'center',
       })
     } else {
-      // Something happened in setting up the request that triggered an Error
-      console.log('Error', error.message);
-
       $q.loading.hide()
       $q.notify({
-        message: 'Error desconocido',
+        message: 'Error desconocido, por favor, presione "Actualizar"',
         color: 'negative',
         position: 'center',
       })
@@ -247,18 +208,11 @@ async function showCharge(){
   .then(function (response) {
     if(response.status==200){
         parallelData.value = response.data;
-        console.log("Status de consulta paralelo",response.status)
         $q.loading.hide()
       }
   })
   .catch(function (error) {
     if (error.response) {
-      // The request was made and the server responded with a status code
-      // that falls out of the range of 2xx
-      console.log(error.response.data);
-      console.log(error.response.status);
-      console.log(error.response.headers);
-
       $q.loading.hide()
       $q.notify({
         message: 'No se puso contactar con el servidor',
@@ -267,32 +221,21 @@ async function showCharge(){
       })
 
     } else if (error.request) {
-      // The request was made but no response was received
-      // `error.request` is an instance of XMLHttpRequest in the browser
-      // and an instance of http.ClientRequest in node.js
-      console.log(error.request.status);
-
       $q.loading.hide()
       $q.notify({
-        message: 'Error de conexión',
+        message: 'Error de conexión, por favor, presione "Actualizar"',
         color: 'negative',
         position: 'center',
       })
     } else {
-      // Something happened in setting up the request that triggered an Error
-      console.log('Error', error.message);
-
       $q.loading.hide()
       $q.notify({
-        message: 'Error desconocido',
+        message: 'Error desconocido, por favor, presione "Actualizar"',
         color: 'negative',
         position: 'center',
       })
     }
   });
-
-    promedioValue.value = ((bcvData.value.monitors.usd.price + parallelData.value.price)/2).toFixed(2);
-    console.log(promedioValue.value)
 
     //Data BCV
     consultHourBcv.value = bcvData.value.monitors.usd.last_update;
@@ -325,6 +268,8 @@ async function showCharge(){
         symbolParallel.value = 'mdi-minus'
       break;
     };
+
+    promedioValue.value = ((bcvData.value.monitors.usd.price + parallelData.value.price)/2).toFixed(2);
 }
 
 
@@ -342,9 +287,6 @@ export default defineComponent({
       returnToZeroBcv,
       returnToZeroParallel,
       returnToZeroPromedio,
-      returnBcvValue,
-      returnParallelValue,
-      returnPromedioValue,
       OfficialValue,
       ParallelValue,
       amountBcv,
@@ -357,6 +299,54 @@ export default defineComponent({
       symbolBcv,
       consultHourParallel,
       consultHourBcv,
+      returnBcvValue() {
+        if (amountBcv.value.includes(",") === true)
+        {
+          amountBcv.value = amountBcv.value.replace(",",".")
+        };
+
+        if(OfficialValue.value == undefined || OfficialValue.value == null){
+          $q.notify({
+              message: 'Error al calcular, por favor, presione "Actualizar"',
+              color: 'negative',
+              position: 'center',
+            })
+        } else{
+          resultBcv.value = (OfficialValue.value * amountBcv.value).toFixed(2);
+        };
+      },
+      returnParallelValue() {
+        if (amountParallel.value.includes(",") === true)
+        {
+          amountParallel.value = amountParallel.value.replace(",",".")
+        };
+
+        if(ParallelValue.value == undefined || ParallelValue.value == null){
+          $q.notify({
+              message: 'Error al calcular, por favor, presione "Actualizar"',
+              color: 'negative',
+              position: 'center',
+            })
+        } else{
+          resultParallel.value = (ParallelValue.value * amountParallel.value).toFixed(2);
+        };
+      },
+      returnPromedioValue() {
+        if (amountPromedio.value.includes(",") === true)
+        {
+          amountPromedio.value = amountPromedio.value.replace(",",".")
+        };
+
+        if(promedioValue.value == undefined || promedioValue.value == null){
+          $q.notify({
+              message: 'Error al calcular, por favor, presione "Actualizar"',
+              color: 'negative',
+              position: 'center',
+            })
+        } else{
+          resultPromedio.value = (promedioValue.value * amountPromedio.value).toFixed(2);
+        };
+      },
       async showLoading () {
         amountBcv.value = null;
         resultBcv.value = null;
@@ -372,98 +362,65 @@ export default defineComponent({
         .then(function (response) {
           if(response.status == 200){
             bcvData.value=response.data;
-            console.log("Status de consulta bcv",response.status);
           }
         })
         .catch(function (error) {
-    if (error.response) {
-      // The request was made and the server responded with a status code
-      // that falls out of the range of 2xx
-      console.log(error.response.data);
-      console.log(error.response.status);
-      console.log(error.response.headers);
+        if (error.response) {
+          $q.loading.hide()
+          $q.notify({
+            message: 'No se puso contactar con el servidor',
+            color: 'negative',
+            position: 'center',
+          })
 
-      $q.loading.hide()
-      $q.notify({
-        message: 'No se puso contactar con el servidor',
-        color: 'negative',
-        position: 'center',
+        } else if (error.request) {
+          $q.loading.hide()
+          $q.notify({
+            message: 'Error de conexión, por favor, presione "Actualizar"',
+            color: 'negative',
+            position: 'center',
+          })
+        } else {
+          $q.loading.hide()
+          $q.notify({
+            message: 'Error desconocido, por favor, presione "Actualizar"',
+            color: 'negative',
+            position: 'center',
+          })
+        }
+      });
+      await axios.get('https://pydolarve.org/api/v1/dollar?monitor=enparalelovzla')
+      .then(function (response) {
+        if(response.status==200){
+          parallelData.value = response.data;
+          $q.loading.hide()
+        }
       })
+      .catch(function (error) {
+        if (error.response) {
+          $q.loading.hide()
+          $q.notify({
+            message: 'No se puso contactar con el servidor',
+            color: 'negative',
+            position: 'center',
+          })
 
-    } else if (error.request) {
-      // The request was made but no response was received
-      // `error.request` is an instance of XMLHttpRequest in the browser
-      // and an instance of http.ClientRequest in node.js
-      console.log(error.request.status);
-
-      $q.loading.hide()
-      $q.notify({
-        message: 'Error de conexión',
-        color: 'negative',
-        position: 'center',
-      })
-    } else {
-      // Something happened in setting up the request that triggered an Error
-      console.log('Error', error.message);
-
-      $q.loading.hide()
-      $q.notify({
-        message: 'Error desconocido',
-        color: 'negative',
-        position: 'center',
-      })
-    }
-  });
-        await axios.get('https://pydolarve.org/api/v1/dollar?monitor=enparalelovzla')
-        .then(function (response) {
-          if(response.status==200){
-            parallelData.value = response.data;
-            console.log("Status de consulta paralelo",response.status)
-            $q.loading.hide()
-          }
-        })
-        .catch(function (error) {
-    if (error.response) {
-      // The request was made and the server responded with a status code
-      // that falls out of the range of 2xx
-      console.log(error.response.data);
-      console.log(error.response.status);
-      console.log(error.response.headers);
-
-      $q.loading.hide()
-      $q.notify({
-        message: 'No se puso contactar con el servidor',
-        color: 'negative',
-        position: 'center',
-      })
-
-    } else if (error.request) {
-      // The request was made but no response was received
-      // `error.request` is an instance of XMLHttpRequest in the browser
-      // and an instance of http.ClientRequest in node.js
-      console.log(error.request.status);
-
-      $q.loading.hide()
-      $q.notify({
-        message: 'Error de conexión',
-        color: 'negative',
-        position: 'center',
-      })
-    } else {
-      // Something happened in setting up the request that triggered an Error
-      console.log('Error', error.message);
-
-      $q.loading.hide()
-      $q.notify({
-        message: 'Error desconocido',
-        color: 'negative',
-        position: 'center',
-      })
-    }
-  });
-
-        promedioValue.value = ((bcvData.value.monitors.usd.price + parallelData.value.price)/2).toFixed(2);
-        console.log(promedioValue.value)
+        } else if (error.request) {
+          $q.loading.hide()
+          $q.notify({
+            message: 'Error de conexión, por favor, presione "Actualizar"',
+            color: 'negative',
+            position: 'center',
+          })
+        } else {
+          $q.loading.hide()
+          $q.notify({
+            message: 'Error desconocido, por favor, presione "Actualizar"',
+            color: 'negative',
+            position: 'center',
+          })
+        }
+      });
 
         //Data BCV
         consultHourBcv.value = bcvData.value.monitors.usd.last_update;
@@ -496,6 +453,8 @@ export default defineComponent({
             symbolParallel.value = 'mdi-minus'
           break;
         };
+
+        promedioValue.value = ((bcvData.value.monitors.usd.price + parallelData.value.price)/2).toFixed(2);
       }
     }
   },
