@@ -27,7 +27,7 @@
         <ComparativeFinanceComponent/>
       </q-tab-panel>
     </q-tab-panels>
-    <div class="q-pb-md q-pt-xl">
+    <div class="q-pb-md q-pt-xl" style="text-shadow: 1px 1px 1px black;">
       <div class="row flex-center">RylovTech ©</div>
       <div class="row flex-center">2025 · Venezuela</div>
     </div>

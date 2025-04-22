@@ -12,7 +12,7 @@
           </q-item-section>
 
           <q-item-section>
-            <h6>Oficial ($): {{ OfficialValue }} <q-icon :color=colorBcv :name="symbolBcv"/><br><div class="text-caption">{{ consultHourBcv }}</div></h6>
+            <h6 style="text-shadow: 1px 1px 4px black;">Oficial ($): {{ OfficialValue }} <q-icon :color=colorBcv :name="symbolBcv"/><br><div class="text-caption">{{ consultHourBcv }}</div></h6>
           </q-item-section>
         </template>
 
@@ -53,7 +53,7 @@
             </q-avatar>
           </q-item-section>
           <q-item-section>
-            <h6>Paralelo ($): {{ ParallelValue }} <q-icon :color=colorParallel :name='symbolParallel'/><br><div class="text-caption">{{ consultHourParallel }}</div></h6>
+            <h6 style="text-shadow: 1px 1px 4px black;">Paralelo ($): {{ ParallelValue }} <q-icon :color=colorParallel :name='symbolParallel'/><br><div class="text-caption">{{ consultHourParallel }}</div></h6>
           </q-item-section>
         </template>
 
@@ -94,7 +94,7 @@
           </q-item-section>
 
           <q-item-section>
-            <h6>Promedio ($): {{ promedioValue }} <br><div class="text-caption">{{ consultHourParallel }}</div></h6>
+            <h6 style="text-shadow: 1px 1px 4px black;">Promedio ($): {{ promedioValue }} <q-icon :color=colorPromedio :name='symbolPromedio'/><br><div class="text-caption">{{ consultHourParallel }}</div></h6>
           </q-item-section>
         </template>
 
@@ -151,6 +151,8 @@ const colorBcv = ref('');
 const colorParallel = ref('');
 const symbolBcv = ref('');
 const symbolParallel = ref('');
+const colorPromedio = ref('');
+const symbolPromedio = ref('');
 
 function returnToZeroBcv() {
   amountBcv.value = null;
@@ -237,6 +239,16 @@ async function showCharge(){
     }
   });
 
+  promedioValue.value = ((bcvData.value.monitors.usd.price + parallelData.value.price)/2).toFixed(2);
+  if (bcvData.value.monitors.usd.color == 'green' && parallelData.value.color == 'green')
+      {
+        colorPromedio.value = 'green';
+        symbolPromedio.value = 'mdi-arrow-up';
+      } else if (bcvData.value.monitors.usd.color == 'red' && parallelData.value.color == 'red'){
+        colorPromedio.value = 'red';
+        symbolPromedio.value = 'mdi-arrow-down'
+      };
+
     //Data BCV
     consultHourBcv.value = bcvData.value.monitors.usd.last_update;
     OfficialValue.value = bcvData.value.monitors.usd.price.toFixed(2);
@@ -268,8 +280,6 @@ async function showCharge(){
         symbolParallel.value = 'mdi-minus'
       break;
     };
-
-    promedioValue.value = ((bcvData.value.monitors.usd.price + parallelData.value.price)/2).toFixed(2);
 }
 
 
@@ -299,6 +309,8 @@ export default defineComponent({
       symbolBcv,
       consultHourParallel,
       consultHourBcv,
+      colorPromedio,
+      symbolPromedio,
       returnBcvValue() {
         if (amountBcv.value.includes(",") === true)
         {
@@ -423,6 +435,14 @@ export default defineComponent({
       });
 
       promedioValue.value = ((bcvData.value.monitors.usd.price + parallelData.value.price)/2).toFixed(2);
+      if (bcvData.value.monitors.usd.color == 'green' && parallelData.value.color == 'green')
+      {
+        colorPromedio.value = 'green';
+        symbolPromedio.value = 'mdi-arrow-up';
+      } else if (bcvData.value.monitors.usd.color == 'red' && parallelData.value.color == 'red'){
+        colorPromedio.value = 'red';
+        symbolPromedio.value = 'mdi-arrow-down'
+      };
 
         //Data BCV
         consultHourBcv.value = bcvData.value.monitors.usd.last_update;

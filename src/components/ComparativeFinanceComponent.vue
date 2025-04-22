@@ -27,7 +27,7 @@
           <q-avatar style="font-size: 30px;" class="q-ma-xs">
             <img src="/BcvDolarPNG.png">
           </q-avatar>
-          <h6 class="row justify-center q-mt-none q-mb-none">Oficial ($):</h6>
+          <h6 style="text-shadow: 1px 1px 4px black;" class="row justify-center q-mt-none q-mb-none">Oficial ($):</h6>
           <q-input class="col q-pr-md q-pl-sm" outlined dense :hint="BcvHint" readonly>
             <template v-slot:append>
               <div style="font-size:large;"> $ </div >
@@ -43,7 +43,7 @@
         <q-avatar style="font-size: 30px;" class="q-ma-xs">
           <img src="/monitorDolarPng.png">
         </q-avatar>
-        <h6 class="row justify-center q-mt-none q-mb-none">Paralelo ($):</h6>
+        <h6 style="text-shadow: 1px 1px 4px black;" class="row justify-center q-mt-none q-mb-none">Paralelo ($):</h6>
         <q-input class="col q-pr-md q-pl-sm" outlined dense :hint="ParallelHint" readonly>
           <template v-slot:append>
             <div style="font-size:large;"> $ </div >
@@ -58,7 +58,7 @@
         <q-avatar style="font-size: 30px;" class="q-ma-xs">
           <img src="/promedio.png">
         </q-avatar>
-        <h6 class="row justify-center q-mt-none q-mb-none">Promedio ($):</h6>
+        <h6 style="text-shadow: 1px 1px 4px black;" class="row justify-center q-mt-none q-mb-none">Promedio ($):</h6>
         <q-input class="col q-pr-md q-pl-sm" outlined dense :hint=PromedioHint readonly>
           <template v-slot:append>
             <div style="font-size:large;"> $ </div >
@@ -73,7 +73,7 @@
           <q-avatar style="font-size: 30px;" class="q-ma-xs">
             <img src="/BcvDolarPNG.png">
           </q-avatar>
-          <h6 class="row justify-center q-mt-none q-mb-none">Oficial (€):</h6>
+          <h6 style="text-shadow: 1px 1px 4px black;" class="row justify-center q-mt-none q-mb-none">Oficial (€):</h6>
           <q-input class="col q-pr-md q-pl-sm" outlined dense :hint="BcvHintEuro" readonly>
             <template v-slot:append>
               <div style="font-size:large;"> € </div >
@@ -180,6 +180,8 @@ async function showCharge(){
     }
   });
 
+    promedioValue.value = ((bcvData.value.monitors.usd.price + parallelData.value.price)/2).toFixed(2);
+
     //Data BCV
     consultHourBcv.value = bcvData.value.monitors.usd.last_update;
     OfficialValue.value = bcvData.value.monitors.usd.price.toFixed(2);
@@ -194,7 +196,6 @@ async function showCharge(){
     PromedioHint.value = 'Calculo a: '+ promedioValue.value;
     BcvHintEuro.value = 'Calculo a: ' + OfficialEuroValue.value;
 
-    promedioValue.value = ((bcvData.value.monitors.usd.price + parallelData.value.price)/2).toFixed(2);
 }
 
 
@@ -336,7 +337,7 @@ export default defineComponent({
       })
     }
   });
-  promedioValue.value = ((bcvData.value.monitors.usd.price + parallelData.value.price)/2).toFixed(2);
+    promedioValue.value = ((bcvData.value.monitors.usd.price + parallelData.value.price)/2).toFixed(2);
 
     //Data BCV
     consultHourBcv.value = bcvData.value.monitors.usd.last_update;
