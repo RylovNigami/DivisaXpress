@@ -336,6 +336,7 @@ export default defineComponent({
       })
     }
   });
+  promedioValue.value = ((bcvData.value.monitors.usd.price + parallelData.value.price)/2).toFixed(2);
 
     //Data BCV
     consultHourBcv.value = bcvData.value.monitors.usd.last_update;
@@ -351,7 +352,6 @@ export default defineComponent({
     PromedioHint.value = 'Calculo a: '+ promedioValue.value;
     BcvHintEuro.value = 'calculo a: ' + OfficialEuroValue.value;
 
-    promedioValue.value = ((bcvData.value.monitors.usd.price + parallelData.value.price)/2).toFixed(2);
       }
     }
   },

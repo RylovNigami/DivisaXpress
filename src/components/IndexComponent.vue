@@ -422,6 +422,8 @@ export default defineComponent({
         }
       });
 
+      promedioValue.value = ((bcvData.value.monitors.usd.price + parallelData.value.price)/2).toFixed(2);
+
         //Data BCV
         consultHourBcv.value = bcvData.value.monitors.usd.last_update;
         OfficialValue.value = bcvData.value.monitors.usd.price.toFixed(2);
@@ -454,7 +456,6 @@ export default defineComponent({
           break;
         };
 
-        promedioValue.value = ((bcvData.value.monitors.usd.price + parallelData.value.price)/2).toFixed(2);
       }
     }
   },
