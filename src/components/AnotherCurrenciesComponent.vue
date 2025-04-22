@@ -198,40 +198,6 @@ const TRYResultBcv = ref();
 const TRYColorBcv = ref();
 const TRYSymbolBcv = ref();
 
-
-function EURreturnBcvValue() {
-  if (EURAmountBcv.value.includes(",") === true)
-  {
-    EURAmountBcv.value = EURAmountBcv.value.replace(",",".")
-  }
-  EURResultBcv.value = (EUROfficialBcv.value * EURAmountBcv.value).toFixed(2);
-};
-
-function CNYreturnBcvValue() {
-  if (CNYAmountBcv.value.includes(",") === true)
-  {
-    CNYAmountBcv.value = CNYAmountBcv.value.replace(",",".")
-  }
-  CNYResultBcv.value = (CNYOfficialBcv.value * CNYAmountBcv.value).toFixed(2);
-};
-
-function RUBreturnBcvValue() {
-  if (RUBAmountBcv.value.includes(",") === true)
-  {
-    RUBAmountBcv.value = RUBAmountBcv.value.replace(",",".")
-  }
-  RUBResultBcv.value = (RUBOfficialBcv.value * RUBAmountBcv.value).toFixed(2);
-};
-
-function TRYreturnBcvValue() {
-  if (TRYAmountBcv.value.includes(",") === true)
-  {
-    TRYAmountBcv.value = TRYAmountBcv.value.replace(",",".")
-  }
-  TRYResultBcv.value = (TRYOfficialBcv.value * TRYAmountBcv.value).toFixed(2);
-};
-
-
 function EURreturnToZeroBcv() {
   EURAmountBcv.value = null;
   EURResultBcv.value = null;
@@ -252,7 +218,6 @@ function TRYreturnToZeroBcv() {
   TRYResultBcv.value = null;
 };
 
-
 async function showCharge(){
   const $q = useQuasar()
 
@@ -263,17 +228,10 @@ async function showCharge(){
       if(response.status == 200){
         bcvData.value=response.data
         $q.loading.hide()
-        console.log("Status de consulta bcv",response.status);
       }
     })
     .catch(function (error) {
     if (error.response) {
-      // The request was made and the server responded with a status code
-      // that falls out of the range of 2xx
-      console.log(error.response.data);
-      console.log(error.response.status);
-      console.log(error.response.headers);
-
       $q.loading.hide()
       $q.notify({
         message: 'No se puso contactar con el servidor',
@@ -282,24 +240,16 @@ async function showCharge(){
       })
 
     } else if (error.request) {
-      // The request was made but no response was received
-      // `error.request` is an instance of XMLHttpRequest in the browser
-      // and an instance of http.ClientRequest in node.js
-      console.log(error.request.status);
-
       $q.loading.hide()
       $q.notify({
-        message: 'Error de conexión',
+        message: 'Error de conexión, por favor, presione "Actualizar"',
         color: 'negative',
         position: 'center',
       })
     } else {
-      // Something happened in setting up the request that triggered an Error
-      console.log('Error', error.message);
-
       $q.loading.hide()
       $q.notify({
-        message: 'Error desconocido',
+        message: 'Error desconocido, por favor, presione "Actualizar"',
         color: 'negative',
         position: 'center',
       })
@@ -378,10 +328,6 @@ export default defineComponent({
 
     return {
       showCharge,
-      EURreturnBcvValue,
-      CNYreturnBcvValue,
-      RUBreturnBcvValue,
-      TRYreturnBcvValue,
       EURreturnToZeroBcv,
       CNYreturnToZeroBcv,
       RUBreturnToZeroBcv,
@@ -407,6 +353,70 @@ export default defineComponent({
       TRYResultBcv,
       TRYColorBcv,
       TRYSymbolBcv,
+      EURreturnBcvValue() {
+        if (EURAmountBcv.value.includes(",") === true)
+        {
+          EURAmountBcv.value = EURAmountBcv.value.replace(",",".")
+        };
+
+        if(EUROfficialBcv.value == undefined || EUROfficialBcv.value == null){
+          $q.notify({
+              message: 'Error al calcular, por favor, presione "Actualizar"',
+              color: 'negative',
+              position: 'center',
+            })
+        } else{
+          EURResultBcv.value = (EUROfficialBcv.value * EURAmountBcv.value).toFixed(2);
+        };
+      },
+      CNYreturnBcvValue() {
+        if (CNYAmountBcv.value.includes(",") === true)
+        {
+          CNYAmountBcv.value = CNYAmountBcv.value.replace(",",".")
+        };
+
+        if(CNYOfficialBcv.value == undefined || CNYOfficialBcv.value == null){
+          $q.notify({
+              message: 'Error al calcular, por favor, presione "Actualizar"',
+              color: 'negative',
+              position: 'center',
+            })
+        } else{
+          CNYResultBcv.value = (CNYOfficialBcv.value * CNYAmountBcv.value).toFixed(2);
+        };
+      },
+      RUBreturnBcvValue() {
+        if (RUBAmountBcv.value.includes(",") === true)
+        {
+          RUBAmountBcv.value = RUBAmountBcv.value.replace(",",".")
+        };
+
+        if(RUBOfficialBcv.value == undefined || RUBOfficialBcv.value == null){
+          $q.notify({
+              message: 'Error al calcular, por favor, presione "Actualizar"',
+              color: 'negative',
+              position: 'center',
+            })
+        } else{
+          RUBResultBcv.value = (RUBOfficialBcv.value * RUBAmountBcv.value).toFixed(2);
+        };
+      },
+      TRYreturnBcvValue() {
+        if (TRYAmountBcv.value.includes(",") === true)
+        {
+          TRYAmountBcv.value = TRYAmountBcv.value.replace(",",".")
+        };
+
+        if(TRYOfficialBcv.value == undefined || TRYOfficialBcv.value == null){
+          $q.notify({
+              message: 'Error al calcular, por favor, presione "Actualizar"',
+              color: 'negative',
+              position: 'center',
+            })
+        } else{
+          TRYResultBcv.value = (TRYOfficialBcv.value * TRYAmountBcv.value).toFixed(2);
+        };
+      },
       async showLoading () {
 
         EURAmountBcv.value = null;
@@ -428,17 +438,10 @@ export default defineComponent({
           if(response.status == 200){
             bcvData.value=response.data
             $q.loading.hide()
-            console.log("Status de consulta bcv",response.status);
           }
         })
         .catch(function (error) {
     if (error.response) {
-      // The request was made and the server responded with a status code
-      // that falls out of the range of 2xx
-      console.log(error.response.data);
-      console.log(error.response.status);
-      console.log(error.response.headers);
-
       $q.loading.hide()
       $q.notify({
         message: 'No se puso contactar con el servidor',
@@ -447,24 +450,16 @@ export default defineComponent({
       })
 
     } else if (error.request) {
-      // The request was made but no response was received
-      // `error.request` is an instance of XMLHttpRequest in the browser
-      // and an instance of http.ClientRequest in node.js
-      console.log(error.request.status);
-
       $q.loading.hide()
       $q.notify({
-        message: 'Error de conexión',
+        message: 'Error de conexión, por favor, presione "Actualizar"',
         color: 'negative',
         position: 'center',
       })
     } else {
-      // Something happened in setting up the request that triggered an Error
-      console.log('Error', error.message);
-
       $q.loading.hide()
       $q.notify({
-        message: 'Error desconocido',
+        message: 'Error desconocido, por favor, presione "Actualizar"',
         color: 'negative',
         position: 'center',
       })
