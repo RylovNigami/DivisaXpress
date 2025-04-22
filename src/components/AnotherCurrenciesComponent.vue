@@ -9,7 +9,7 @@
           </q-item-section>
 
           <q-item-section>
-            <h5>Euro (€): {{ EUROfficialBcv }} <q-icon :color=EURColorBcv :name="EURSymbolBcv"/><br><div class="text-caption">{{ consultHourBcv }}</div></h5>
+            <h5 style="text-shadow: 1px 1px 4px black;">Euro (€): {{ EUROfficialBcv }} <q-icon :color=EURColorBcv :name="EURSymbolBcv"/><br><div class="text-caption">{{ consultHourBcv }}</div></h5>
           </q-item-section>
         </template>
 
@@ -50,7 +50,7 @@
             </q-avatar>
           </q-item-section>
           <q-item-section>
-            <h5>Yuan (¥): {{ CNYOfficialBcv }} <q-icon :color=CNYColorBcv :name='CNYSymbolBcv'/><br><div class="text-caption">{{ consultHourBcv }}</div></h5>
+            <h5 style="text-shadow: 1px 1px 4px black;">Yuan (¥): {{ CNYOfficialBcv }} <q-icon :color=CNYColorBcv :name='CNYSymbolBcv'/><br><div class="text-caption">{{ consultHourBcv }}</div></h5>
           </q-item-section>
         </template>
 
@@ -91,7 +91,7 @@
           </q-item-section>
 
           <q-item-section>
-            <h5>Rublo (₽): {{ RUBOfficialBcv }} <q-icon :color=RUBColorBcv :name='RUBSymbolBcv'/><br><div class="text-caption">{{ consultHourBcv }}</div></h5>
+            <h5 style="text-shadow: 1px 1px 4px black;">Rublo (₽): {{ RUBOfficialBcv }} <q-icon :color=RUBColorBcv :name='RUBSymbolBcv'/><br><div class="text-caption">{{ consultHourBcv }}</div></h5>
           </q-item-section>
         </template>
 
@@ -132,7 +132,7 @@
           </q-item-section>
 
           <q-item-section>
-            <h5>Lira (₺): {{ TRYOfficialBcv }} <q-icon :color=TRYColorBcv :name='TRYSymbolBcv'/><br><div class="text-caption">{{ consultHourBcv }}</div></h5>
+            <h5 style="text-shadow: 1px 1px 4px black;">Lira (₺): {{ TRYOfficialBcv }} <q-icon :color=TRYColorBcv :name='TRYSymbolBcv'/><br><div class="text-caption">{{ consultHourBcv }}</div></h5>
           </q-item-section>
         </template>
 

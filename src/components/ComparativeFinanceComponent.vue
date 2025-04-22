@@ -24,7 +24,7 @@
           <q-avatar style="font-size: 70px;" class="q-ma-xs">
             <img src="BcvDolarPNG.png">
           </q-avatar>
-          <h5 class="q-mt-lg q-mb-none">Oficial ($):</h5>
+          <h5 style="text-shadow: 1px 1px 4px black;" class="q-mt-lg q-mb-none">Oficial ($):</h5>
           <q-input class="col q-pr-md q-pl-sm q-mt-lg q-mb-none" outlined dense :hint="BcvHint" readonly>
             <template v-slot:append>
               <div style="font-size:large;"> $ </div >
@@ -40,7 +40,7 @@
         <q-avatar style="font-size: 70px;" class="q-ma-xs">
           <img src="monitorDolarPng.png">
         </q-avatar>
-        <h5 class="q-mt-lg q-mb-none">Paralelo ($):</h5>
+        <h5 style="text-shadow: 1px 1px 4px black;" class="q-mt-lg q-mb-none">Paralelo ($):</h5>
         <q-input class="col q-pr-md q-pl-sm q-mt-lg q-mb-none" outlined dense :hint="ParallelHint" readonly>
           <template v-slot:append>
             <div style="font-size:large;"> $ </div >
@@ -55,7 +55,7 @@
         <q-avatar style="font-size: 70px;" class="q-ma-xs">
           <img src="promedio.png">
         </q-avatar>
-        <h5 class=" q-mt-lg q-mb-none">Promedio ($):</h5>
+        <h5 style="text-shadow: 1px 1px 4px black;" class=" q-mt-lg q-mb-none">Promedio ($):</h5>
         <q-input class="col q-pr-md q-pl-sm q-mt-lg q-mb-none" outlined dense :hint=PromedioHint readonly>
           <template v-slot:append>
             <div style="font-size:large;"> $ </div >
@@ -70,7 +70,7 @@
           <q-avatar style="font-size: 70px;" class="q-ma-xs">
             <img src="BcvDolarPNG.png">
           </q-avatar>
-          <h5 class="q-mt-lg q-mb-none">Oficial (€):</h5>
+          <h5 style="text-shadow: 1px 1px 4px black;" class="q-mt-lg q-mb-none">Oficial (€):</h5>
           <q-input class="col q-pr-md q-pl-sm q-mt-lg q-mb-none" outlined dense :hint="BcvHintEuro" readonly>
             <template v-slot:append>
               <div style="font-size:large;"> € </div >
