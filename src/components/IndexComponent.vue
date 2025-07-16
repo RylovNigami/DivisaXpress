@@ -1,6 +1,6 @@
 <template>
     <div>
-      <q-expansion-item class="q-px-xl q-mt-xl" @click="returnToZeroBcv()">
+      <q-expansion-item class="q-px-xl q-mt-xl" @click="returnToZeroBcv()" @click.right.prevent="doAthing()">
         <template v-slot:header>
           <q-item-section avatar class="q-pr-sm">
             <q-avatar style="font-size: 90px;">
@@ -42,7 +42,7 @@
           </q-card-section>
         </q-card>
       </q-expansion-item>
-      <q-expansion-item class="q-px-xl" @click="returnToZeroParallel()">
+      <q-expansion-item class="q-px-xl" @click="returnToZeroParallel()" @click.right.prevent="doAthing()">
         <template v-slot:header>
           <q-item-section avatar class="q-pr-sm">
             <q-avatar style="font-size: 90px;">
@@ -82,7 +82,7 @@
           </q-card-section>
         </q-card>
       </q-expansion-item>
-      <q-expansion-item class="q-px-xl" @click="returnToZeroPromedio()">
+      <q-expansion-item class="q-px-xl" @click="returnToZeroPromedio()" @click.right.prevent="doAthing()">
         <template v-slot:header>
           <q-item-section avatar class="q-pr-sm">
             <q-avatar style="font-size: 90px;">
@@ -140,6 +140,8 @@ const consultHourBcv = ref('');
 const consultHourParallel = ref('');
 const OfficialValue = ref();
 const ParallelValue = ref();
+const OldOfficialValue = ref();
+const OldParallelValue = ref();
 const promedioValue = ref();
 const amountBcv = ref();
 const amountParallel = ref();
@@ -153,6 +155,10 @@ const symbolBcv = ref('');
 const symbolParallel = ref('');
 const colorPromedio = ref('');
 const symbolPromedio = ref('');
+
+function doAthing(){
+  console.log('muchacho es click derecho');
+};
 
 function returnToZeroBcv() {
   amountBcv.value = null;
@@ -178,6 +184,7 @@ async function showCharge(){
   .then(function (response) {
     if(response.status == 200){
       bcvData.value=response.data
+      //console.log(bcvData.value)
     }
   })
   .catch(function (error) {
@@ -210,6 +217,7 @@ async function showCharge(){
   .then(function (response) {
     if(response.status==200){
         parallelData.value = response.data;
+        //console.log(parallelData.value)
         $q.loading.hide()
       }
   })
@@ -251,6 +259,7 @@ async function showCharge(){
     //Data BCV
     consultHourBcv.value = bcvData.value.monitors.usd.last_update;
     OfficialValue.value = bcvData.value.monitors.usd.price.toFixed(2);
+    OldOfficialValue.value = bcvData.value.monitors.usd.price_old.toFixed(2);
     colorBcv.value = bcvData.value.monitors.usd.color;
     switch (colorBcv.value) {
       case 'green':
@@ -267,6 +276,7 @@ async function showCharge(){
     //Data Paralelo
     consultHourParallel.value = parallelData.value.last_update;
     ParallelValue.value = parallelData.value.price.toFixed(2);
+    OldParallelValue.value = parallelData.value.price_old.toFixed(2);
     colorParallel.value = parallelData.value.color;
     switch (colorParallel.value) {
       case 'green':
@@ -310,6 +320,9 @@ export default defineComponent({
       consultHourBcv,
       colorPromedio,
       symbolPromedio,
+      doAthing,
+      OldOfficialValue,
+      OldParallelValue,
       returnBcvValue() {
         if (amountBcv.value.includes(",") === true)
         {
@@ -444,6 +457,7 @@ export default defineComponent({
         //Data BCV
         consultHourBcv.value = bcvData.value.monitors.usd.last_update;
         OfficialValue.value = bcvData.value.monitors.usd.price.toFixed(2);
+        OldOfficialValue.value = bcvData.value.monitors.usd.price_old.toFixed(2);
         colorBcv.value = bcvData.value.monitors.usd.color;
         switch (colorBcv.value) {
           case 'green':
@@ -460,6 +474,7 @@ export default defineComponent({
         //Data Paralelo
         consultHourParallel.value = parallelData.value.last_update;
         ParallelValue.value = parallelData.value.price.toFixed(2);
+        OldParallelValue.value = parallelData.value.price_old.toFixed(2);
         colorParallel.value = parallelData.value.color;
         switch (colorParallel.value) {
           case 'green':
