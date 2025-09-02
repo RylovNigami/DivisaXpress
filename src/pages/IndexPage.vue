@@ -11,7 +11,7 @@
       style="background-color: black;"
     >
       <q-tab name="$ a Bs." label="$$$ a Bs." />
-      <q-tab name="Otras" label="Otras Divisas" />
+      <!--q-tab name="Otras" label="Otras Divisas" /-->
       <q-tab name="Bs. en $" label="Bs. en Divisas" />
     </q-tabs>
     <q-tab-panels v-model="tab" animated class="hero-image font-color">
@@ -19,9 +19,9 @@
         <IndexComponent/>
       </q-tab-panel>
 
-      <q-tab-panel name="Otras" class="q-pa-none">
+      <!--q-tab-panel name="Otras" class="q-pa-none">
         <AnotherCurrenciesComponent/>
-      </q-tab-panel>
+      </q-tab-panel-->
 
       <q-tab-panel name="Bs. en $" class="q-pa-none">
         <ComparativeFinanceComponent/>
@@ -37,7 +37,7 @@
 <script>
 import { defineComponent, ref } from 'vue';
 import ComparativeFinanceComponent from 'components/ComparativeFinanceComponent.vue';
-import AnotherCurrenciesComponent from 'components/AnotherCurrenciesComponent.vue';
+//import AnotherCurrenciesComponent from 'components/AnotherCurrenciesComponent.vue';
 import IndexComponent from 'components/IndexComponent.vue';
 
 
@@ -45,14 +45,14 @@ export default defineComponent({
   name: 'IndexPage',
   components: {
     ComparativeFinanceComponent,
-    AnotherCurrenciesComponent,
+    //AnotherCurrenciesComponent,
     IndexComponent,
   },
 
   setup() {
     return {
       ComparativeFinanceComponent,
-      AnotherCurrenciesComponent,
+      //AnotherCurrenciesComponent,
       IndexComponent,
       tab: ref('$ a Bs.'),
     }

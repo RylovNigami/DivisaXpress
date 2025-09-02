@@ -49,11 +49,11 @@
         <template v-slot:header>
           <q-item-section avatar class="q-pr-sm">
             <q-avatar style="font-size: 75px;">
-              <img src="/monitorDolarPng.png">
+              <img src="/USDT_Logo.png">
             </q-avatar>
           </q-item-section>
           <q-item-section>
-            <h6 style="text-shadow: 1px 1px 4px black;">Paralelo ($): {{ ParallelValue }} <q-icon :color=colorParallel :name='symbolParallel'/><br><div class="text-caption">{{ consultHourParallel }}</div></h6>
+            <h6 style="text-shadow: 1px 1px 4px black;">USDT ($): {{ ParallelValue }} <q-icon :color=colorParallel :name='symbolParallel'/><br><div class="text-caption">{{ consultHourParallel }}</div></h6>
           </q-item-section>
         </template>
 
@@ -133,6 +133,10 @@
 import { defineComponent, ref } from 'vue';
 import { useQuasar } from "quasar";
 import axios from 'axios';
+//import crypto from "crypto";
+//import { createHmac,update,digest } from "crypto";
+//import { defineConfig } from 'vite';
+//import { nodePolyfills } from 'vite-plugin-node-polyfills';
 
 const parallelData = [];
 const bcvData = [];
@@ -174,7 +178,40 @@ async function showCharge(){
 
   $q.loading.show()
 
-  await axios.get('https://pydolarve.org/api/v1/dollar?page=bcv')
+  await axios.get('https://ve.dolarapi.com/v1/dolares')
+  .then(function (response) {
+    if(response.status == 200){
+      bcvData.value = response.data[0];
+      parallelData.value = response.data[1];
+      $q.loading.hide()
+    }
+  }).catch(function (error) {
+    if (error.response) {
+      $q.loading.hide()
+      $q.notify({
+        message: 'No se puso contactar con el servidor',
+        color: 'negative',
+        position: 'center',
+      })
+
+    } else if (error.request) {
+      $q.loading.hide()
+      $q.notify({
+        message: 'Error de conexión, por favor, presione "Actualizar"',
+        color: 'negative',
+        position: 'center',
+      })
+    } else {
+      $q.loading.hide()
+      $q.notify({
+        message: 'Error desconocido, por favor, presione "Actualizar"',
+        color: 'negative',
+        position: 'center',
+      })
+    }
+  });
+
+  /*await axios.get('https://pydolarve.org/api/v1/dollar?page=bcv')
   .then(function (response) {
     if(response.status == 200){
       bcvData.value=response.data
@@ -237,23 +274,23 @@ async function showCharge(){
         position: 'center',
       })
     }
-  });
+  });*/
 
-  promedioValue.value = ((bcvData.value.monitors.usd.price + parallelData.value.price)/2).toFixed(2);
-  if (bcvData.value.monitors.usd.color == 'green' && parallelData.value.color == 'green')
+  promedioValue.value = ((bcvData.value.promedio + parallelData.value.promedio)/2).toFixed(2);
+  /*if (bcvData.value.monitors.usd.color == 'green' && parallelData.value.color == 'green')
       {
         colorPromedio.value = 'green';
         symbolPromedio.value = 'mdi-arrow-up';
       } else if (bcvData.value.monitors.usd.color == 'red' && parallelData.value.color == 'red'){
         colorPromedio.value = 'red';
         symbolPromedio.value = 'mdi-arrow-down'
-      };
+      };*/
 
     //Data BCV
-    consultHourBcv.value = bcvData.value.monitors.usd.last_update;
-    OfficialValue.value = bcvData.value.monitors.usd.price.toFixed(2);
-    colorBcv.value = bcvData.value.monitors.usd.color;
-    switch (colorBcv.value) {
+    consultHourBcv.value = bcvData.value.fechaActualizacion;
+    OfficialValue.value = bcvData.value.promedio.toFixed(2);
+    //colorBcv.value = bcvData.value.monitors.usd.color;
+    /*switch (colorBcv.value) {
       case 'green':
         symbolBcv.value = 'mdi-arrow-up'
       break;
@@ -263,13 +300,13 @@ async function showCharge(){
       case 'neutral':
         symbolBcv.value = 'mdi-minus'
       break;
-    };
+    };*/
 
     //Data Paralelo
-    consultHourParallel.value = parallelData.value.last_update;
-    ParallelValue.value = parallelData.value.price.toFixed(2);
-    colorParallel.value = parallelData.value.color;
-    switch (colorParallel.value) {
+    consultHourParallel.value = parallelData.value.fechaActualizacion;
+    ParallelValue.value = parallelData.value.promedio.toFixed(2);
+    //colorParallel.value = parallelData.value.color;
+    /*switch (colorParallel.value) {
       case 'green':
         symbolParallel.value = 'mdi-arrow-up'
       break;
@@ -279,7 +316,7 @@ async function showCharge(){
       case 'neutral':
         symbolParallel.value = 'mdi-minus'
       break;
-    };
+    };*/
 }
 
 
@@ -370,10 +407,12 @@ export default defineComponent({
         resultPromedio.value = null;
         $q.loading.show()
 
-        await axios.get('https://pydolarve.org/api/v1/dollar?page=bcv')
+        await axios.get('https://ve.dolarapi.com/v1/dolares')
         .then(function (response) {
           if(response.status == 200){
-            bcvData.value=response.data;
+            bcvData.value=response.data[0];
+            parallelData.value = response.data[1];
+            $q.loading.hide()
           }
         })
         .catch(function (error) {
@@ -401,10 +440,10 @@ export default defineComponent({
           })
         }
       });
-      await axios.get('https://pydolarve.org/api/v1/dollar?monitor=enparalelovzla')
+      /*await axios.get('https://pydolarve.org/api/v1/dollar?monitor=enparalelovzla')
       .then(function (response) {
         if(response.status==200){
-          parallelData.value = response.data;
+          parallelData.value = response.data[1];
           $q.loading.hide()
         }
       })
@@ -432,22 +471,22 @@ export default defineComponent({
             position: 'center',
           })
         }
-      });
+      });*/
 
-      promedioValue.value = ((bcvData.value.monitors.usd.price + parallelData.value.price)/2).toFixed(2);
-      if (bcvData.value.monitors.usd.color == 'green' && parallelData.value.color == 'green')
+      promedioValue.value = ((bcvData.value.promedio + parallelData.value.promedio)/2).toFixed(2);
+      /*if (bcvData.value.monitors.usd.color == 'green' && parallelData.value.color == 'green')
       {
         colorPromedio.value = 'green';
         symbolPromedio.value = 'mdi-arrow-up';
       } else if (bcvData.value.monitors.usd.color == 'red' && parallelData.value.color == 'red'){
         colorPromedio.value = 'red';
         symbolPromedio.value = 'mdi-arrow-down'
-      };
+      };*/
 
         //Data BCV
-        consultHourBcv.value = bcvData.value.monitors.usd.last_update;
-        OfficialValue.value = bcvData.value.monitors.usd.price.toFixed(2);
-        colorBcv.value = bcvData.value.monitors.usd.color;
+        consultHourBcv.value = bcvData.value.fechaActualizacion;
+        OfficialValue.value = bcvData.value.promedio.toFixed(2);
+        /*colorBcv.value = bcvData.value.monitors.usd.color;
         switch (colorBcv.value) {
           case 'green':
             symbolBcv.value = 'mdi-arrow-up'
@@ -458,12 +497,12 @@ export default defineComponent({
           case 'neutral':
             symbolBcv.value = 'mdi-minus'
           break;
-        };
+        };*/
 
         //Data Paralelo
-        consultHourParallel.value = parallelData.value.last_update;
-        ParallelValue.value = parallelData.value.price.toFixed(2);
-        colorParallel.value = parallelData.value.color;
+        consultHourParallel.value = parallelData.value.fechaActualizacion;
+        ParallelValue.value = parallelData.value.promedio;
+        /*colorParallel.value = parallelData.value.color;
         switch (colorParallel.value) {
           case 'green':
             symbolParallel.value = 'mdi-arrow-up'
@@ -474,7 +513,7 @@ export default defineComponent({
           case 'neutral':
             symbolParallel.value = 'mdi-minus'
           break;
-        };
+        };*/
 
       }
     }

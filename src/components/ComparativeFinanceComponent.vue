@@ -69,7 +69,7 @@
         </q-input>
       </div>
 
-      <div class="row justify-center q-ml-md q-pb-xl">
+      <!--div class="row justify-center q-ml-md q-pb-xl">
           <q-avatar style="font-size: 30px;" class="q-ma-xs">
             <img src="/BcvDolarPNG.png">
           </q-avatar>
@@ -83,7 +83,7 @@
               </template>
           </q-input>
           <br>
-      </div>
+      </div-->
     </div>
 </template>
 
@@ -104,9 +104,9 @@ const resultBcv = ref();
 const resultParallel = ref();
 const resultPromedio = ref();
 const BcvHint = ref('');
-const BcvHintEuro = ref('');
-const OfficialEuroValue = ref();
-const resultEuroBcv = ref();
+//const BcvHintEuro = ref('');
+//const OfficialEuroValue = ref();
+//const resultEuroBcv = ref();
 const ParallelHint = ref('');
 const PromedioHint = ref('');
 
@@ -115,10 +115,12 @@ async function showCharge(){
 
   $q.loading.show()
 
-  await axios.get('https://pydolarve.org/api/v1/dollar?page=bcv')
+  await axios.get('https://ve.dolarapi.com/v1/dolares')
   .then(function (response) {
     if(response.status == 200){
-      bcvData.value=response.data
+      bcvData.value=response.data[0];
+      parallelData.value = response.data[1];
+        $q.loading.hide()
     }
   })
   .catch(function (error) {
@@ -147,7 +149,7 @@ async function showCharge(){
     }
   });
 
-  await axios.get('https://pydolarve.org/api/v1/dollar?monitor=enparalelovzla')
+  /*await axios.get('https://pydolarve.org/api/v1/dollar?monitor=enparalelovzla')
   .then(function (response) {
     if(response.status==200){
         parallelData.value = response.data;
@@ -178,23 +180,23 @@ async function showCharge(){
         position: 'center',
       })
     }
-  });
+  });*/
 
-    promedioValue.value = ((bcvData.value.monitors.usd.price + parallelData.value.price)/2).toFixed(2);
+    promedioValue.value = ((bcvData.value.promedio + parallelData.value.promedio)/2).toFixed(2);
 
     //Data BCV
-    consultHourBcv.value = bcvData.value.monitors.usd.last_update;
-    OfficialValue.value = bcvData.value.monitors.usd.price.toFixed(2);
-    OfficialEuroValue.value = bcvData.value.monitors.eur.price.toFixed(2);
+    consultHourBcv.value = bcvData.value.fechaActualizacion;
+    OfficialValue.value = bcvData.value.promedio.toFixed(2);
+    //OfficialEuroValue.value = bcvData.value.monitors.eur.price.toFixed(2);
 
     //Data Paralelo
-    consultHourParallel.value = parallelData.value.last_update;
-    ParallelValue.value = parallelData.value.price.toFixed(2);
+    consultHourParallel.value = parallelData.value.fechaActualizacion;
+    ParallelValue.value = parallelData.value.promedio.toFixed(2);
 
     BcvHint.value = 'Calculo a: '+ OfficialValue.value;
     ParallelHint.value = 'Calculo a: '+ ParallelValue.value;
     PromedioHint.value = 'Calculo a: '+ promedioValue.value;
-    BcvHintEuro.value = 'Calculo a: ' + OfficialEuroValue.value;
+    //BcvHintEuro.value = 'Calculo a: ' + OfficialEuroValue.value;
 
 }
 
@@ -219,9 +221,9 @@ export default defineComponent({
       resultParallel,
       consultHourParallel,
       consultHourBcv,
-      BcvHintEuro,
-      resultEuroBcv,
-      OfficialEuroValue,
+      //BcvHintEuro,
+      //resultEuroBcv,
+      //OfficialEuroValue,
       returnValues() {
         if (amountBcv.value.includes(",") === true)
         {
@@ -254,7 +256,7 @@ export default defineComponent({
         } else{
           resultPromedio.value = (amountBcv.value / promedioValue.value).toFixed(3);
         };
-        if(OfficialEuroValue.value == undefined || OfficialEuroValue.value == null){
+        /*if(OfficialEuroValue.value == undefined || OfficialEuroValue.value == null){
           $q.notify({
               message: 'Error al calcular Promedio, por favor, presione "Actualizar"',
               color: 'negative',
@@ -262,21 +264,23 @@ export default defineComponent({
             })
         } else{
           resultEuroBcv.value = (amountBcv.value / OfficialEuroValue.value).toFixed(3);
-        };
+        };*/
       },
       async showLoading () {
         amountBcv.value = null;
         resultBcv.value = null;
         resultParallel.value = null;
         resultPromedio.value = null;
-        resultEuroBcv.value = null;
+        //resultEuroBcv.value = null;
 
         $q.loading.show()
 
-        await axios.get('https://pydolarve.org/api/v1/dollar?page=bcv')
+        await axios.get('https://ve.dolarapi.com/v1/dolares')
         .then(function (response) {
           if(response.status == 200){
-            bcvData.value=response.data;
+            bcvData.value=response.data[0];
+            parallelData.value = response.data[1];
+            $q.loading.hide()
           }
         })
         .catch(function (error) {
@@ -305,7 +309,7 @@ export default defineComponent({
     }
   });
 
-        await axios.get('https://pydolarve.org/api/v1/dollar?monitor=enparalelovzla')
+       /* await axios.get('https://pydolarve.org/api/v1/dollar?monitor=enparalelovzla')
         .then(function (response) {
           if(response.status==200){
             parallelData.value = response.data;
@@ -336,22 +340,22 @@ export default defineComponent({
         position: 'center',
       })
     }
-  });
-    promedioValue.value = ((bcvData.value.monitors.usd.price + parallelData.value.price)/2).toFixed(2);
+  });*/
+    promedioValue.value = ((bcvData.value.promedio + parallelData.value.promedio)/2).toFixed(2);
 
     //Data BCV
-    consultHourBcv.value = bcvData.value.monitors.usd.last_update;
-    OfficialValue.value = bcvData.value.monitors.usd.price.toFixed(2);
-    OfficialEuroValue.value = bcvData.value.monitors.eur.price.toFixed(2);
+    consultHourBcv.value = bcvData.value.fechaActualizacion;
+    OfficialValue.value = bcvData.value.promedio.toFixed(2);
+    //OfficialEuroValue.value = bcvData.value.monitors.eur.price.toFixed(2);
 
     //Data Paralelo
-    consultHourParallel.value = parallelData.value.last_update;
-    ParallelValue.value = parallelData.value.price.toFixed(2);
+    consultHourParallel.value = parallelData.value.fechaActualizacion;
+    ParallelValue.value = parallelData.value.promedio.toFixed(2);
 
     BcvHint.value = 'Calculo a: '+ OfficialValue.value;
     ParallelHint.value = 'Calculo a: '+ ParallelValue.value;
     PromedioHint.value = 'Calculo a: '+ promedioValue.value;
-    BcvHintEuro.value = 'calculo a: ' + OfficialEuroValue.value;
+    //BcvHintEuro.value = 'calculo a: ' + OfficialEuroValue.value;
 
       }
     }
