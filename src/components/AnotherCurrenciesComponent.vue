@@ -12,34 +12,48 @@
           </q-item-section>
 
           <q-item-section>
-            <h6 style="text-shadow: 1px 1px 4px black;">Euro (€): {{ EUROfficialBcv }} <q-icon :color=EURColorBcv :name="EURSymbolBcv"/><br><div class="text-caption">{{ consultHourBcv }}</div></h6>
+            <h6 style="text-shadow: 1px 1px 4px black;">BCV (€): {{ EUROfficialBcv }} <q-icon :color=EURColorBcv :name="EURSymbolBcv"/><br><div class="text-caption">{{ consultHourBcv }}</div></h6>
           </q-item-section>
         </template>
 
         <q-card class="transparent">
           <q-card-section >
             <q-input
-            class="col q-pb-xl"
-            outlined
-            v-model.trim="EURAmountBcv"
-            dense="dense"
-            hint="Inserte valor € (EUR)"
-            inputmode="numeric"
-            type="tel"
+              class="col q-pb-xl"
+              outlined
+              v-model.trim="EURAmountBcv"
+              dense="dense"
+              hint="Inserte valor € (EUR)"
+              type="number"
+              pattern="[0-9]*\.?[0-9]*"
+              inputmode="decimal"
+              @focus="BcvAmountEUR = null"
             >
               <template v-slot:append>
-                <div style="font-size:large;"> € </div >
+                <div style="font-size:large;"> $ </div >
               </template>
-              <template v-slot:after>
-                <q-btn round dense flat icon="send" @click="EURreturnBcvValue()"/>
-              </template>
+              <template v-slot:prepend>
+                  {{ pruebaComputedBsToEur }}
+                </template>
             </q-input>
-            <q-input class="col" outlined dense="dense" hint="Calculo (Bs.)" readonly>
+            <q-input
+              class="col"
+              outlined
+              v-model.trim="BcvAmountEUR"
+              dense="dense"
+              hint="Calculo (Bs.)"
+              inputmode="numeric"
+              type="tel"
+              @focus="EURAmountBcv = null"
+            >
               <template v-slot:append>
                 <div style="font-size:large;"> Bs. </div >
               </template>
-              <template v-slot:prepend>
+              <!--template v-slot:prepend>
                   {{ EURResultBcv }}
+                </template-->
+                <template v-slot:prepend>
+                  {{ pruebaComputedEurToBs }}
                 </template>
             </q-input>
           </q-card-section>
@@ -171,7 +185,7 @@
 </template>
 
 <script>
-import { defineComponent, ref } from 'vue';
+import { computed, defineComponent, ref } from 'vue';
 import { useQuasar } from "quasar";
 import axios from 'axios';
 
@@ -179,6 +193,7 @@ const bcvData = [];
 const consultHourBcv = ref('');
 const EUROfficialBcv = ref();
 const EURAmountBcv = ref();
+const BcvAmountEUR = ref();
 const EURResultBcv = ref();
 const EURColorBcv = ref();
 const EURSymbolBcv = ref();
@@ -198,9 +213,24 @@ const TRYResultBcv = ref();
 const TRYColorBcv = ref();
 const TRYSymbolBcv = ref();
 
+const pruebaComputedEurToBs = computed (() => {
+  console.log(EURAmountBcv.value);
+    if (EURAmountBcv.value > 0){
+      return (EUROfficialBcv.value * EURAmountBcv.value).toFixed(2);
+    }
+  return null;
+});
+
+const pruebaComputedBsToEur = computed (() => {
+  if (BcvAmountEUR.value > 0){
+    return (BcvAmountEUR.value / EUROfficialBcv.value).toFixed(2);
+  }
+  return null;
+});
+
 function EURreturnToZeroBcv() {
   EURAmountBcv.value = null;
-  EURResultBcv.value = null;
+  BcvAmountEUR.value = null;
 };
 
 function CNYreturnToZeroBcv() {
@@ -223,10 +253,10 @@ async function showCharge(){
 
     $q.loading.show()
 
-    await axios.get('https://pydolarve.org/api/v1/dollar?page=bcv')
+    await axios.get('https://ve.dolarapi.com/v1/dolares')
     .then(function (response) {
       if(response.status == 200){
-        bcvData.value=response.data
+        bcvData.value=response.data[0]
         $q.loading.hide()
       }
     })
@@ -257,11 +287,11 @@ async function showCharge(){
   });
 
   //Data BCV
-  consultHourBcv.value = bcvData.value.monitors.usd.last_update;
+  consultHourBcv.value = bcvData.value.fechaActualizacion;
 
   //Data Euro
-  EUROfficialBcv.value = bcvData.value.monitors.eur.price.toFixed(2);
-  EURColorBcv.value = bcvData.value.monitors.eur.color;
+  EUROfficialBcv.value = bcvData.value.promedio.toFixed(2);
+  /*EURColorBcv.value = bcvData.value.monitors.eur.color;
   switch (EURColorBcv.value) {
     case 'green':
       EURSymbolBcv.value = 'mdi-arrow-up'
@@ -272,11 +302,11 @@ async function showCharge(){
     case 'neutral':
       EURSymbolBcv.value = 'mdi-minus'
     break;
-  };
+  };*/
 
   //Data Yuan Chino
   CNYOfficialBcv.value = bcvData.value.monitors.cny.price.toFixed(2);
-  CNYColorBcv.value = bcvData.value.monitors.cny.color;
+  /*CNYColorBcv.value = bcvData.value.monitors.cny.color;
   switch (CNYColorBcv.value) {
     case 'green':
       CNYSymbolBcv.value = 'mdi-arrow-up'
@@ -287,11 +317,11 @@ async function showCharge(){
     case 'neutral':
       CNYSymbolBcv.value = 'mdi-minus'
     break;
-  };
+  };*/
 
   //Data Lira Turca
   TRYOfficialBcv.value = bcvData.value.monitors.try.price.toFixed(2);
-  TRYColorBcv.value = bcvData.value.monitors.try.color;
+  /*TRYColorBcv.value = bcvData.value.monitors.try.color;
   switch (TRYColorBcv.value) {
     case 'green':
       TRYSymbolBcv.value = 'mdi-arrow-up'
@@ -302,11 +332,11 @@ async function showCharge(){
     case 'neutral':
       TRYSymbolBcv.value = 'mdi-minus'
     break;
-  };
+  };*/
 
   //Data Rublo Ruso
   RUBOfficialBcv.value = bcvData.value.monitors.rub.price.toFixed(2);
-  RUBColorBcv.value = bcvData.value.monitors.rub.color;
+  /*RUBColorBcv.value = bcvData.value.monitors.rub.color;
   switch (RUBColorBcv.value) {
     case 'green':
       RUBSymbolBcv.value = 'mdi-arrow-up'
@@ -317,7 +347,7 @@ async function showCharge(){
     case 'neutral':
       RUBSymbolBcv.value = 'mdi-minus'
     break;
-  };
+  };*/
 }
 
 
@@ -327,6 +357,8 @@ export default defineComponent({
     const $q = useQuasar()
 
     return {
+      pruebaComputedEurToBs,
+      pruebaComputedBsToEur,
       showCharge,
       EURreturnToZeroBcv,
       CNYreturnToZeroBcv,
@@ -335,6 +367,7 @@ export default defineComponent({
       consultHourBcv,
       EUROfficialBcv,
       EURAmountBcv,
+      BcvAmountEUR,
       EURResultBcv,
       EURColorBcv,
       EURSymbolBcv,
@@ -353,7 +386,7 @@ export default defineComponent({
       TRYResultBcv,
       TRYColorBcv,
       TRYSymbolBcv,
-      EURreturnBcvValue() {
+      /*EURreturnBcvValue() {
         if (EURAmountBcv.value.includes(",") === true)
         {
           EURAmountBcv.value = EURAmountBcv.value.replace(",",".")
@@ -416,7 +449,7 @@ export default defineComponent({
         } else{
           TRYResultBcv.value = (TRYOfficialBcv.value * TRYAmountBcv.value).toFixed(2);
         };
-      },
+      },*/
       async showLoading () {
 
         EURAmountBcv.value = null;
