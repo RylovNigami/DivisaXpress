@@ -16,37 +16,104 @@
         <q-card class="transparent">
           <q-card-section >
             <q-input
-            class="col q-pb-xl"
-            outlined
-            v-model.trim="amountBcv"
-            dense="dense"
-            hint="Inserte valor $ (USD)"
-            inputmode="numeric"
-            type="tel"
+              class="col q-pb-xl"
+              outlined
+              v-model.trim="USDamountBCV"
+              dense="dense"
+              hint="Inserte valor $ (USD)"
+              type="number"
+              pattern="[0-9]*\.?[0-9]*"
+              inputmode="decimal"
+              @focus="BCVamountUSD = null"
             >
               <template v-slot:append>
                 <div style="font-size:large;"> $ </div >
               </template>
-              <template v-slot:after>
-                <q-btn round dense flat icon="send" @click="returnBcvValue()"/>
-              </template>
+              <template v-slot:prepend>
+                  {{ computedBCVtoUSD }}
+                </template>
             </q-input>
-            <q-input class="col" outlined dense="dense" hint="Calculo (Bs.)" readonly>
+            <q-input
+              class="col"
+              outlined
+              dense="dense"
+              hint="Calculo (Bs.)"
+              type="number"
+              pattern="[0-9]*\.?[0-9]*"
+              inputmode="decimal"
+              v-model.trim="BCVamountUSD"
+              @focus="USDamountBCV = null"
+            >
               <template v-slot:append>
                 <div style="font-size:large;"> Bs. </div >
               </template>
               <template v-slot:prepend>
-                  {{ resultBcv }}
+                {{ computedUSDtoBCV }}
+              </template>
+            </q-input>
+          </q-card-section>
+        </q-card>
+      </q-expansion-item>
+
+      <q-expansion-item class="q-px-xl" @click="returnToZeroBcvEUR()" @click.right.prevent="doAthing()">
+        <template v-slot:header>
+          <q-item-section avatar class="q-pr-sm">
+            <q-avatar style="font-size: 90px;">
+              <img src="BcvDolarPNG.png">
+            </q-avatar>
+          </q-item-section>
+
+          <q-item-section>
+            <h5 style="text-shadow: 1px 1px 4px black;">Oficial (€): {{ OfficialEURvalue }} <q-icon :color=colorBcv :name="symbolBcv"/><br><div class="text-caption">{{ consultHourBcv }}</div></h5>
+          </q-item-section>
+        </template>
+
+        <q-card class="transparent">
+          <q-card-section >
+            <q-input
+              class="col q-pb-xl"
+              outlined
+              v-model.trim="EURamountBCV"
+              dense="dense"
+              hint="Inserte valor € (EUR)"
+              type="number"
+              pattern="[0-9]*\.?[0-9]*"
+              inputmode="decimal"
+              @focus="BCVamountEUR = null"
+            >
+              <template v-slot:append>
+                <div style="font-size:large;"> $ </div >
+              </template>
+              <template v-slot:prepend>
+                  {{ computedBCVtoEUR }}
+                </template>
+            </q-input>
+            <q-input class="col"
+              outlined
+              dense="dense"
+              hint="Calculo (Bs.)"
+              type="number"
+              pattern="[0-9]*\.?[0-9]*"
+              inputmode="decimal"
+              v-model.trim="BCVamountEUR"
+              @focus="EURamountBCV = null"
+            >
+              <template v-slot:append>
+                <div style="font-size:large;"> Bs. </div >
+              </template>
+              <template v-slot:prepend>
+                  {{ computedEURtoBCV }}
                 </template>
             </q-input>
           </q-card-section>
         </q-card>
       </q-expansion-item>
-      <q-expansion-item class="q-px-xl" @click="returnToZeroParallel()" @click.right.prevent="doAthing()">
+
+      <q-expansion-item class="q-px-xl" @click="returnToZeroParallel()">
         <template v-slot:header>
           <q-item-section avatar class="q-pr-sm">
             <q-avatar style="font-size: 90px;">
-              <img src="monitorDolarPng.png">
+              <img src="USDT_Logo.png">
             </q-avatar>
           </q-item-section>
           <q-item-section>
@@ -56,32 +123,46 @@
 
         <q-card class="transparent">
           <q-card-section>
-            <q-input class="col q-pb-xl"
-            outlined
-            v-model.trim="amountParallel"
-            dense="dense"
-            hint="Inserte valor $ (USD)"
-            inputmode="numeric"
-            type="tel"
+            <q-input
+              class="col q-pb-xl"
+              outlined
+              v-model.trim="USDamountParallel"
+              dense="dense"
+              hint="Inserte valor $ (USD)"
+              type="number"
+              pattern="[0-9]*\.?[0-9]*"
+              inputmode="decimal"
+              @focus="ParallelamountUSD = null"
             >
               <template v-slot:append>
                 <div style="font-size:large;"> $ </div >
               </template>
-              <template v-slot:after>
-                <q-btn round dense flat icon="send" @click="returnParallelValue()"/>
+              <template v-slot:prepend>
+                {{ computedParalleltoUSD }}
               </template>
             </q-input>
-            <q-input class="col" outlined dense="dense" hint="Calculo (Bs.)" readonly>
+            <q-input
+              class="col"
+              outlined
+              dense="dense"
+              hint="Calculo (Bs.)"
+              type="number"
+              pattern="[0-9]*\.?[0-9]*"
+              inputmode="decimal"
+              v-model.trim="ParallelamountUSD"
+              @focus="USDamountParallel = null"
+            >
               <template v-slot:append>
                 <div style="font-size:large;"> Bs. </div >
               </template>
               <template v-slot:prepend>
-                {{ resultParallel }}
+                {{ computedUSDtoParallel }}
               </template>
             </q-input>
           </q-card-section>
         </q-card>
       </q-expansion-item>
+
       <q-expansion-item class="q-px-xl" @click="returnToZeroPromedio()" @click.right.prevent="doAthing()">
         <template v-slot:header>
           <q-item-section avatar class="q-pr-sm">
@@ -97,28 +178,41 @@
 
         <q-card class="transparent">
           <q-card-section>
-            <q-input class="col q-pb-xl"
-            outlined
-            v-model.trim="amountPromedio"
-            dense="dense"
-            hint="Inserte valor $ (USD)"
-            inputmode="numeric"
-            type="tel"
+            <q-input
+              class="col q-pb-xl"
+              outlined
+              v-model.trim="USDamountPromedio"
+              dense="dense"
+              hint="Inserte valor $ (USD)"
+              type="number"
+              pattern="[0-9]*\.?[0-9]*"
+              inputmode="decimal"
+              @focus="PromedioamountUSD = null"
             >
               <template v-slot:append>
                 <div style="font-size:large;"> $ </div >
               </template>
-              <template v-slot:after>
-                <q-btn round dense flat icon="send" @click="returnPromedioValue()"/>
-              </template>
+              <template v-slot:prepend>
+                  {{ computedPromediotoUSD }}
+                </template>
             </q-input>
-            <q-input class="col" outlined dense="dense" hint="Calculo (Bs.)" readonly>
+            <q-input
+              class="col"
+              outlined
+              dense="dense"
+              hint="Calculo (Bs.)"
+              type="number"
+              pattern="[0-9]*\.?[0-9]*"
+              inputmode="decimal"
+              v-model.trim="PromedioamountUSD"
+              @focus="USDamountPromedio = null"
+            >
               <template v-slot:append>
                 <div style="font-size:large;"> Bs. </div >
               </template>
               <template v-slot:prepend>
-                  {{ resultPromedio }}
-                </template>
+                {{ computedUSDtoPromedio }}
+              </template>
             </q-input>
           </q-card-section>
         </q-card>
@@ -130,7 +224,7 @@
 </template>
 
 <script>
-import { defineComponent, ref } from 'vue';
+import { computed, defineComponent, ref } from 'vue';
 import { useQuasar } from "quasar";
 import axios from 'axios';
 
@@ -140,51 +234,175 @@ const consultHourBcv = ref('');
 const consultHourParallel = ref('');
 const OfficialValue = ref();
 const ParallelValue = ref();
-const OldOfficialValue = ref();
-const OldParallelValue = ref();
 const promedioValue = ref();
-const amountBcv = ref();
-const amountParallel = ref();
-const amountPromedio = ref();
-const resultBcv = ref();
-const resultParallel = ref();
-const resultPromedio = ref();
-const colorBcv = ref('');
+const OfficialEURvalue = ref();
+const USDamountBCV = ref();
+const BCVamountUSD = ref();
+const USDamountParallel = ref();
+const ParallelamountUSD = ref();
+const USDamountPromedio = ref();
+const PromedioamountUSD = ref();
+const EURamountBCV = ref();
+const BCVamountEUR = ref();
+
+const computedUSDtoBCV = computed (() => {
+    if (USDamountBCV.value > 0){
+      return (OfficialValue.value * USDamountBCV.value).toFixed(2);
+    }
+  return null;
+});
+
+const computedBCVtoUSD = computed (() => {
+    if (BCVamountUSD.value > 0){
+      return (BCVamountUSD.value / OfficialValue.value).toFixed(2);
+    }
+  return null;
+});
+
+const computedEURtoBCV = computed (() => {
+    if (EURamountBCV.value > 0){
+      return (OfficialEURvalue.value * EURamountBCV.value).toFixed(2);
+    }
+  return null;
+});
+
+const computedBCVtoEUR = computed (() => {
+    if (BCVamountEUR.value > 0){
+      return (BCVamountEUR.value / OfficialEURvalue.value).toFixed(2);
+    }
+  return null;
+});
+
+const computedUSDtoParallel = computed (() => {
+    if (USDamountParallel.value > 0){
+      return (ParallelValue.value * USDamountParallel.value).toFixed(2);
+    }
+  return null;
+});
+
+const computedParalleltoUSD = computed (() => {
+    if (ParallelamountUSD.value > 0){
+      return (ParallelamountUSD.value / ParallelValue.value).toFixed(2);
+    }
+  return null;
+});
+
+const computedUSDtoPromedio = computed (() => {
+    if (USDamountPromedio.value > 0){
+      return (promedioValue.value * USDamountPromedio.value).toFixed(2);
+    }
+  return null;
+});
+
+const computedPromediotoUSD = computed (() => {
+    if (PromedioamountUSD.value > 0){
+      return (PromedioamountUSD.value / promedioValue.value).toFixed(2);
+    }
+  return null;
+});
+
+/*const colorBcv = ref('');
 const colorParallel = ref('');
 const symbolBcv = ref('');
 const symbolParallel = ref('');
 const colorPromedio = ref('');
-const symbolPromedio = ref('');
-
-function doAthing(){
-  console.log('muchacho es click derecho');
-};
+const symbolPromedio = ref('');*/
 
 function returnToZeroBcv() {
-  amountBcv.value = null;
-  resultBcv.value = null;
+  USDamountBCV.value = null;
+  BCVamountUSD.value = null;
 };
 
 function returnToZeroParallel() {
-  amountParallel.value = null;
-  resultParallel.value = null;
+  USDamountParallel.value = null;
+  ParallelamountUSD.value = null;
 };
 
 function returnToZeroPromedio() {
-  amountPromedio.value = null;
-  resultPromedio.value = null;
+  USDamountPromedio.value = null;
+  PromedioamountUSD.value = null;
 };
+
+function returnToZeroBcvEUR() {
+  EURamountBCV.value = null;
+  BCVamountEUR.value = null;
+};
+
 
 async function showCharge(){
   const $q = useQuasar()
 
   $q.loading.show()
 
-  await axios.get('https://pydolarve.org/api/v1/dollar?page=bcv')
+  await axios.get('https://ve.dolarapi.com/v1/dolares')
+  .then(function (response) {
+    if(response.status == 200){
+      //bcvData.value = response.data[0];
+      parallelData.value = response.data[1];
+    }
+  }).catch(function (error) {
+    if (error.response) {
+      $q.loading.hide()
+      $q.notify({
+        message: 'No se puso contactar con el servidor',
+        color: 'negative',
+        position: 'center',
+      })
+
+    } else if (error.request) {
+      $q.loading.hide()
+      $q.notify({
+        message: 'Error de conexión, por favor, presione "Actualizar"',
+        color: 'negative',
+        position: 'center',
+      })
+    } else {
+      $q.loading.hide()
+      $q.notify({
+        message: 'Error desconocido, por favor, presione "Actualizar"',
+        color: 'negative',
+        position: 'center',
+      })
+    }
+  });
+
+  await axios.get('https://api.dolarvzla.com/public/exchange-rate')
+  .then(function (response) {
+    if(response.status == 200){
+      bcvData.value = response.data.current
+      $q.loading.hide()
+    }
+  })
+  .catch(function (error) {
+    if (error.response) {
+      $q.loading.hide()
+      $q.notify({
+        message: 'No se puso contactar con el servidor',
+        color: 'negative',
+        position: 'center',
+      })
+
+    } else if (error.request) {
+      $q.loading.hide()
+      $q.notify({
+        message: 'Error de conexión, por favor, presione "Actualizar"',
+        color: 'negative',
+        position: 'center',
+      })
+    } else {
+      $q.loading.hide()
+      $q.notify({
+        message: 'Error desconocido, por favor, presione "Actualizar"',
+        color: 'negative',
+        position: 'center',
+      })
+    }
+  });
+
+  /*await axios.get('https://pydolarve.org/api/v1/dollar?page=bcv')
   .then(function (response) {
     if(response.status == 200){
       bcvData.value=response.data
-      //console.log(bcvData.value)
     }
   })
   .catch(function (error) {
@@ -217,7 +435,6 @@ async function showCharge(){
   .then(function (response) {
     if(response.status==200){
         parallelData.value = response.data;
-        //console.log(parallelData.value)
         $q.loading.hide()
       }
   })
@@ -245,23 +462,24 @@ async function showCharge(){
         position: 'center',
       })
     }
-  });
-    promedioValue.value = ((bcvData.value.monitors.usd.price + parallelData.value.price)/2).toFixed(2);
-    if(bcvData.value.monitors.usd.color == 'green' && parallelData.value.color == 'green'){
-      colorPromedio.value = 'green';
-      symbolPromedio.value = 'green';
-    }else if (bcvData.value.monitors.usd.color == 'red' && parallelData.value.color == 'red'){
-      colorPromedio.value = 'red';
-      symbolPromedio.value = 'red';
-    };
+  });*/
 
+  promedioValue.value = ((bcvData.value.usd + parallelData.value.promedio)/2).toFixed(2);
+  /*if (bcvData.value.monitors.usd.color == 'green' && parallelData.value.color == 'green')
+      {
+        colorPromedio.value = 'green';
+        symbolPromedio.value = 'mdi-arrow-up';
+      } else if (bcvData.value.monitors.usd.color == 'red' && parallelData.value.color == 'red'){
+        colorPromedio.value = 'red';
+        symbolPromedio.value = 'mdi-arrow-down'
+      };*/
 
     //Data BCV
-    consultHourBcv.value = bcvData.value.monitors.usd.last_update;
-    OfficialValue.value = bcvData.value.monitors.usd.price.toFixed(2);
-    OldOfficialValue.value = bcvData.value.monitors.usd.price_old.toFixed(2);
-    colorBcv.value = bcvData.value.monitors.usd.color;
-    switch (colorBcv.value) {
+    consultHourBcv.value = parallelData.value.fechaActualizacion;
+    OfficialValue.value = bcvData.value.usd.toFixed(2);
+    OfficialEURvalue.value = bcvData.value.eur.toFixed(2);
+    //colorBcv.value = bcvData.value.monitors.usd.color;
+    /*switch (colorBcv.value) {
       case 'green':
         symbolBcv.value = 'mdi-arrow-up'
       break;
@@ -271,14 +489,13 @@ async function showCharge(){
       case 'neutral':
         symbolBcv.value = 'mdi-minus'
       break;
-    };
+    };*/
 
     //Data Paralelo
-    consultHourParallel.value = parallelData.value.last_update;
-    ParallelValue.value = parallelData.value.price.toFixed(2);
-    OldParallelValue.value = parallelData.value.price_old.toFixed(2);
-    colorParallel.value = parallelData.value.color;
-    switch (colorParallel.value) {
+    consultHourParallel.value = parallelData.value.fechaActualizacion;
+    ParallelValue.value = parallelData.value.promedio.toFixed(2);
+    //colorParallel.value = parallelData.value.color;
+    /*switch (colorParallel.value) {
       case 'green':
         symbolParallel.value = 'mdi-arrow-up'
       break;
@@ -288,7 +505,7 @@ async function showCharge(){
       case 'neutral':
         symbolParallel.value = 'mdi-minus'
       break;
-    };
+    };*/
 }
 
 
@@ -299,194 +516,225 @@ export default defineComponent({
 
     return {
       tab: ref('$ a Bs.'),
-      resultPromedio,
-      amountPromedio,
+      USDamountPromedio,
+      USDamountBCV,
+      USDamountParallel,
+      PromedioamountUSD,
+      BCVamountUSD,
+      ParallelamountUSD,
+      EURamountBCV,
+      BCVamountEUR,
       promedioValue,
       showCharge,
       returnToZeroBcv,
       returnToZeroParallel,
       returnToZeroPromedio,
+      returnToZeroBcvEUR,
       OfficialValue,
       ParallelValue,
-      amountBcv,
-      amountParallel,
-      resultBcv,
-      resultParallel,
-      colorParallel,
-      colorBcv,
-      symbolParallel,
-      symbolBcv,
+      OfficialEURvalue,
+      computedBCVtoUSD,
+      computedUSDtoBCV,
+      computedUSDtoParallel,
+      computedParalleltoUSD,
+      computedPromediotoUSD,
+      computedUSDtoPromedio,
+      computedEURtoBCV,
+      computedBCVtoEUR,
+      //colorParallel,
+      //colorBcv,
+      //symbolParallel,
+      //symbolBcv,
       consultHourParallel,
       consultHourBcv,
-      colorPromedio,
-      symbolPromedio,
-      doAthing,
-      OldOfficialValue,
-      OldParallelValue,
-      returnBcvValue() {
-        if (amountBcv.value.includes(",") === true)
-        {
-          amountBcv.value = amountBcv.value.replace(",",".")
-        };
-
-        if(OfficialValue.value == undefined || OfficialValue.value == null){
-          $q.notify({
-              message: 'Error al calcular, por favor, presione "Actualizar"',
-              color: 'negative',
-              position: 'center',
-            })
-        } else{
-          resultBcv.value = (OfficialValue.value * amountBcv.value).toFixed(2);
-        };
-      },
-      returnParallelValue() {
-        if (amountParallel.value.includes(",") === true)
-        {
-          amountParallel.value = amountParallel.value.replace(",",".")
-        };
-
-        if(ParallelValue.value == undefined || ParallelValue.value == null){
-          $q.notify({
-              message: 'Error al calcular, por favor, presione "Actualizar"',
-              color: 'negative',
-              position: 'center',
-            })
-        } else{
-          resultParallel.value = (ParallelValue.value * amountParallel.value).toFixed(2);
-        };
-      },
-      returnPromedioValue() {
-        if (amountPromedio.value.includes(",") === true)
-        {
-          amountPromedio.value = amountPromedio.value.replace(",",".")
-        };
-
-        if(promedioValue.value == undefined || promedioValue.value == null){
-          $q.notify({
-              message: 'Error al calcular, por favor, presione "Actualizar"',
-              color: 'negative',
-              position: 'center',
-            })
-        } else{
-          resultPromedio.value = (promedioValue.value * amountPromedio.value).toFixed(2);
-        };
-      },
+      //colorPromedio,
+      //symbolPromedio,
       async showLoading () {
-        amountBcv.value = null;
-        resultBcv.value = null;
+        USDamountBCV.value = null;
+        BCVamountUSD.value = null;
 
-        amountParallel.value = null;
-        resultParallel.value = null;
+        USDamountParallel.value = null;
+        ParallelamountUSD.value = null;
 
-        amountPromedio.value = null;
-        resultPromedio.value = null;
+        USDamountPromedio.value = null;
+        PromedioamountUSD.value = null;
+
+        EURamountBCV.value = null;
+        BCVamountEUR.value = null;
         $q.loading.show()
 
-        await axios.get('https://pydolarve.org/api/v1/dollar?page=bcv')
-        .then(function (response) {
-          if(response.status == 200){
-            bcvData.value=response.data;
-          }
-        })
-        .catch(function (error) {
-        if (error.response) {
-          $q.loading.hide()
-          $q.notify({
-            message: 'No se puso contactar con el servidor',
-            color: 'negative',
-            position: 'center',
-          })
-
-        } else if (error.request) {
-          $q.loading.hide()
-          $q.notify({
-            message: 'Error de conexión, por favor, presione "Actualizar"',
-            color: 'negative',
-            position: 'center',
-          })
-        } else {
-          $q.loading.hide()
-          $q.notify({
-            message: 'Error desconocido, por favor, presione "Actualizar"',
-            color: 'negative',
-            position: 'center',
-          })
-        }
-      });
-      await axios.get('https://pydolarve.org/api/v1/dollar?monitor=enparalelovzla')
-      .then(function (response) {
-        if(response.status==200){
-          parallelData.value = response.data;
-          $q.loading.hide()
-        }
+          await axios.get('https://ve.dolarapi.com/v1/dolares')
+  .then(function (response) {
+    if(response.status == 200){
+      //bcvData.value = response.data[0];
+      parallelData.value = response.data[1];
+    }
+  }).catch(function (error) {
+    if (error.response) {
+      $q.loading.hide()
+      $q.notify({
+        message: 'No se puso contactar con el servidor',
+        color: 'negative',
+        position: 'center',
       })
-      .catch(function (error) {
-        if (error.response) {
-          $q.loading.hide()
-          $q.notify({
-            message: 'No se puso contactar con el servidor',
-            color: 'negative',
-            position: 'center',
-          })
 
-        } else if (error.request) {
-          $q.loading.hide()
-          $q.notify({
-            message: 'Error de conexión, por favor, presione "Actualizar"',
-            color: 'negative',
-            position: 'center',
-          })
-        } else {
-          $q.loading.hide()
-          $q.notify({
-            message: 'Error desconocido, por favor, presione "Actualizar"',
-            color: 'negative',
-            position: 'center',
-          })
-        }
-      });
-        promedioValue.value = ((bcvData.value.monitors.usd.price + parallelData.value.price)/2).toFixed(2);
-        if(bcvData.value.monitors.usd.color == 'green' && parallelData.value.color == 'green'){
-          colorPromedio.value = 'green';
-          symbolPromedio.value = 'green';
-        }else if (bcvData.value.monitors.usd.color == 'red' && parallelData.value.color == 'red'){
-          colorPromedio.value = 'red';
-          symbolPromedio.value = 'red';
-        };
+    } else if (error.request) {
+      $q.loading.hide()
+      $q.notify({
+        message: 'Error de conexión, por favor, presione "Actualizar"',
+        color: 'negative',
+        position: 'center',
+      })
+    } else {
+      $q.loading.hide()
+      $q.notify({
+        message: 'Error desconocido, por favor, presione "Actualizar"',
+        color: 'negative',
+        position: 'center',
+      })
+    }
+  });
 
-        //Data BCV
-        consultHourBcv.value = bcvData.value.monitors.usd.last_update;
-        OfficialValue.value = bcvData.value.monitors.usd.price.toFixed(2);
-        OldOfficialValue.value = bcvData.value.monitors.usd.price_old.toFixed(2);
-        colorBcv.value = bcvData.value.monitors.usd.color;
-        switch (colorBcv.value) {
-          case 'green':
-            symbolBcv.value = 'mdi-arrow-up'
-          break;
-          case 'red':
-            symbolBcv.value = 'mdi-arrow-down'
-          break;
-          case 'neutral':
-            symbolBcv.value = 'mdi-minus'
-          break;
-        };
+  await axios.get('https://api.dolarvzla.com/public/exchange-rate')
+  .then(function (response) {
+    if(response.status == 200){
+      bcvData.value = response.data.current
+      $q.loading.hide()
+    }
+  })
+  .catch(function (error) {
+    if (error.response) {
+      $q.loading.hide()
+      $q.notify({
+        message: 'No se puso contactar con el servidor',
+        color: 'negative',
+        position: 'center',
+      })
 
-        //Data Paralelo
-        consultHourParallel.value = parallelData.value.last_update;
-        ParallelValue.value = parallelData.value.price.toFixed(2);
-        OldParallelValue.value = parallelData.value.price_old.toFixed(2);
-        colorParallel.value = parallelData.value.color;
-        switch (colorParallel.value) {
-          case 'green':
-            symbolParallel.value = 'mdi-arrow-up'
-          break;
-          case 'red':
-            symbolParallel.value = 'mdi-arrow-down'
-          break;
-          case 'neutral':
-            symbolParallel.value = 'mdi-minus'
-          break;
-        };
+    } else if (error.request) {
+      $q.loading.hide()
+      $q.notify({
+        message: 'Error de conexión, por favor, presione "Actualizar"',
+        color: 'negative',
+        position: 'center',
+      })
+    } else {
+      $q.loading.hide()
+      $q.notify({
+        message: 'Error desconocido, por favor, presione "Actualizar"',
+        color: 'negative',
+        position: 'center',
+      })
+    }
+  });
+
+  /*await axios.get('https://pydolarve.org/api/v1/dollar?page=bcv')
+  .then(function (response) {
+    if(response.status == 200){
+      bcvData.value=response.data
+    }
+  })
+  .catch(function (error) {
+    if (error.response) {
+      $q.loading.hide()
+      $q.notify({
+        message: 'No se puso contactar con el servidor',
+        color: 'negative',
+        position: 'center',
+      })
+
+    } else if (error.request) {
+      $q.loading.hide()
+      $q.notify({
+        message: 'Error de conexión, por favor, presione "Actualizar"',
+        color: 'negative',
+        position: 'center',
+      })
+    } else {
+      $q.loading.hide()
+      $q.notify({
+        message: 'Error desconocido, por favor, presione "Actualizar"',
+        color: 'negative',
+        position: 'center',
+      })
+    }
+  });
+
+  await axios.get('https://pydolarve.org/api/v1/dollar?monitor=enparalelovzla')
+  .then(function (response) {
+    if(response.status==200){
+        parallelData.value = response.data;
+        $q.loading.hide()
+      }
+  })
+  .catch(function (error) {
+    if (error.response) {
+      $q.loading.hide()
+      $q.notify({
+        message: 'No se puso contactar con el servidor',
+        color: 'negative',
+        position: 'center',
+      })
+
+    } else if (error.request) {
+      $q.loading.hide()
+      $q.notify({
+        message: 'Error de conexión, por favor, presione "Actualizar"',
+        color: 'negative',
+        position: 'center',
+      })
+    } else {
+      $q.loading.hide()
+      $q.notify({
+        message: 'Error desconocido, por favor, presione "Actualizar"',
+        color: 'negative',
+        position: 'center',
+      })
+    }
+  });*/
+
+  promedioValue.value = ((bcvData.value.usd + parallelData.value.promedio)/2).toFixed(2);
+  /*if (bcvData.value.monitors.usd.color == 'green' && parallelData.value.color == 'green')
+      {
+        colorPromedio.value = 'green';
+        symbolPromedio.value = 'mdi-arrow-up';
+      } else if (bcvData.value.monitors.usd.color == 'red' && parallelData.value.color == 'red'){
+        colorPromedio.value = 'red';
+        symbolPromedio.value = 'mdi-arrow-down'
+      };*/
+
+    //Data BCV
+    consultHourBcv.value = parallelData.value.fechaActualizacion;
+    OfficialValue.value = bcvData.value.usd.toFixed(2);
+    OfficialEURvalue.value = bcvData.value.eur.toFixed(2);
+    //colorBcv.value = bcvData.value.monitors.usd.color;
+    /*switch (colorBcv.value) {
+      case 'green':
+        symbolBcv.value = 'mdi-arrow-up'
+      break;
+      case 'red':
+        symbolBcv.value = 'mdi-arrow-down'
+      break;
+      case 'neutral':
+        symbolBcv.value = 'mdi-minus'
+      break;
+    };*/
+
+    //Data Paralelo
+    consultHourParallel.value = parallelData.value.fechaActualizacion;
+    ParallelValue.value = parallelData.value.promedio.toFixed(2);
+    //colorParallel.value = parallelData.value.color;
+    /*switch (colorParallel.value) {
+      case 'green':
+        symbolParallel.value = 'mdi-arrow-up'
+      break;
+      case 'red':
+        symbolParallel.value = 'mdi-arrow-down'
+      break;
+      case 'neutral':
+        symbolParallel.value = 'mdi-minus'
+      break;
+    };*/
       }
     }
   },
