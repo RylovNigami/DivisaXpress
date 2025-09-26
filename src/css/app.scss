@@ -72,3 +72,17 @@ background: linear-gradient(180deg,#030000 33%, #090979 66%, #0037ff 100%);
 .q-item__label--caption {
   color: rgba(251, 251, 251, 0.54);
 }
+
+.safe-area-top {
+  padding-top: calc(10px + env(safe-area-inset-top));
+}
+
+.safe-area-bottom {
+  //height: calc(100% + env(safe-area-inset-bottom));
+  padding-bottom: env(safe-area-inset-bottom);
+}
+
+.rotated-safe-areas {
+  padding-right: env(safe-area-inset-right);
+  padding-left: env(safe-area-inset-left);
+}

@@ -1,5 +1,5 @@
 <template>
-  <q-page class="font-color" style="background: #0037FF;">
+  <q-page class="font-color rotated-safe-areas" style="background: #0037FF;">
     <!--q-tabs
       v-model="tab"
       dense
@@ -23,7 +23,7 @@
         <AnotherCurrenciesComponent/>
       </q-tab-panel-->
     </q-tab-panels>
-    <div class="q-pb-md q-pt-xl" style="text-shadow: 1px 1px 1px black;">
+    <div class="q-pb-md q-pt-xl safe-area-bottom" style="text-shadow: 1px 1px 1px black;">
       <div class="row flex-center">RylovTech ©</div>
       <div class="row flex-center">2025 · Venezuela</div>
     </div>
