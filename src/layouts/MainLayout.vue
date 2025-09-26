@@ -1,6 +1,6 @@
 <template>
   <q-layout view="lHh Lpr lFf">
-    <q-header elevated style="background-color: black">
+    <q-header elevated style="background-color: black; padding-top: env(safe-area-inset-top);">
       <q-toolbar>
         <q-btn flat dense round icon="menu" aria-label="Menu" @click="toggleLeftDrawer" />
         <q-avatar class="q-ml-sm">
