@@ -74,7 +74,12 @@ background: linear-gradient(180deg,#030000 33%, #090979 66%, #0037ff 100%);
 }
 
 .safe-area-top {
-  padding-top: calc(10px + env(safe-area-inset-top));
+  padding-top: env(safe-area-inset-top);
+  height: calc(63px + env(safe-area-inset-top));
+}
+
+body.platform-ios .my-toolbar-title {
+	padding-top: 63px; /* Adjust as needed for specific alignment */
 }
 
 .safe-area-bottom {
@@ -85,4 +90,6 @@ background: linear-gradient(180deg,#030000 33%, #090979 66%, #0037ff 100%);
 .rotated-safe-areas {
   padding-right: env(safe-area-inset-right);
   padding-left: env(safe-area-inset-left);
+  padding-top: env(safe-area-inset-top);
+  padding-bottom: env(safe-area-inset-bottom);
 }

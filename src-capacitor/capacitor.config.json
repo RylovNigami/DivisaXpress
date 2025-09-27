@@ -1,5 +1,11 @@
 {
   "appId": "org.capacitor.quasar.app",
   "appName": "DivisaXpress",
-  "webDir": "www"
+  "webDir": "www",
+  "bundledWebRuntime": true,
+  "ios": {
+    "splashScreen": {
+      "enabled": false
+    }
+  }
 }
