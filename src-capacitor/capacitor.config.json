@@ -1,7 +1,7 @@
 {
   "appId": "org.capacitor.quasar.app",
   "appName": "DivisaXpress",
-  "webDir": "dist/spa",
+  "webDir": "dist",
   "bundledWebRuntime": true,
   "server": {
     "androidScheme": "https",
@@ -9,6 +9,6 @@
   },
   "ios": {
     "scheme": "App",
-    "contentInset": "always"
+    "contentInset": "automatic"
   }
 }
