@@ -5,7 +5,12 @@ const config: CapacitorConfig = {
   appName: 'DivisaXpress',
   webDir: 'www',
   server: {
-    androidScheme: 'https'
+    androidScheme: 'https',
+    iosScheme: 'https',
+  },
+  ios: {
+    scheme: 'App',
+    contentInset: 'always'
   }
 };
 

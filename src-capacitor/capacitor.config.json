@@ -3,9 +3,12 @@
   "appName": "DivisaXpress",
   "webDir": "www",
   "bundledWebRuntime": true,
+  "server": {
+    "androidScheme": "https",
+    "iosScheme": "https"
+  },
   "ios": {
-    "splashScreen": {
-      "enabled": false
-    }
+    "scheme": "App",
+    "contentInset": "always"
   }
 }
