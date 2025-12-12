@@ -42,10 +42,10 @@ const linksList = [
     link: 'https://www.instagram.com/bcv.org.ve/',
   },
   {
-    title: '[Instagram] Monitor Dolar',
-    caption: 'Visita el instagram de Monitor Dolar',
+    title: '[Binance] Cotizacion del USDT',
+    caption: 'Visita la cotizacion del USDT en Binance',
     icon: 'mdi-currency-usd',
-    link: 'https://www.instagram.com/monitordollarvzlar/',
+    link: 'https://p2p.binance.com/trade/all-payments/USDT?fiat=VES',
   },
 ];
 
