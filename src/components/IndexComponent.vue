@@ -248,7 +248,7 @@ const BCVamountEUR = ref();
 const computedUSDtoBCV = computed (() => {
     if (USDamountBCV.value > 0){
       return (OfficialValue.value * USDamountBCV.value).toFixed(2);
-    }
+    };
   return null;
 });
 
