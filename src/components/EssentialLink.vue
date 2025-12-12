@@ -9,7 +9,9 @@
       v-if="props.icon"
       avatar
     >
-      <q-icon :name="props.icon" />
+      <q-avatar style="font-size: 60px;">
+        <img :src=props.icon />
+      </q-avatar>
     </q-item-section>
 
     <q-item-section>
