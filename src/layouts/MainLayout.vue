@@ -4,7 +4,7 @@
       <q-toolbar>
         <q-btn flat dense round icon="menu" aria-label="Menu" @click="toggleLeftDrawer" />
         <q-avatar class="q-ml-sm">
-          <img src="\MainLogo.png">
+          <img src="MainLogo.png">
         </q-avatar>
         <q-toolbar-title>DivisaXpress</q-toolbar-title>
 
@@ -38,13 +38,13 @@ const linksList = [
   {
     title: '[Instagram] Banco Central de Venezuela',
     caption: 'Visita el instagram de BCV',
-    icon: '/BcvDolarPNG.png',
+    icon: 'BcvDolarPNG.png',
     link: 'https://www.instagram.com/bcv.org.ve/',
   },
   {
     title: '[Binance] Cotizacion del USDT',
     caption: 'Visita la cotizacion del USDT en Binance',
-    icon: '/binance.png',
+    icon: 'binance.png',
     link: 'https://p2p.binance.com/trade/all-payments/USDT?fiat=VES',
   },
 ];
