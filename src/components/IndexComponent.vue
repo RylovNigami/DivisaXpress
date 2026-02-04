@@ -85,7 +85,7 @@
               @focus="BCVamountEUR = null"
             >
               <template v-slot:append>
-                <div style="font-size:large;"> $ </div >
+                <div style="font-size:large;"> € </div >
               </template>
               <template v-slot:prepend>
                   {{ computedBCVtoEUR }}
