@@ -8,7 +8,7 @@
         </q-avatar>
         <q-toolbar-title>DivisaXpress</q-toolbar-title>
 
-        <p class="q-pt-md">V.9.0</p>
+        <p class="q-pt-md">V.9.2</p>
       </q-toolbar>
     </q-header>
 

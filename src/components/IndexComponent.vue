@@ -344,7 +344,7 @@ async function showCharge(){
     if (error.response) {
       $q.loading.hide()
       $q.notify({
-        message: 'No se puso contactar con el servidor',
+        message: 'No se pudo contactar con el servidor',
         color: 'negative',
         position: 'center',
       })
@@ -366,10 +366,15 @@ async function showCharge(){
     }
   });
 
-  await axios.get('https://api.dolarvzla.com/public/exchange-rate')
-  .then(function (response) {
+ await axios.get('https://api.dolarvzla.com/public/exchange-rate', {
+    headers: {
+      'x-dolarvzla-key': process.env.DOLAR_API_KEY
+    }
+  }).then(function (response) {
     if(response.status == 200){
-      bcvData.value = response.data.current
+      if (response.data && response.data.current) {
+        bcvData.value = response.data.current
+      }
       $q.loading.hide()
     }
   })
@@ -377,7 +382,7 @@ async function showCharge(){
     if (error.response) {
       $q.loading.hide()
       $q.notify({
-        message: 'No se puso contactar con el servidor',
+        message: 'No se pudo contactar con el servidor',
         color: 'negative',
         position: 'center',
       })
@@ -409,7 +414,7 @@ async function showCharge(){
     if (error.response) {
       $q.loading.hide()
       $q.notify({
-        message: 'No se puso contactar con el servidor',
+        message: 'No se pudo contactar con el servidor',
         color: 'negative',
         position: 'center',
       })
@@ -442,7 +447,7 @@ async function showCharge(){
     if (error.response) {
       $q.loading.hide()
       $q.notify({
-        message: 'No se puso contactar con el servidor',
+        message: 'No se pudo contactar con el servidor',
         color: 'negative',
         position: 'center',
       })
@@ -464,7 +469,8 @@ async function showCharge(){
     }
   });*/
 
-  promedioValue.value = ((bcvData.value.usd + parallelData.value.promedio)/2).toFixed(2);
+  if (bcvData.value && bcvData.value.usd && parallelData.value && parallelData.value.promedio) {
+    promedioValue.value = ((bcvData.value.usd + parallelData.value.promedio)/2).toFixed(2);
   /*if (bcvData.value.monitors.usd.color == 'green' && parallelData.value.color == 'green')
       {
         colorPromedio.value = 'green';
@@ -476,8 +482,8 @@ async function showCharge(){
 
     //Data BCV
     consultHourBcv.value = parallelData.value.fechaActualizacion;
-    OfficialValue.value = bcvData.value.usd.toFixed(2);
-    OfficialEURvalue.value = bcvData.value.eur.toFixed(2);
+    OfficialValue.value = bcvData.value.usd ? bcvData.value.usd.toFixed(2) : '0.00';
+    OfficialEURvalue.value = bcvData.value.eur ? bcvData.value.eur.toFixed(2) : '0.00';
     //colorBcv.value = bcvData.value.monitors.usd.color;
     /*switch (colorBcv.value) {
       case 'green':
@@ -493,7 +499,7 @@ async function showCharge(){
 
     //Data Paralelo
     consultHourParallel.value = parallelData.value.fechaActualizacion;
-    ParallelValue.value = parallelData.value.promedio.toFixed(2);
+    ParallelValue.value = parallelData.value.promedio ? parallelData.value.promedio.toFixed(2) : '0.00';
     //colorParallel.value = parallelData.value.color;
     /*switch (colorParallel.value) {
       case 'green':
@@ -506,6 +512,7 @@ async function showCharge(){
         symbolParallel.value = 'mdi-minus'
       break;
     };*/
+  }
 }
 
 
@@ -573,7 +580,7 @@ export default defineComponent({
     if (error.response) {
       $q.loading.hide()
       $q.notify({
-        message: 'No se puso contactar con el servidor',
+        message: 'No se pudo contactar con el servidor',
         color: 'negative',
         position: 'center',
       })
@@ -595,10 +602,16 @@ export default defineComponent({
     }
   });
 
-  await axios.get('https://api.dolarvzla.com/public/exchange-rate')
+  await axios.get('https://api.dolarvzla.com/public/exchange-rate', {
+    headers: {
+      'x-dolarvzla-key': process.env.DOLAR_API_KEY
+    }
+  })
   .then(function (response) {
     if(response.status == 200){
-      bcvData.value = response.data.current
+      if (response.data && response.data.current) {
+        bcvData.value = response.data.current
+      }
       $q.loading.hide()
     }
   })
@@ -606,7 +619,7 @@ export default defineComponent({
     if (error.response) {
       $q.loading.hide()
       $q.notify({
-        message: 'No se puso contactar con el servidor',
+        message: 'No se pudo contactar con el servidor',
         color: 'negative',
         position: 'center',
       })
@@ -638,7 +651,7 @@ export default defineComponent({
     if (error.response) {
       $q.loading.hide()
       $q.notify({
-        message: 'No se puso contactar con el servidor',
+        message: 'No se pudo contactar con el servidor',
         color: 'negative',
         position: 'center',
       })
@@ -671,7 +684,7 @@ export default defineComponent({
     if (error.response) {
       $q.loading.hide()
       $q.notify({
-        message: 'No se puso contactar con el servidor',
+        message: 'No se pudo contactar con el servidor',
         color: 'negative',
         position: 'center',
       })
@@ -693,7 +706,8 @@ export default defineComponent({
     }
   });*/
 
-  promedioValue.value = ((bcvData.value.usd + parallelData.value.promedio)/2).toFixed(2);
+  if (bcvData.value && bcvData.value.usd && parallelData.value && parallelData.value.promedio) {
+    promedioValue.value = ((bcvData.value.usd + parallelData.value.promedio)/2).toFixed(2);
   /*if (bcvData.value.monitors.usd.color == 'green' && parallelData.value.color == 'green')
       {
         colorPromedio.value = 'green';
@@ -705,8 +719,8 @@ export default defineComponent({
 
     //Data BCV
     consultHourBcv.value = parallelData.value.fechaActualizacion;
-    OfficialValue.value = bcvData.value.usd.toFixed(2);
-    OfficialEURvalue.value = bcvData.value.eur.toFixed(2);
+    OfficialValue.value = bcvData.value.usd ? bcvData.value.usd.toFixed(2) : '0.00';
+    OfficialEURvalue.value = bcvData.value.eur ? bcvData.value.eur.toFixed(2) : '0.00';
     //colorBcv.value = bcvData.value.monitors.usd.color;
     /*switch (colorBcv.value) {
       case 'green':
@@ -722,7 +736,7 @@ export default defineComponent({
 
     //Data Paralelo
     consultHourParallel.value = parallelData.value.fechaActualizacion;
-    ParallelValue.value = parallelData.value.promedio.toFixed(2);
+    ParallelValue.value = parallelData.value.promedio ? parallelData.value.promedio.toFixed(2) : '0.00';
     //colorParallel.value = parallelData.value.color;
     /*switch (colorParallel.value) {
       case 'green':
@@ -735,6 +749,7 @@ export default defineComponent({
         symbolParallel.value = 'mdi-minus'
       break;
     };*/
+  }
       }
     }
   },

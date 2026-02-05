@@ -234,7 +234,7 @@ async function showCharge(){
     if (error.response) {
       $q.loading.hide()
       $q.notify({
-        message: 'No se puso contactar con el servidor',
+        message: 'No se pudo contactar con el servidor',
         color: 'negative',
         position: 'center',
       })
@@ -444,7 +444,7 @@ export default defineComponent({
     if (error.response) {
       $q.loading.hide()
       $q.notify({
-        message: 'No se puso contactar con el servidor',
+        message: 'No se pudo contactar con el servidor',
         color: 'negative',
         position: 'center',
       })
