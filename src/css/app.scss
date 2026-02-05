@@ -13,6 +13,15 @@ background: linear-gradient(180deg,#030000 33%, #090979 66%, #0037ff 100%);
   position: relative;
 }
 
+.q-item__section--side {
+	padding-right: 8px;
+}
+
+.fit {
+    width: 101% !important;
+    height: 100% !important;
+}
+
 .q-item__section--main ~ .q-item__section--side {
 	align-items: flex-end;
 	padding-right: 0;
