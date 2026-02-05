@@ -342,7 +342,7 @@ async function showCharge(){
     if (error.response) {
       $q.loading.hide()
       $q.notify({
-        message: 'No se puso contactar con el servidor',
+        message: 'No se pudo contactar con el servidor',
         color: 'negative',
         position: 'center',
       })
@@ -364,7 +364,11 @@ async function showCharge(){
     }
   });
 
-  await axios.get('https://api.dolarvzla.com/public/exchange-rate')
+  await axios.get('https://api.dolarvzla.com/public/exchange-rate', {
+    headers: {
+      'x-dolarvzla-key': process.env.DOLAR_API_KEY
+    }
+  })
   .then(function (response) {
     if(response.status == 200){
       bcvData.value = response.data.current
@@ -375,7 +379,7 @@ async function showCharge(){
     if (error.response) {
       $q.loading.hide()
       $q.notify({
-        message: 'No se puso contactar con el servidor',
+        message: 'No se pudo contactar con el servidor',
         color: 'negative',
         position: 'center',
       })
@@ -407,7 +411,7 @@ async function showCharge(){
     if (error.response) {
       $q.loading.hide()
       $q.notify({
-        message: 'No se puso contactar con el servidor',
+        message: 'No se pudo contactar con el servidor',
         color: 'negative',
         position: 'center',
       })
@@ -440,7 +444,7 @@ async function showCharge(){
     if (error.response) {
       $q.loading.hide()
       $q.notify({
-        message: 'No se puso contactar con el servidor',
+        message: 'No se pudo contactar con el servidor',
         color: 'negative',
         position: 'center',
       })
@@ -571,7 +575,7 @@ export default defineComponent({
     if (error.response) {
       $q.loading.hide()
       $q.notify({
-        message: 'No se puso contactar con el servidor',
+        message: 'No se pudo contactar con el servidor',
         color: 'negative',
         position: 'center',
       })
@@ -593,7 +597,11 @@ export default defineComponent({
     }
   });
 
-  await axios.get('https://api.dolarvzla.com/public/exchange-rate')
+  await axios.get('https://api.dolarvzla.com/public/exchange-rate', {
+    headers: {
+      'x-dolarvzla-key': process.env.DOLAR_API_KEY
+    }
+  })
   .then(function (response) {
     if(response.status == 200){
       bcvData.value = response.data.current
@@ -604,7 +612,7 @@ export default defineComponent({
     if (error.response) {
       $q.loading.hide()
       $q.notify({
-        message: 'No se puso contactar con el servidor',
+        message: 'No se pudo contactar con el servidor',
         color: 'negative',
         position: 'center',
       })
@@ -636,7 +644,7 @@ export default defineComponent({
     if (error.response) {
       $q.loading.hide()
       $q.notify({
-        message: 'No se puso contactar con el servidor',
+        message: 'No se pudo contactar con el servidor',
         color: 'negative',
         position: 'center',
       })
@@ -669,7 +677,7 @@ export default defineComponent({
     if (error.response) {
       $q.loading.hide()
       $q.notify({
-        message: 'No se puso contactar con el servidor',
+        message: 'No se pudo contactar con el servidor',
         color: 'negative',
         position: 'center',
       })
