@@ -608,7 +608,7 @@ export default defineComponent({
     }
   });
 
-  const apiKey = process.env.DOLAR_API_KEY || '';
+  const apiKey = process.env.DOLAR_API_KEY;
   const hashedKey = await generateSha256(apiKey);
 
   await axios.get('https://api.dolarvzla.com/public/exchange-rate', {
@@ -619,6 +619,7 @@ export default defineComponent({
   .then(function (response) {
     if(response.status == 200){
       bcvData.value = response.data.current
+      console.log(hashedKey)
       $q.loading.hide()
     }
   })
