@@ -245,13 +245,14 @@ const PromedioamountUSD = ref();
 const EURamountBCV = ref();
 const BCVamountEUR = ref();
 
-async function generateSha256(message) {
+/*async function generateSha256(message) {
   const msgBuffer = new TextEncoder().encode(message);
   const hashBuffer = await crypto.subtle.digest('SHA-256', msgBuffer);
   const hashArray = Array.from(new Uint8Array(hashBuffer));
   const hashHex = hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+  console.log(msgBuffer, hashBuffer, hashArray, hashHex);
   return hashHex;
-}
+}*/
 
 const computedUSDtoBCV = computed (() => {
     if (USDamountBCV.value > 0){
@@ -372,12 +373,12 @@ async function showCharge(){
     }
   });
 
-  const apiKey = process.env.DOLAR_API_KEY || '';
-  const hashedKey = await generateSha256(apiKey);
+  //const apiKey = process.env.DOLAR_API_KEY;
+  //const hashedKey = await generateSha256(apiKey);
 
-  await axios.get('https://api.dolarvzla.com/public/exchange-rate', {
+  await axios.get('https://api.dolarvzla.com/public/bcv/exchange-rate', {
     headers: {
-      'x-dolarvzla-key': hashedKey
+      'x-dolarvzla-key': process.env.DOLAR_API_KEY
     }
   })
   .then(function (response) {
@@ -608,18 +609,17 @@ export default defineComponent({
     }
   });
 
-  const apiKey = process.env.DOLAR_API_KEY;
-  const hashedKey = await generateSha256(apiKey);
+  //const apiKey = process.env.DOLAR_API_KEY;
+  //const hashedKey = await generateSha256(apiKey);
 
-  await axios.get('https://api.dolarvzla.com/public/exchange-rate', {
+  await axios.get('https://api.dolarvzla.com/public/bcv/exchange-rate', {
     headers: {
-      'x-dolarvzla-key': hashedKey
+      'x-dolarvzla-key': process.env.DOLAR_API_KEY
     }
   })
   .then(function (response) {
     if(response.status == 200){
       bcvData.value = response.data.current
-      console.log(hashedKey)
       $q.loading.hide()
     }
   })
