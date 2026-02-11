@@ -21,7 +21,7 @@
     "@capacitor/core": "^8.0.1",
     "@capacitor/ios": "^8.0.1",
     "@quasar/extras": "^1.17.0",
-    "axios": "^1.13.2",
+    "axios": "^1.13.5",
     "date-fns": "^4.1.0",
     "kotlin": "^1.9.25",
     "pinia": "^3.0.4",
