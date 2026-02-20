@@ -8,7 +8,7 @@
         </q-avatar>
         <q-toolbar-title>DivisaXpress</q-toolbar-title>
 
-        <p class="q-pt-md">V.9.2</p>
+        <p class="q-pt-md">V.9.5</p>
       </q-toolbar>
     </q-header>
 
@@ -21,6 +21,10 @@
       <q-list>
         <q-item-label header> Referencias </q-item-label>
         <EssentialLink v-for="link in linksList" :key="link.title" v-bind="link" />
+        <div class="q-pb-md q-pt-md fixed-bottom" style="text-shadow: 1px 1px 1px black; background-color: transparent; width: 100%;">
+          <div class="row flex-center">RylovTech ©</div>
+          <div class="row flex-center">2026 · Venezuela</div>
+        </div>
       </q-list>
     </q-drawer>
 

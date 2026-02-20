@@ -1,6 +1,6 @@
 <template>
     <div>
-      <q-expansion-item class="q-px-xl q-mt-xl" @click="returnToZeroBcv()" @click.right.prevent="doAthing()">
+      <q-expansion-item class="q-px-xl q-mt-xl" @click="returnToZeroBcv()">
         <template v-slot:header>
           <q-item-section avatar class="q-pr-sm">
             <q-avatar style="font-size: 90px;">
@@ -9,7 +9,7 @@
           </q-item-section>
 
           <q-item-section>
-            <h5 style="text-shadow: 1px 1px 4px black;">Oficial ($): {{ OfficialValue }} <q-icon :color=colorBcv :name="symbolBcv"/><br><div class="text-caption">{{ consultHourBcv }}</div></h5>
+            <h6 style="text-shadow: 1px 1px 4px black;">Oficial ($): {{ OfficialValue }} <q-icon :color=colorBcv :name="symbolBcv"/><br><div class="text-caption">{{ consultHourBcv }}</div></h6>
           </q-item-section>
         </template>
 
@@ -40,7 +40,7 @@
               hint="Calculo (Bs.)"
               type="number"
               pattern="[0-9]*\.?[0-9]*"
-              inputmode="decimal"
+              inputmode="numeric"
               v-model.trim="BCVamountUSD"
               @focus="USDamountBCV = null"
             >
@@ -55,7 +55,7 @@
         </q-card>
       </q-expansion-item>
 
-      <q-expansion-item class="q-px-xl" @click="returnToZeroBcvEUR()" @click.right.prevent="doAthing()">
+      <!--q-expansion-item class="q-px-xl" @click="returnToZeroBcvEUR()" @click.right.prevent="doAthing()">
         <template v-slot:header>
           <q-item-section avatar class="q-pr-sm">
             <q-avatar style="font-size: 90px;">
@@ -64,7 +64,7 @@
           </q-item-section>
 
           <q-item-section>
-            <h5 style="text-shadow: 1px 1px 4px black;">Oficial (€): {{ OfficialEURvalue }} <q-icon :color=colorBcv :name="symbolBcv"/><br><div class="text-caption">{{ consultHourBcv }}</div></h5>
+            <h6 style="text-shadow: 1px 1px 4px black;">Oficial (€): {{ OfficialEURvalue }} <q-icon :color=colorBcv :name="symbolBcv"/><br><div class="text-caption">{{ consultHourBcv }}</div></h6>
           </q-item-section>
         </template>
 
@@ -107,7 +107,7 @@
             </q-input>
           </q-card-section>
         </q-card>
-      </q-expansion-item>
+      </q-expansion-item-->
 
       <q-expansion-item class="q-px-xl" @click="returnToZeroParallel()">
         <template v-slot:header>
@@ -117,7 +117,7 @@
             </q-avatar>
           </q-item-section>
           <q-item-section>
-            <h5 style="text-shadow: 1px 1px 4px black;">Paralelo ($): {{ ParallelValue }} <q-icon :color=colorParallel :name='symbolParallel'/><br><div class="text-caption">{{ consultHourParallel }}</div></h5>
+            <h6 style="text-shadow: 1px 1px 4px black;">Paralelo ($): {{ ParallelValue }} <q-icon :color=colorParallel :name='symbolParallel'/><br><div class="text-caption">{{ consultHourParallel }}</div></h6>
           </q-item-section>
         </template>
 
@@ -172,7 +172,7 @@
           </q-item-section>
 
           <q-item-section>
-            <h5 style="text-shadow: 1px 1px 4px black;">Promedio ($): {{ promedioValue }} <br><div class="text-caption">{{ consultHourParallel }}</div></h5>
+            <h6 style="text-shadow: 1px 1px 4px black;">Promedio ($): {{ promedioValue }} <br><div class="text-caption">{{ consultHourParallel }}</div></h6>
           </q-item-section>
         </template>
 
@@ -218,7 +218,7 @@
         </q-card>
       </q-expansion-item>
     </div>
-    <div class="q-pt-md q-mx-xl row justify-end font-color">
+    <div class="q-py-md q-mx-xl row justify-end font-color">
       <q-btn outline rounded label="Actualizar" @click="showLoading()"/>
     </div>
 </template>
@@ -334,11 +334,48 @@ async function showCharge(){
 
   $q.loading.show()
 
+  await axios.get(process.env.SUPABASE_URL + '/rest/v1/rpc/obtener_ultima_tasa', {
+    headers: {
+      'apikey': process.env.SUPABASE_KEY,
+      'Authorization': 'Bearer ' + process.env.SUPABASE_KEY
+    }
+  })
+  .then(function (response) {
+    if(response.status == 200){
+      bcvData.value = response.data[0];
+    }
+  })
+  .catch(function (error) {
+    if (error.response) {
+      $q.loading.hide()
+      $q.notify({
+        message: 'No se pudo contactar con el servidor',
+        color: 'negative',
+        position: 'center',
+      })
+
+    } else if (error.request) {
+      $q.loading.hide()
+      $q.notify({
+        message: 'Error de conexión, por favor, presione "Actualizar"',
+        color: 'negative',
+        position: 'center',
+      })
+    } else {
+      $q.loading.hide()
+      $q.notify({
+        message: 'Error desconocido, por favor, presione "Actualizar"',
+        color: 'negative',
+        position: 'center',
+      })
+    }
+  });
+
   await axios.get('https://ve.dolarapi.com/v1/dolares')
   .then(function (response) {
     if(response.status == 200){
-      //bcvData.value = response.data[0];
       parallelData.value = response.data[1];
+      $q.loading.hide()
     }
   }).catch(function (error) {
     if (error.response) {
@@ -366,111 +403,7 @@ async function showCharge(){
     }
   });
 
- await axios.get('https://api.dolarvzla.com/public/exchange-rate', {
-    headers: {
-      'x-dolarvzla-key': process.env.DOLAR_API_KEY
-    }
-  }).then(function (response) {
-    if(response.status == 200){
-      if (response.data && response.data.current) {
-        bcvData.value = response.data.current
-      }
-      $q.loading.hide()
-    }
-  })
-  .catch(function (error) {
-    if (error.response) {
-      $q.loading.hide()
-      $q.notify({
-        message: 'No se pudo contactar con el servidor',
-        color: 'negative',
-        position: 'center',
-      })
-
-    } else if (error.request) {
-      $q.loading.hide()
-      $q.notify({
-        message: 'Error de conexión, por favor, presione "Actualizar"',
-        color: 'negative',
-        position: 'center',
-      })
-    } else {
-      $q.loading.hide()
-      $q.notify({
-        message: 'Error desconocido, por favor, presione "Actualizar"',
-        color: 'negative',
-        position: 'center',
-      })
-    }
-  });
-
-  /*await axios.get('https://pydolarve.org/api/v1/dollar?page=bcv')
-  .then(function (response) {
-    if(response.status == 200){
-      bcvData.value=response.data
-    }
-  })
-  .catch(function (error) {
-    if (error.response) {
-      $q.loading.hide()
-      $q.notify({
-        message: 'No se pudo contactar con el servidor',
-        color: 'negative',
-        position: 'center',
-      })
-
-    } else if (error.request) {
-      $q.loading.hide()
-      $q.notify({
-        message: 'Error de conexión, por favor, presione "Actualizar"',
-        color: 'negative',
-        position: 'center',
-      })
-    } else {
-      $q.loading.hide()
-      $q.notify({
-        message: 'Error desconocido, por favor, presione "Actualizar"',
-        color: 'negative',
-        position: 'center',
-      })
-    }
-  });
-
-  await axios.get('https://pydolarve.org/api/v1/dollar?monitor=enparalelovzla')
-  .then(function (response) {
-    if(response.status==200){
-        parallelData.value = response.data;
-        $q.loading.hide()
-      }
-  })
-  .catch(function (error) {
-    if (error.response) {
-      $q.loading.hide()
-      $q.notify({
-        message: 'No se pudo contactar con el servidor',
-        color: 'negative',
-        position: 'center',
-      })
-
-    } else if (error.request) {
-      $q.loading.hide()
-      $q.notify({
-        message: 'Error de conexión, por favor, presione "Actualizar"',
-        color: 'negative',
-        position: 'center',
-      })
-    } else {
-      $q.loading.hide()
-      $q.notify({
-        message: 'Error desconocido, por favor, presione "Actualizar"',
-        color: 'negative',
-        position: 'center',
-      })
-    }
-  });*/
-
-  if (bcvData.value && bcvData.value.usd && parallelData.value && parallelData.value.promedio) {
-    promedioValue.value = ((bcvData.value.usd + parallelData.value.promedio)/2).toFixed(2);
+   promedioValue.value = ((bcvData.value.usd + parallelData.value.promedio)/2).toFixed(2);
   /*if (bcvData.value.monitors.usd.color == 'green' && parallelData.value.color == 'green')
       {
         colorPromedio.value = 'green';
@@ -481,9 +414,9 @@ async function showCharge(){
       };*/
 
     //Data BCV
-    consultHourBcv.value = parallelData.value.fechaActualizacion;
-    OfficialValue.value = bcvData.value.usd ? bcvData.value.usd.toFixed(2) : '0.00';
-    OfficialEURvalue.value = bcvData.value.eur ? bcvData.value.eur.toFixed(2) : '0.00';
+    consultHourBcv.value = bcvData.value.fecha_consulta;
+    OfficialValue.value = bcvData.value.usd.toFixed(2);
+    OfficialEURvalue.value = bcvData.value.eur.toFixed(2);
     //colorBcv.value = bcvData.value.monitors.usd.color;
     /*switch (colorBcv.value) {
       case 'green':
@@ -499,7 +432,7 @@ async function showCharge(){
 
     //Data Paralelo
     consultHourParallel.value = parallelData.value.fechaActualizacion;
-    ParallelValue.value = parallelData.value.promedio ? parallelData.value.promedio.toFixed(2) : '0.00';
+    ParallelValue.value = parallelData.value.promedio.toFixed(2);
     //colorParallel.value = parallelData.value.color;
     /*switch (colorParallel.value) {
       case 'green':
@@ -512,7 +445,6 @@ async function showCharge(){
         symbolParallel.value = 'mdi-minus'
       break;
     };*/
-  }
 }
 
 
@@ -570,186 +502,116 @@ export default defineComponent({
         BCVamountEUR.value = null;
         $q.loading.show()
 
-          await axios.get('https://ve.dolarapi.com/v1/dolares')
-  .then(function (response) {
-    if(response.status == 200){
-      //bcvData.value = response.data[0];
-      parallelData.value = response.data[1];
-    }
-  }).catch(function (error) {
-    if (error.response) {
-      $q.loading.hide()
-      $q.notify({
-        message: 'No se pudo contactar con el servidor',
-        color: 'negative',
-        position: 'center',
-      })
+        await axios.get(process.env.SUPABASE_URL + '/rest/v1/rpc/obtener_ultima_tasa', {
+          headers: {
+            'apikey': process.env.SUPABASE_KEY,
+            'Authorization': 'Bearer ' + process.env.SUPABASE_KEY
+          }
+        })
+        .then(function (response) {
+          if(response.status == 200){
+            bcvData.value = response.data[0];
+          }
+        })
+        .catch(function (error) {
+          if (error.response) {
+            $q.loading.hide()
+            $q.notify({
+              message: 'No se pudo contactar con el servidor',
+              color: 'negative',
+              position: 'center',
+            })
+          } else if (error.request) {
+            $q.loading.hide()
+            $q.notify({
+              message: 'Error de conexión, por favor, presione "Actualizar"',
+              color: 'negative',
+              position: 'center',
+            })
+          } else {
+            $q.loading.hide()
+            $q.notify({
+              message: 'Error desconocido, por favor, presione "Actualizar"',
+              color: 'negative',
+              position: 'center',
+            })
+          }
+        });
 
-    } else if (error.request) {
-      $q.loading.hide()
-      $q.notify({
-        message: 'Error de conexión, por favor, presione "Actualizar"',
-        color: 'negative',
-        position: 'center',
-      })
-    } else {
-      $q.loading.hide()
-      $q.notify({
-        message: 'Error desconocido, por favor, presione "Actualizar"',
-        color: 'negative',
-        position: 'center',
-      })
-    }
-  });
+        await axios.get('https://ve.dolarapi.com/v1/dolares')
+        .then(function (response) {
+          if(response.status == 200){
+            parallelData.value = response.data[1];
+            $q.loading.hide()
+          }
+        }).catch(function (error) {
+          if (error.response) {
+            $q.loading.hide()
+            $q.notify({
+              message: 'No se pudo contactar con el servidor',
+              color: 'negative',
+              position: 'center',
+            })
 
-  await axios.get('https://api.dolarvzla.com/public/exchange-rate', {
-    headers: {
-      'x-dolarvzla-key': process.env.DOLAR_API_KEY
-    }
-  })
-  .then(function (response) {
-    if(response.status == 200){
-      if (response.data && response.data.current) {
-        bcvData.value = response.data.current
-      }
-      $q.loading.hide()
-    }
-  })
-  .catch(function (error) {
-    if (error.response) {
-      $q.loading.hide()
-      $q.notify({
-        message: 'No se pudo contactar con el servidor',
-        color: 'negative',
-        position: 'center',
-      })
+          } else if (error.request) {
+            $q.loading.hide()
+            $q.notify({
+              message: 'Error de conexión, por favor, presione "Actualizar"',
+              color: 'negative',
+              position: 'center',
+            })
+          } else {
+            $q.loading.hide()
+            $q.notify({
+              message: 'Error desconocido, por favor, presione "Actualizar"',
+              color: 'negative',
+              position: 'center',
+            })
+          }
+        });
 
-    } else if (error.request) {
-      $q.loading.hide()
-      $q.notify({
-        message: 'Error de conexión, por favor, presione "Actualizar"',
-        color: 'negative',
-        position: 'center',
-      })
-    } else {
-      $q.loading.hide()
-      $q.notify({
-        message: 'Error desconocido, por favor, presione "Actualizar"',
-        color: 'negative',
-        position: 'center',
-      })
-    }
-  });
+        promedioValue.value = ((bcvData.value.usd + parallelData.value.promedio)/2).toFixed(2);
+        /*if (bcvData.value.monitors.usd.color == 'green' && parallelData.value.color == 'green')
+          {
+            colorPromedio.value = 'green';
+            symbolPromedio.value = 'mdi-arrow-up';
+          } else if (bcvData.value.monitors.usd.color == 'red' && parallelData.value.color == 'red'){
+            colorPromedio.value = 'red';
+            symbolPromedio.value = 'mdi-arrow-down'
+          };*/
 
-  /*await axios.get('https://pydolarve.org/api/v1/dollar?page=bcv')
-  .then(function (response) {
-    if(response.status == 200){
-      bcvData.value=response.data
-    }
-  })
-  .catch(function (error) {
-    if (error.response) {
-      $q.loading.hide()
-      $q.notify({
-        message: 'No se pudo contactar con el servidor',
-        color: 'negative',
-        position: 'center',
-      })
+        //Data BCV
+        consultHourBcv.value = bcvData.value.fecha_consulta;
+        OfficialValue.value = bcvData.value.usd.toFixed(2);
+        OfficialEURvalue.value = bcvData.value.eur.toFixed(2);
+        //colorBcv.value = bcvData.value.monitors.usd.color;
+        /*switch (colorBcv.value) {
+          case 'green':
+            symbolBcv.value = 'mdi-arrow-up'
+          break;
+          case 'red':
+            symbolBcv.value = 'mdi-arrow-down'
+          break;
+          case 'neutral':
+            symbolBcv.value = 'mdi-minus'
+          break;
+        };*/
 
-    } else if (error.request) {
-      $q.loading.hide()
-      $q.notify({
-        message: 'Error de conexión, por favor, presione "Actualizar"',
-        color: 'negative',
-        position: 'center',
-      })
-    } else {
-      $q.loading.hide()
-      $q.notify({
-        message: 'Error desconocido, por favor, presione "Actualizar"',
-        color: 'negative',
-        position: 'center',
-      })
-    }
-  });
-
-  await axios.get('https://pydolarve.org/api/v1/dollar?monitor=enparalelovzla')
-  .then(function (response) {
-    if(response.status==200){
-        parallelData.value = response.data;
-        $q.loading.hide()
-      }
-  })
-  .catch(function (error) {
-    if (error.response) {
-      $q.loading.hide()
-      $q.notify({
-        message: 'No se pudo contactar con el servidor',
-        color: 'negative',
-        position: 'center',
-      })
-
-    } else if (error.request) {
-      $q.loading.hide()
-      $q.notify({
-        message: 'Error de conexión, por favor, presione "Actualizar"',
-        color: 'negative',
-        position: 'center',
-      })
-    } else {
-      $q.loading.hide()
-      $q.notify({
-        message: 'Error desconocido, por favor, presione "Actualizar"',
-        color: 'negative',
-        position: 'center',
-      })
-    }
-  });*/
-
-  if (bcvData.value && bcvData.value.usd && parallelData.value && parallelData.value.promedio) {
-    promedioValue.value = ((bcvData.value.usd + parallelData.value.promedio)/2).toFixed(2);
-  /*if (bcvData.value.monitors.usd.color == 'green' && parallelData.value.color == 'green')
-      {
-        colorPromedio.value = 'green';
-        symbolPromedio.value = 'mdi-arrow-up';
-      } else if (bcvData.value.monitors.usd.color == 'red' && parallelData.value.color == 'red'){
-        colorPromedio.value = 'red';
-        symbolPromedio.value = 'mdi-arrow-down'
-      };*/
-
-    //Data BCV
-    consultHourBcv.value = parallelData.value.fechaActualizacion;
-    OfficialValue.value = bcvData.value.usd ? bcvData.value.usd.toFixed(2) : '0.00';
-    OfficialEURvalue.value = bcvData.value.eur ? bcvData.value.eur.toFixed(2) : '0.00';
-    //colorBcv.value = bcvData.value.monitors.usd.color;
-    /*switch (colorBcv.value) {
-      case 'green':
-        symbolBcv.value = 'mdi-arrow-up'
-      break;
-      case 'red':
-        symbolBcv.value = 'mdi-arrow-down'
-      break;
-      case 'neutral':
-        symbolBcv.value = 'mdi-minus'
-      break;
-    };*/
-
-    //Data Paralelo
-    consultHourParallel.value = parallelData.value.fechaActualizacion;
-    ParallelValue.value = parallelData.value.promedio ? parallelData.value.promedio.toFixed(2) : '0.00';
-    //colorParallel.value = parallelData.value.color;
-    /*switch (colorParallel.value) {
-      case 'green':
-        symbolParallel.value = 'mdi-arrow-up'
-      break;
-      case 'red':
-        symbolParallel.value = 'mdi-arrow-down'
-      break;
-      case 'neutral':
-        symbolParallel.value = 'mdi-minus'
-      break;
-    };*/
-  }
+        //Data Paralelo
+        consultHourParallel.value = parallelData.value.fechaActualizacion;
+        ParallelValue.value = parallelData.value.promedio.toFixed(2);
+        //colorParallel.value = parallelData.value.color;
+        /*switch (colorParallel.value) {
+          case 'green':
+            symbolParallel.value = 'mdi-arrow-up'
+          break;
+          case 'red':
+            symbolParallel.value = 'mdi-arrow-down'
+          break;
+          case 'neutral':
+            symbolParallel.value = 'mdi-minus'
+          break;
+        };*/
       }
     }
   },

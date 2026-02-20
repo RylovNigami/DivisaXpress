@@ -1,47 +1,51 @@
 {
-  "name": "DivisaXpress",
-  "version": "9.0.1-desktop",
+  "name": "divisaxpress",
+  "version": "9.5-vercel",
   "description": "Easier way to count your Bs",
   "productName": "DivisaXpress",
   "author": "RylovNigami <mendezr1700@gmail.com>",
   "type": "module",
   "private": true,
   "scripts": {
-    "lint": "eslint -c ./eslint.config.js \"./src*/**/*.{js,cjs,mjs,vue}\"",
+    "lint": "eslint -c ./eslint.config.js \"./src/**/*.{js,cjs,mjs,vue}\"",
     "test": "echo \"No test specified\" && exit 0",
     "dev": "quasar dev",
     "build": "quasar build",
+    "deploy": "vercel",
     "postinstall": "quasar prepare"
   },
   "dependencies": {
     "@quasar/extras": "^1.17.0",
-    "axios": "^1.13.2",
+    "@supabase/supabase-js": "^2.97.0",
+    "axios": "^1.13.5",
+    "cheerio": "^1.2.0",
     "date-fns": "^4.1.0",
-    "electron-packager": "^17.1.2",
-    "kotlin": "^1.9.25",
     "pinia": "^3.0.4",
     "quasar": "^2.18.6",
-    "vue": "^3.5.27",
+    "vue": "^3.5.28",
     "vue-i18n": "^11.2.8",
-    "vue-router": "^4.6.4"
+    "vue-router": "^5.0.3"
   },
   "devDependencies": {
     "@electron/packager": "^18.4.4",
-    "@eslint/js": "^9.39.2",
-    "@intlify/unplugin-vue-i18n": "11.0.3",
-    "@quasar/app-vite": "^2.4.0",
-    "autoprefixer": "^10.4.23",
-    "dotenv": "^17.2.3",
-    "electron": "^40.1.0",
-    "eslint": "^9.39.2",
-    "eslint-plugin-vue": "10.7.0",
-    "globals": "17.0.0",
+    "@eslint/js": "^9.20.0",
+    "@intlify/unplugin-vue-i18n": "^11.0.7",
+    "@quasar/app-vite": "^2.4.1",
+    "autoprefixer": "^10.4.24",
+    "dotenv": "^17.3.1",
+    "electron": "^40.6.0",
+    "eslint": "^9.20.0",
+    "eslint-plugin-vue": "^10.8.0",
+    "globals": "^17.3.0",
     "postcss": "^8.5.6",
-    "vite-plugin-checker": "0.12.0"
+    "vite-plugin-checker": "^0.8.0"
+  },
+  "overrides": {
+    "electron-builder": "24.13.3",
+    "eslint": "$eslint"
   },
   "engines": {
-    "node": "^28 || ^26 || ^24 || ^22 || ^20 || ^18",
-    "npm": ">= 6.13.4",
-    "yarn": ">= 1.21.1"
+    "node": "^24.4.1 || ^22.0.0",
+    "npm": ">= 10.0.0"
   }
 }
