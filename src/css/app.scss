@@ -2,7 +2,7 @@
 .hero-image {
   /* Use "linear-gradient" to add a darken background effect to the image (photographer.jpg). This will make the text easier to read */
   background: #030000;
-background: linear-gradient(180deg,#030000 33%, #090979 66%, #0037ff 100%);
+  background: linear-gradient(180deg,#030000 33%, #090979 66%, #0037ff 100%);
   /* Set a specific height */
   height: 100%;
 
@@ -18,7 +18,7 @@ background: linear-gradient(180deg,#030000 33%, #090979 66%, #0037ff 100%);
 }
 
 .fit {
-    width: 101% !important;
+    width: 102% !important;
     height: 100% !important;
 }
 
@@ -76,6 +76,8 @@ background: linear-gradient(180deg,#030000 33%, #090979 66%, #0037ff 100%);
 
 .font-color {
   color: white;
+  min-height: max-content;
+  min-width: 100%;
 }
 
 .q-item__label--caption {

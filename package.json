@@ -1,6 +1,6 @@
 {
-  "name": "DivisaXpress",
-  "version": "9.2.1-vercel",
+  "name": "divisaxpress",
+  "version": "9.5-vercel",
   "description": "Easier way to count your Bs",
   "productName": "DivisaXpress",
   "author": "RylovNigami <mendezr1700@gmail.com>",
@@ -16,7 +16,9 @@
   },
   "dependencies": {
     "@quasar/extras": "^1.17.0",
+    "@supabase/supabase-js": "^2.97.0",
     "axios": "^1.13.4",
+    "cheerio": "^1.2.0",
     "date-fns": "^4.1.0",
     "electron-packager": "^17.1.2",
     "kotlin": "^1.9.25",

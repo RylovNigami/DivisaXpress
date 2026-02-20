@@ -12,7 +12,7 @@
           </q-item-section>
 
           <q-item-section>
-            <h6 style="text-shadow: 1px 1px 4px black;">BCV (€): {{ EUROfficialBcv }} <q-icon :color=EURColorBcv :name="EURSymbolBcv"/><br><div class="text-caption">{{ consultHourBcv }}</div></h6>
+            <h6 style="text-shadow: 1px 1px 4px black;">Euro (€): {{ EUROfficialBcv }} <q-icon :color=EURColorBcv :name="EURSymbolBcv"/><br><div class="text-caption">{{ consultHourBcv }}</div></h6>
           </q-item-section>
         </template>
 
@@ -30,10 +30,10 @@
               @focus="BcvAmountEUR = null"
             >
               <template v-slot:append>
-                <div style="font-size:large;"> $ </div >
+                <div style="font-size:large;"> € </div >
               </template>
               <template v-slot:prepend>
-                  {{ pruebaComputedBsToEur }}
+                  {{ computedBsToEur }}
                 </template>
             </q-input>
             <q-input
@@ -43,17 +43,15 @@
               dense="dense"
               hint="Calculo (Bs.)"
               inputmode="numeric"
-              type="tel"
+              type="number"
+              pattern="[0-9]*\.?[0-9]*"
               @focus="EURAmountBcv = null"
             >
               <template v-slot:append>
                 <div style="font-size:large;"> Bs. </div >
               </template>
-              <!--template v-slot:prepend>
-                  {{ EURResultBcv }}
-                </template-->
                 <template v-slot:prepend>
-                  {{ pruebaComputedEurToBs }}
+                  {{ computedEurToBs }}
                 </template>
             </q-input>
           </q-card-section>
@@ -78,22 +76,30 @@
             v-model.trim="CNYAmountBcv"
             dense="dense"
             hint="Inserte valor ¥ (CNY)"
-            inputmode="numeric"
-            type="tel"
+            inputmode="decimal"
+            type="number"
+            pattern="[0-9]*\.?[0-9]*"
+            @focus="BcvAmountCNY = null"
             >
               <template v-slot:append>
                 <div style="font-size:large;"> ¥ </div >
               </template>
-              <template v-slot:after>
-                <q-btn round dense flat icon="send" @click="CNYreturnBcvValue()"/>
+              <template v-slot:prepend>
+                {{ computedBsToCNY }}
               </template>
             </q-input>
-            <q-input class="col" outlined dense="dense" hint="Calculo (Bs.)" readonly>
+            <q-input class="col" outlined dense="dense" hint="Calculo (Bs.)"
+            v-model.trim="BcvAmountCNY"
+            inputmode="decimal"
+            type="number"
+            pattern="[0-9]*\.?[0-9]*"
+            @focus="CNYAmountBcv = null"
+            >
               <template v-slot:append>
                 <div style="font-size:large;"> Bs. </div >
               </template>
               <template v-slot:prepend>
-                {{ CNYResultBcv }}
+                {{ computedCNYtoBs }}
               </template>
             </q-input>
           </q-card-section>
@@ -119,22 +125,30 @@
             v-model.trim="RUBAmountBcv"
             dense="dense"
             hint="Inserte valor ₽ (RUB)"
-            inputmode="numeric"
-            type="tel"
+            inputmode="decimal"
+            type="number"
+            pattern="[0-9]*\.?[0-9]*"
+            @focus="BcvAmountRUB = null"
             >
               <template v-slot:append>
                 <div style="font-size:large;"> ₽ </div >
               </template>
-              <template v-slot:after>
-                <q-btn round dense flat icon="send" @click="RUBreturnBcvValue()"/>
+              <template v-slot:prepend>
+                {{ computedBsToRUB }}
               </template>
             </q-input>
-            <q-input class="col" outlined dense="dense" hint="Calculo (Bs.)" readonly>
+            <q-input class="col" outlined dense="dense" hint="Calculo (Bs.)"
+            v-model.trim="BcvAmountRUB"
+            inputmode="decimal"
+            type="number"
+            pattern="[0-9]*\.?[0-9]*"
+            @focus="RUBAmountBcv = null"
+            >
               <template v-slot:append>
                 <div style="font-size:large;"> Bs. </div >
               </template>
               <template v-slot:prepend>
-                  {{ RUBResultBcv }}
+                  {{ computedRUBtoBs }}
                 </template>
             </q-input>
           </q-card-section>
@@ -160,22 +174,30 @@
             v-model.trim="TRYAmountBcv"
             dense="dense"
             hint="Inserte valor ₺ (TRY)"
-            inputmode="numeric"
-            type="tel"
+            inputmode="decimal"
+            type="number"
+            pattern="[0-9]*\.?[0-9]*"
+            @focus="BcvAmountTRY = null"
             >
               <template v-slot:append>
                 <div style="font-size:large;"> ₺ </div >
               </template>
-              <template v-slot:after>
-                <q-btn round dense flat icon="send" @click="TRYreturnBcvValue()"/>
+              <template v-slot:prepend>
+                {{ computedBsToTRY }}
               </template>
             </q-input>
-            <q-input class="col" outlined dense="dense" hint="Calculo (Bs.)" readonly>
+            <q-input class="col" outlined dense="dense" hint="Calculo (Bs.)"
+            v-model.trim="BcvAmountTRY"
+            inputmode="decimal"
+            type="number"
+            pattern="[0-9]*\.?[0-9]*"
+            @focus="TRYAmountBcv = null"
+            >
               <template v-slot:append>
                 <div style="font-size:large;"> Bs. </div >
               </template>
               <template v-slot:prepend>
-                  {{ TRYResultBcv }}
+                  {{ computedTRYtoBs }}
                 </template>
             </q-input>
           </q-card-section>
@@ -194,39 +216,82 @@ const consultHourBcv = ref('');
 const EUROfficialBcv = ref();
 const EURAmountBcv = ref();
 const BcvAmountEUR = ref();
-const EURResultBcv = ref();
 const EURColorBcv = ref();
 const EURSymbolBcv = ref();
 const CNYOfficialBcv = ref();
 const CNYAmountBcv = ref();
-const CNYResultBcv = ref();
+const BcvAmountCNY = ref();
 const CNYColorBcv = ref();
 const CNYSymbolBcv = ref();
 const RUBOfficialBcv = ref();
 const RUBAmountBcv = ref();
-const RUBResultBcv = ref();
+const BcvAmountRUB = ref();
 const RUBColorBcv = ref();
 const RUBSymbolBcv = ref();
 const TRYOfficialBcv = ref();
 const TRYAmountBcv = ref();
-const TRYResultBcv = ref();
+const BcvAmountTRY = ref();
 const TRYColorBcv = ref();
 const TRYSymbolBcv = ref();
 
-const pruebaComputedEurToBs = computed (() => {
-  console.log(EURAmountBcv.value);
+const computedEurToBs = computed (() => {
+  //console.log(EURAmountBcv.value);
     if (EURAmountBcv.value > 0){
       return (EUROfficialBcv.value * EURAmountBcv.value).toFixed(2);
     }
   return null;
 });
 
-const pruebaComputedBsToEur = computed (() => {
+const computedBsToEur = computed (() => {
   if (BcvAmountEUR.value > 0){
     return (BcvAmountEUR.value / EUROfficialBcv.value).toFixed(2);
   }
   return null;
 });
+
+const computedCNYtoBs = computed (() => {
+    if (CNYAmountBcv.value > 0){
+      return (CNYOfficialBcv.value * CNYAmountBcv.value).toFixed(2);
+    }
+  return null;
+});
+
+const computedBsToCNY = computed (() => {
+  if (BcvAmountCNY.value > 0){
+    return (BcvAmountCNY.value / CNYOfficialBcv.value).toFixed(2);
+  }
+  return null;
+});
+
+const computedRUBtoBs = computed (() => {
+    if (RUBAmountBcv.value > 0){
+      return (RUBOfficialBcv.value * RUBAmountBcv.value).toFixed(2);
+    }
+  return null;
+});
+
+const computedBsToRUB = computed (() => {
+  if (BcvAmountRUB.value > 0){
+    return (BcvAmountRUB.value / RUBOfficialBcv.value).toFixed(2);
+  }
+  return null;
+});
+
+const computedTRYtoBs = computed (() => {
+  //console.log(TRYAmountBcv.value);
+    if (TRYAmountBcv.value > 0){
+      return (TRYOfficialBcv.value * TRYAmountBcv.value).toFixed(2);
+    }
+  return null;
+});
+
+const computedBsToTRY = computed (() => {
+  if (BcvAmountTRY.value > 0){
+    return (BcvAmountTRY.value / TRYOfficialBcv.value).toFixed(2);
+  }
+  return null;
+});
+
 
 function EURreturnToZeroBcv() {
   EURAmountBcv.value = null;
@@ -235,17 +300,17 @@ function EURreturnToZeroBcv() {
 
 function CNYreturnToZeroBcv() {
   CNYAmountBcv.value = null;
-  CNYResultBcv.value = null;
+  BcvAmountCNY.value = null;
 };
 
 function RUBreturnToZeroBcv() {
   RUBAmountBcv.value = null;
-  RUBResultBcv.value = null;
+  BcvAmountRUB.value = null;
 };
 
 function TRYreturnToZeroBcv() {
   TRYAmountBcv.value = null;
-  TRYResultBcv.value = null;
+  BcvAmountTRY.value = null;
 };
 
 async function showCharge(){
@@ -253,14 +318,19 @@ async function showCharge(){
 
     $q.loading.show()
 
-    await axios.get('https://ve.dolarapi.com/v1/dolares')
-    .then(function (response) {
-      if(response.status == 200){
-        bcvData.value=response.data[0]
-        $q.loading.hide()
-      }
-    })
-    .catch(function (error) {
+    await axios.get(process.env.SUPABASE_URL + '/rest/v1/rpc/obtener_ultima_tasa', {
+    headers: {
+      'apikey': process.env.SUPABASE_KEY,
+      'Authorization': 'Bearer ' + process.env.SUPABASE_KEY
+    }
+  })
+  .then(function (response) {
+    if(response.status == 200){
+      bcvData.value = response.data[0];
+      $q.loading.hide();
+    }
+  })
+  .catch(function (error) {
     if (error.response) {
       $q.loading.hide()
       $q.notify({
@@ -287,10 +357,10 @@ async function showCharge(){
   });
 
   //Data BCV
-  consultHourBcv.value = bcvData.value.fechaActualizacion;
+  consultHourBcv.value = bcvData.value.fecha_consulta;
 
   //Data Euro
-  EUROfficialBcv.value = bcvData.value.promedio.toFixed(2);
+  EUROfficialBcv.value = bcvData.value.eur.toFixed(2);
   /*EURColorBcv.value = bcvData.value.monitors.eur.color;
   switch (EURColorBcv.value) {
     case 'green':
@@ -305,7 +375,7 @@ async function showCharge(){
   };*/
 
   //Data Yuan Chino
-  CNYOfficialBcv.value = bcvData.value.monitors.cny.price.toFixed(2);
+  CNYOfficialBcv.value = bcvData.value.cny.toFixed(2);
   /*CNYColorBcv.value = bcvData.value.monitors.cny.color;
   switch (CNYColorBcv.value) {
     case 'green':
@@ -320,7 +390,7 @@ async function showCharge(){
   };*/
 
   //Data Lira Turca
-  TRYOfficialBcv.value = bcvData.value.monitors.try.price.toFixed(2);
+  TRYOfficialBcv.value = bcvData.value.try.toFixed(2);
   /*TRYColorBcv.value = bcvData.value.monitors.try.color;
   switch (TRYColorBcv.value) {
     case 'green':
@@ -335,7 +405,7 @@ async function showCharge(){
   };*/
 
   //Data Rublo Ruso
-  RUBOfficialBcv.value = bcvData.value.monitors.rub.price.toFixed(2);
+  RUBOfficialBcv.value = bcvData.value.rub.toFixed(2);
   /*RUBColorBcv.value = bcvData.value.monitors.rub.color;
   switch (RUBColorBcv.value) {
     case 'green':
@@ -354,11 +424,16 @@ async function showCharge(){
 export default defineComponent({
   name: "AnotherCurrenciesComponent, App",
   setup() {
-    const $q = useQuasar()
-
+    const $q = useQuasar();
     return {
-      pruebaComputedEurToBs,
-      pruebaComputedBsToEur,
+      computedEurToBs,
+      computedBsToEur,
+      computedCNYtoBs,
+      computedBsToCNY,
+      computedRUBtoBs,
+      computedBsToRUB,
+      computedTRYtoBs,
+      computedBsToTRY,
       showCharge,
       EURreturnToZeroBcv,
       CNYreturnToZeroBcv,
@@ -368,143 +443,81 @@ export default defineComponent({
       EUROfficialBcv,
       EURAmountBcv,
       BcvAmountEUR,
-      EURResultBcv,
       EURColorBcv,
       EURSymbolBcv,
       CNYOfficialBcv,
       CNYAmountBcv,
-      CNYResultBcv,
+      BcvAmountCNY,
       CNYColorBcv,
       CNYSymbolBcv,
       RUBOfficialBcv,
       RUBAmountBcv,
-      RUBResultBcv,
+      BcvAmountRUB,
       RUBColorBcv,
       RUBSymbolBcv,
       TRYOfficialBcv,
       TRYAmountBcv,
-      TRYResultBcv,
+      BcvAmountTRY,
       TRYColorBcv,
       TRYSymbolBcv,
-      /*EURreturnBcvValue() {
-        if (EURAmountBcv.value.includes(",") === true)
-        {
-          EURAmountBcv.value = EURAmountBcv.value.replace(",",".")
-        };
-
-        if(EUROfficialBcv.value == undefined || EUROfficialBcv.value == null){
-          $q.notify({
-              message: 'Error al calcular, por favor, presione "Actualizar"',
-              color: 'negative',
-              position: 'center',
-            })
-        } else{
-          EURResultBcv.value = (EUROfficialBcv.value * EURAmountBcv.value).toFixed(2);
-        };
-      },
-      CNYreturnBcvValue() {
-        if (CNYAmountBcv.value.includes(",") === true)
-        {
-          CNYAmountBcv.value = CNYAmountBcv.value.replace(",",".")
-        };
-
-        if(CNYOfficialBcv.value == undefined || CNYOfficialBcv.value == null){
-          $q.notify({
-              message: 'Error al calcular, por favor, presione "Actualizar"',
-              color: 'negative',
-              position: 'center',
-            })
-        } else{
-          CNYResultBcv.value = (CNYOfficialBcv.value * CNYAmountBcv.value).toFixed(2);
-        };
-      },
-      RUBreturnBcvValue() {
-        if (RUBAmountBcv.value.includes(",") === true)
-        {
-          RUBAmountBcv.value = RUBAmountBcv.value.replace(",",".")
-        };
-
-        if(RUBOfficialBcv.value == undefined || RUBOfficialBcv.value == null){
-          $q.notify({
-              message: 'Error al calcular, por favor, presione "Actualizar"',
-              color: 'negative',
-              position: 'center',
-            })
-        } else{
-          RUBResultBcv.value = (RUBOfficialBcv.value * RUBAmountBcv.value).toFixed(2);
-        };
-      },
-      TRYreturnBcvValue() {
-        if (TRYAmountBcv.value.includes(",") === true)
-        {
-          TRYAmountBcv.value = TRYAmountBcv.value.replace(",",".")
-        };
-
-        if(TRYOfficialBcv.value == undefined || TRYOfficialBcv.value == null){
-          $q.notify({
-              message: 'Error al calcular, por favor, presione "Actualizar"',
-              color: 'negative',
-              position: 'center',
-            })
-        } else{
-          TRYResultBcv.value = (TRYOfficialBcv.value * TRYAmountBcv.value).toFixed(2);
-        };
-      },*/
       async showLoading () {
+      EURAmountBcv.value = null;
+      BcvAmountEUR.value = null;
 
-        EURAmountBcv.value = null;
-        EURResultBcv.value = null;
+      CNYAmountBcv.value = null;
+      BcvAmountCNY.value = null;
 
-        CNYAmountBcv.value = null;
-        CNYResultBcv.value = null;
+      RUBAmountBcv.value = null;
+      BcvAmountRUB.value = null;
 
-        RUBAmountBcv.value = null;
-        RUBResultBcv.value = null;
-
-        TRYAmountBcv.value = null;
-        TRYResultBcv.value = null;
+      TRYAmountBcv.value = null;
+      BcvAmountTRY.value = null;
 
         $q.loading.show()
 
-        await axios.get('https://pydolarve.org/api/v1/dollar?page=bcv')
+        await axios.get(process.env.SUPABASE_URL + '/rest/v1/rpc/obtener_ultima_tasa', {
+          headers: {
+            'apikey': process.env.SUPABASE_KEY,
+            'Authorization': 'Bearer ' + process.env.SUPABASE_KEY
+          }
+        })
         .then(function (response) {
           if(response.status == 200){
-            bcvData.value=response.data
+            bcvData.value = response.data[0];
             $q.loading.hide()
           }
         })
         .catch(function (error) {
-    if (error.response) {
-      $q.loading.hide()
-      $q.notify({
-        message: 'No se pudo contactar con el servidor',
-        color: 'negative',
-        position: 'center',
-      })
+          if (error.response) {
+            $q.loading.hide()
+            $q.notify({
+              message: 'No se pudo contactar con el servidor',
+              color: 'negative',
+              position: 'center',
+            })
 
-    } else if (error.request) {
-      $q.loading.hide()
-      $q.notify({
-        message: 'Error de conexión, por favor, presione "Actualizar"',
-        color: 'negative',
-        position: 'center',
-      })
-    } else {
-      $q.loading.hide()
-      $q.notify({
-        message: 'Error desconocido, por favor, presione "Actualizar"',
-        color: 'negative',
-        position: 'center',
-      })
-    }
-  });
-
+          } else if (error.request) {
+            $q.loading.hide()
+            $q.notify({
+              message: 'Error de conexión, por favor, presione "Actualizar"',
+              color: 'negative',
+              position: 'center',
+            })
+          } else {
+            $q.loading.hide()
+            $q.notify({
+              message: 'Error desconocido, por favor, presione "Actualizar"',
+              color: 'negative',
+              position: 'center',
+            })
+          }
+        });
         //Data BCV
-        consultHourBcv.value = bcvData.value.monitors.usd.last_update;
+        consultHourBcv.value = bcvData.value.fecha_consulta;
 
         //Data Euro
-        EUROfficialBcv.value = bcvData.value.monitors.eur.price.toFixed(2);
-        EURColorBcv.value = bcvData.value.monitors.eur.color;
+        EUROfficialBcv.value = bcvData.value.eur.toFixed(2);
+        /*EURColorBcv.value = bcvData.value.monitors.eur.color;
         switch (EURColorBcv.value) {
           case 'green':
             EURSymbolBcv.value = 'mdi-arrow-up'
@@ -515,11 +528,11 @@ export default defineComponent({
           case 'neutral':
             EURSymbolBcv.value = 'mdi-minus'
           break;
-        };
+        };*/
 
         //Data Yuan Chino
-        CNYOfficialBcv.value = bcvData.value.monitors.cny.price.toFixed(2);
-        CNYColorBcv.value = bcvData.value.monitors.cny.color;
+        CNYOfficialBcv.value = bcvData.value.cny.toFixed(2);
+        /*CNYColorBcv.value = bcvData.value.monitors.cny.color;
         switch (CNYColorBcv.value) {
           case 'green':
             CNYSymbolBcv.value = 'mdi-arrow-up'
@@ -530,11 +543,11 @@ export default defineComponent({
           case 'neutral':
             CNYSymbolBcv.value = 'mdi-minus'
           break;
-        };
+        };*/
 
         //Data Lira Turca
-        TRYOfficialBcv.value = bcvData.value.monitors.try.price.toFixed(2);
-        TRYColorBcv.value = bcvData.value.monitors.try.color;
+        TRYOfficialBcv.value = bcvData.value.try.toFixed(2);
+        /*TRYColorBcv.value = bcvData.value.monitors.try.color;
         switch (TRYColorBcv.value) {
           case 'green':
             TRYSymbolBcv.value = 'mdi-arrow-up'
@@ -545,11 +558,11 @@ export default defineComponent({
           case 'neutral':
             TRYSymbolBcv.value = 'mdi-minus'
           break;
-        };
+        };*/
 
         //Data Rublo Ruso
-        RUBOfficialBcv.value = bcvData.value.monitors.rub.price.toFixed(2);
-        RUBColorBcv.value = bcvData.value.monitors.rub.color;
+        RUBOfficialBcv.value = bcvData.value.rub.toFixed(2);
+        /*RUBColorBcv.value = bcvData.value.monitors.rub.color;
         switch (RUBColorBcv.value) {
           case 'green':
             RUBSymbolBcv.value = 'mdi-arrow-up'
@@ -560,7 +573,7 @@ export default defineComponent({
           case 'neutral':
             RUBSymbolBcv.value = 'mdi-minus'
           break;
-        };
+        };*/
       }
     }
   },
