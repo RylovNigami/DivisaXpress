@@ -55,7 +55,8 @@ export default defineConfig((ctx) => {
       // publicPath: '/',
       // analyze: true,
       env: {
-        DOLAR_API_KEY: process.env.DOLAR_API_KEY
+        SUPABASE_KEY: process.env.SUPABASE_KEY,
+        SUPABASE_URL: process.env.SUPABASE_URL
       },
       // rawDefine: {}
       // ignorePublicFolder: true,
