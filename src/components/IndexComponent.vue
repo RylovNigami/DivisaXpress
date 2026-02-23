@@ -58,61 +58,6 @@
         </q-card>
       </q-expansion-item>
 
-      <!--q-expansion-item @click="returnToZeroBcvEUR()">
-        <template v-slot:header>
-          <q-item-section avatar class="q-pr-sm">
-            <q-avatar style="font-size: 75px;">
-              <img src="/BcvDolarPNG.png">
-            </q-avatar>
-          </q-item-section>
-
-          <q-item-section>
-            <h6 style="text-shadow: 1px 1px 4px black;">Oficial (€): {{ OfficialEURvalue }} <q-icon :color=colorBcv :name="symbolBcv"/><br><div class="text-caption">{{ consultHourBcv }}</div></h6>
-          </q-item-section>
-        </template>
-
-        <q-card class="transparent">
-          <q-card-section >
-            <q-input
-              class="col q-pb-xl"
-              outlined
-              v-model.trim="EURamountBCV"
-              dense="dense"
-              hint="Inserte valor € (EUR)"
-              type="number"
-              pattern="[0-9]*\.?[0-9]*"
-              inputmode="decimal"
-              @focus="BCVamountEUR = null"
-            >
-              <template v-slot:append>
-                <div style="font-size:large;"> $ </div >
-              </template>
-              <template v-slot:prepend>
-                  {{ computedBCVtoEUR }}
-                </template>
-            </q-input>
-            <q-input
-              class="col"
-              outlined
-              dense="dense"
-              hint="Calculo (Bs.)"
-              type="number"
-              pattern="[0-9]*\.?[0-9]*"
-              inputmode="decimal"
-              v-model.trim="BCVamountEUR"
-              @focus="EURamountBCV = null"
-            >
-              <template v-slot:append>
-                <div style="font-size:large;"> Bs. </div >
-              </template>
-              <template v-slot:prepend>
-                  {{ computedEURtoBCV }}
-                </template>
-            </q-input>
-          </q-card-section>
-        </q-card>
-      </q-expansion-item-->
-
       <q-expansion-item @click="returnToZeroParallel()">
         <template v-slot:header>
           <q-item-section avatar class="q-pr-sm">
@@ -235,15 +180,12 @@ const consultHourParallel = ref('');
 const OfficialValue = ref();
 const ParallelValue = ref();
 const promedioValue = ref();
-const OfficialEURvalue = ref();
 const USDamountBCV = ref();
 const BCVamountUSD = ref();
 const USDamountParallel = ref();
 const ParallelamountUSD = ref();
 const USDamountPromedio = ref();
 const PromedioamountUSD = ref();
-const EURamountBCV = ref();
-const BCVamountEUR = ref();
 
 const computedUSDtoBCV = computed (() => {
     if (USDamountBCV.value > 0){
@@ -255,20 +197,6 @@ const computedUSDtoBCV = computed (() => {
 const computedBCVtoUSD = computed (() => {
     if (BCVamountUSD.value > 0){
       return (BCVamountUSD.value / OfficialValue.value).toFixed(2);
-    }
-  return null;
-});
-
-const computedEURtoBCV = computed (() => {
-    if (EURamountBCV.value > 0){
-      return (OfficialEURvalue.value * EURamountBCV.value).toFixed(2);
-    }
-  return null;
-});
-
-const computedBCVtoEUR = computed (() => {
-    if (BCVamountEUR.value > 0){
-      return (BCVamountEUR.value / OfficialEURvalue.value).toFixed(2);
     }
   return null;
 });
@@ -322,11 +250,6 @@ function returnToZeroPromedio() {
   PromedioamountUSD.value = null;
 };
 
-function returnToZeroBcvEUR() {
-  EURamountBCV.value = null;
-  BCVamountEUR.value = null;
-};
-
 async function showCharge(){
   const $q = useQuasar()
 
@@ -369,10 +292,14 @@ async function showCharge(){
     }
   });
 
-  await axios.get('https://ve.dolarapi.com/v1/dolares')
-  .then(function (response) {
+  await axios.get(process.env.SUPABASE_URL + '/rest/v1/rpc/obtener_ultima_tasa_binance', {
+    headers: {
+      'apikey': process.env.SUPABASE_KEY,
+      'Authorization': 'Bearer ' + process.env.SUPABASE_KEY
+    }
+  }).then(function (response) {
     if(response.status == 200){
-      parallelData.value = response.data[1];
+      parallelData.value = response.data[0];
       $q.loading.hide()
     }
   }).catch(function (error) {
@@ -401,7 +328,7 @@ async function showCharge(){
     }
   });
 
-   promedioValue.value = ((bcvData.value.usd + parallelData.value.promedio)/2).toFixed(2);
+   promedioValue.value = ((bcvData.value.usd + parallelData.value.usdt_ves)/2).toFixed(2);
   /*if (bcvData.value.monitors.usd.color == 'green' && parallelData.value.color == 'green')
       {
         colorPromedio.value = 'green';
@@ -414,7 +341,6 @@ async function showCharge(){
     //Data BCV
     consultHourBcv.value = bcvData.value.fecha_consulta;
     OfficialValue.value = bcvData.value.usd.toFixed(2);
-    OfficialEURvalue.value = bcvData.value.eur.toFixed(2);
     //colorBcv.value = bcvData.value.monitors.usd.color;
     /*switch (colorBcv.value) {
       case 'green':
@@ -429,8 +355,8 @@ async function showCharge(){
     };*/
 
     //Data Paralelo
-    consultHourParallel.value = parallelData.value.fechaActualizacion;
-    ParallelValue.value = parallelData.value.promedio.toFixed(2);
+    consultHourParallel.value = parallelData.value.fecha_consulta;
+    ParallelValue.value = parallelData.value.usdt_ves.toFixed(2);
     //colorParallel.value = parallelData.value.color;
     /*switch (colorParallel.value) {
       case 'green':
@@ -459,25 +385,19 @@ export default defineComponent({
       PromedioamountUSD,
       BCVamountUSD,
       ParallelamountUSD,
-      EURamountBCV,
-      BCVamountEUR,
       promedioValue,
       showCharge,
       returnToZeroBcv,
       returnToZeroParallel,
       returnToZeroPromedio,
-      returnToZeroBcvEUR,
       OfficialValue,
       ParallelValue,
-      OfficialEURvalue,
       computedBCVtoUSD,
       computedUSDtoBCV,
       computedUSDtoParallel,
       computedParalleltoUSD,
       computedPromediotoUSD,
       computedUSDtoPromedio,
-      computedEURtoBCV,
-      computedBCVtoEUR,
       //colorParallel,
       //colorBcv,
       //symbolParallel,
@@ -496,8 +416,6 @@ export default defineComponent({
         USDamountPromedio.value = null;
         PromedioamountUSD.value = null;
 
-        EURamountBCV.value = null;
-        BCVamountEUR.value = null;
         $q.loading.show()
 
  await axios.get(process.env.SUPABASE_URL + '/rest/v1/rpc/obtener_ultima_tasa', {
@@ -537,10 +455,14 @@ export default defineComponent({
     }
   });
 
-  await axios.get('https://ve.dolarapi.com/v1/dolares')
-  .then(function (response) {
+  await axios.get(process.env.SUPABASE_URL + '/rest/v1/rpc/obtener_ultima_tasa_binance', {
+    headers: {
+      'apikey': process.env.SUPABASE_KEY,
+      'Authorization': 'Bearer ' + process.env.SUPABASE_KEY
+    }
+  }).then(function (response) {
     if(response.status == 200){
-      parallelData.value = response.data[1];
+      parallelData.value = response.data[0];
       $q.loading.hide()
     }
   }).catch(function (error) {
@@ -551,7 +473,6 @@ export default defineComponent({
         color: 'negative',
         position: 'center',
       })
-
     } else if (error.request) {
       $q.loading.hide()
       $q.notify({
@@ -569,7 +490,7 @@ export default defineComponent({
     }
   });
 
-  promedioValue.value = ((bcvData.value.usd + parallelData.value.promedio)/2).toFixed(2);
+  promedioValue.value = ((bcvData.value.usd + parallelData.value.usdt_ves)/2).toFixed(2);
   /*if (bcvData.value.monitors.usd.color == 'green' && parallelData.value.color == 'green')
       {
         colorPromedio.value = 'green';
@@ -582,7 +503,6 @@ export default defineComponent({
     //Data BCV
     consultHourBcv.value = bcvData.value.fecha_consulta;
     OfficialValue.value = bcvData.value.usd.toFixed(2);
-    OfficialEURvalue.value = bcvData.value.eur.toFixed(2);
     //colorBcv.value = bcvData.value.monitors.usd.color;
     /*switch (colorBcv.value) {
       case 'green':
@@ -597,8 +517,8 @@ export default defineComponent({
     };*/
 
     //Data Paralelo
-    consultHourParallel.value = parallelData.value.fechaActualizacion;
-    ParallelValue.value = parallelData.value.promedio.toFixed(2);
+    consultHourParallel.value = parallelData.value.fecha_consulta;
+    ParallelValue.value = parallelData.value.usdt_ves.toFixed(2);
     //colorParallel.value = parallelData.value.color;
     /*switch (colorParallel.value) {
       case 'green':
