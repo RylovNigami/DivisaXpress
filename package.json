@@ -1,6 +1,6 @@
 {
-  "name": "DivisaXpress",
-  "version": "9.0.2-mobile",
+  "name": "divisaxpress",
+  "version": "9.5-mobile",
   "description": "Easier way to count your Bs",
   "productName": "DivisaXpress",
   "author": "RylovNigami <mendezr1700@gmail.com>",
@@ -15,13 +15,10 @@
     "postinstall": "quasar prepare"
   },
   "dependencies": {
-    "@capacitor/android": "^8.0.1",
-    "@capacitor/app": "^8.0.0",
-    "@capacitor/cli": "^8.0.1",
-    "@capacitor/core": "^8.0.1",
-    "@capacitor/ios": "^8.0.1",
+    "@capacitor/android": "^8.1.0",
     "@quasar/extras": "^1.17.0",
-    "axios": "^1.13.2",
+    "@supabase/supabase-js": "^2.97.0",
+    "axios": "^1.13.4",
     "date-fns": "^4.1.0",
     "kotlin": "^1.9.25",
     "pinia": "^3.0.4",
@@ -31,18 +28,16 @@
     "vue-router": "^4.6.4"
   },
   "devDependencies": {
-    "@capacitor/assets": "^3.0.5",
-    "@electron/packager": "19.0.1",
     "@eslint/js": "^9.39.2",
     "@intlify/unplugin-vue-i18n": "11.0.3",
     "@quasar/app-vite": "^2.4.0",
-    "autoprefixer": "^10.4.23",
+    "autoprefixer": "^10.4.24",
+    "dotenv": "^17.2.3",
     "eslint": "^9.39.2",
     "eslint-plugin-vue": "10.7.0",
-    "globals": "17.0.0",
+    "globals": "17.3.0",
     "postcss": "^8.5.6",
-    "vite-plugin-checker": "0.12.0",
-    "vite-plugin-node-polyfills": "^0.25.0"
+    "vite-plugin-checker": "0.12.0"
   },
   "engines": {
     "node": "^28 || ^26 || ^24 || ^22 || ^20 || ^18",

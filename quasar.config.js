@@ -3,6 +3,9 @@
 
 import { defineConfig } from '#q-app/wrappers'
 import { fileURLToPath } from 'node:url'
+import * as dotenv from 'dotenv'
+
+dotenv.config()
 
 export default defineConfig((ctx) => {
   return {
@@ -13,7 +16,6 @@ export default defineConfig((ctx) => {
     // --> boot files are part of "main.js"
     // https://v2.quasar.dev/quasar-cli-vite/boot-files
     boot: [
-      'i18n',
       'axios'
     ],
 
@@ -35,7 +37,23 @@ export default defineConfig((ctx) => {
       'roboto-font', // optional, you are not bound to it
       'material-icons', // optional, you are not bound to it
     ],
+    capacitor: {
+    hideSplashscreen: true,
 
+    /**
+     * Preparation params with which the Capacitor CLI is called
+     *
+     * @default [ 'sync', ctx.targetName ]
+     */
+    capacitorCliPreparationParams: ['sync', ctx.targetName],
+
+    /** If not present, will look for `package.json > name` */
+    appName: ctx.appName,
+    /** If not present, will look for `package.json > version` */
+    version: ctx.version,
+    /** If not present, will look for `package.json > description` */
+    description: ctx.description,
+    },
     // Full list of options: https://v2.quasar.dev/quasar-cli-vite/quasar-config-file#build
     build: {
       target: {
@@ -52,7 +70,10 @@ export default defineConfig((ctx) => {
 
       // publicPath: '/',
       // analyze: true,
-      // env: {},
+      env: {
+        SUPABASE_KEY: process.env.SUPABASE_KEY,
+        SUPABASE_URL: process.env.SUPABASE_URL
+      },
       // rawDefine: {}
       // ignorePublicFolder: true,
       // minify: false,
@@ -63,20 +84,6 @@ export default defineConfig((ctx) => {
       // viteVuePluginOptions: {},
 
       vitePlugins: [
-        ['@intlify/unplugin-vue-i18n/vite', {
-          // if you want to use Vue I18n Legacy API, you need to set `compositionOnly: false`
-          // compositionOnly: false,
-
-          // if you want to use named tokens in your Vue I18n messages, such as 'Hello {name}',
-          // you need to set `runtimeOnly: false`
-          // runtimeOnly: false,
-
-          ssr: ctx.modeName === 'ssr',
-
-          // you need to set i18n resource including paths !
-          include: [ fileURLToPath(new URL('./src/i18n', import.meta.url)) ]
-        }],
-
         ['vite-plugin-checker', {
           eslint: {
             lintCommand: 'eslint -c ./eslint.config.js "./src*/**/*.{js,mjs,cjs,vue}"',
@@ -95,7 +102,10 @@ export default defineConfig((ctx) => {
     // https://v2.quasar.dev/quasar-cli-vite/quasar-config-file#framework
     framework: {
       config: {
-        Loading:[]
+        Loading:[],
+        capacitor: {
+          iosStatusBarPadding: false // add the dynamic top padding on iOS mobile devices
+        }
       },
 
       // iconSet: 'material-icons', // Quasar icon set
@@ -166,51 +176,6 @@ export default defineConfig((ctx) => {
       // extendPWACustomSWConf (esbuildConf) {},
       // extendGenerateSWOptions (cfg) {},
       // extendInjectManifestOptions (cfg) {}
-    },
-
-    // Full list of options: https://v2.quasar.dev/quasar-cli-vite/developing-cordova-apps/configuring-cordova
-    cordova: {
-      // noIosLegacyBuildFlag: true, // uncomment only if you know what you are doing
-    },
-
-    // Full list of options: https://v2.quasar.dev/quasar-cli-vite/developing-capacitor-apps/configuring-capacitor
-    capacitor: {
-      hideSplashscreen: true
-    },
-
-    // Full list of options: https://v2.quasar.dev/quasar-cli-vite/developing-electron-apps/configuring-electron
-    electron: {
-      // extendElectronMainConf (esbuildConf) {},
-      // extendElectronPreloadConf (esbuildConf) {},
-
-      // extendPackageJson (json) {},
-
-      // Electron preload scripts (if any) from /src-electron, WITHOUT file extension
-      preloadScripts: [ 'electron-preload' ],
-
-      // specify the debugging port to use for the Electron app when running in development mode
-      inspectPort: 5858,
-
-      bundler: 'packager', // 'packager' or 'builder'
-
-      packager: {
-        // https://github.com/electron-userland/electron-packager/blob/master/docs/api.md#options
-
-        // OS X / Mac App Store
-        // appBundleId: '',
-        // appCategoryType: '',
-        // osxSign: '',
-        // protocol: 'myapp://path',
-
-        // Windows only
-        // win32metadata: { ... }
-      },
-
-      builder: {
-        // https://www.electron.build/configuration/configuration
-
-        appId: 'DivisaXpress'
-      }
     },
 
     // Full list of options: https://v2.quasar.dev/quasar-cli-vite/developing-browser-extensions/configuring-bex

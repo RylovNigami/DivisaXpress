@@ -16,6 +16,8 @@ node_modules
 # Capacitor related directories and files
 /src-capacitor/www
 /src-capacitor/node_modules
+src-capacitor/android/app/keystore.properties
+src-capacitor/android/app/*.jks
 
 # Log files
 npm-debug.log*
@@ -31,3 +33,5 @@ yarn-error.log*
 
 # local .env files
 .env.local*
+.env
+

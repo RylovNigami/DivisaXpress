@@ -1,4 +1,4 @@
-package org.capacitor.quasar.app;
+package app.rylovtech.divisaxpress;
 
 import com.getcapacitor.BridgeActivity;
 

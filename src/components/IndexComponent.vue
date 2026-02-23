@@ -58,7 +58,7 @@
         </q-card>
       </q-expansion-item>
 
-      <q-expansion-item @click="returnToZeroBcvEUR()">
+      <!--q-expansion-item @click="returnToZeroBcvEUR()">
         <template v-slot:header>
           <q-item-section avatar class="q-pr-sm">
             <q-avatar style="font-size: 75px;">
@@ -85,7 +85,7 @@
               @focus="BCVamountEUR = null"
             >
               <template v-slot:append>
-                <div style="font-size:large;"> € </div >
+                <div style="font-size:large;"> $ </div >
               </template>
               <template v-slot:prepend>
                   {{ computedBCVtoEUR }}
@@ -111,7 +111,7 @@
             </q-input>
           </q-card-section>
         </q-card>
-      </q-expansion-item>
+      </q-expansion-item-->
 
       <q-expansion-item @click="returnToZeroParallel()">
         <template v-slot:header>
@@ -248,7 +248,7 @@ const BCVamountEUR = ref();
 const computedUSDtoBCV = computed (() => {
     if (USDamountBCV.value > 0){
       return (OfficialValue.value * USDamountBCV.value).toFixed(2);
-    }
+    };
   return null;
 });
 
@@ -332,17 +332,54 @@ async function showCharge(){
 
   $q.loading.show()
 
+  await axios.get(process.env.SUPABASE_URL + '/rest/v1/rpc/obtener_ultima_tasa', {
+    headers: {
+      'apikey': process.env.SUPABASE_KEY,
+      'Authorization': 'Bearer ' + process.env.SUPABASE_KEY
+    }
+  })
+  .then(function (response) {
+    if(response.status == 200){
+      bcvData.value = response.data[0];
+    }
+  })
+  .catch(function (error) {
+    if (error.response) {
+      $q.loading.hide()
+      $q.notify({
+        message: 'No se pudo contactar con el servidor',
+        color: 'negative',
+        position: 'center',
+      })
+
+    } else if (error.request) {
+      $q.loading.hide()
+      $q.notify({
+        message: 'Error de conexión, por favor, presione "Actualizar"',
+        color: 'negative',
+        position: 'center',
+      })
+    } else {
+      $q.loading.hide()
+      $q.notify({
+        message: 'Error desconocido, por favor, presione "Actualizar"',
+        color: 'negative',
+        position: 'center',
+      })
+    }
+  });
+
   await axios.get('https://ve.dolarapi.com/v1/dolares')
   .then(function (response) {
     if(response.status == 200){
-      //bcvData.value = response.data[0];
       parallelData.value = response.data[1];
+      $q.loading.hide()
     }
   }).catch(function (error) {
     if (error.response) {
       $q.loading.hide()
       $q.notify({
-        message: 'No se puso contactar con el servidor',
+        message: 'No se pudo contactar con el servidor',
         color: 'negative',
         position: 'center',
       })
@@ -364,105 +401,7 @@ async function showCharge(){
     }
   });
 
-  await axios.get('https://api.dolarvzla.com/public/exchange-rate')
-  .then(function (response) {
-    if(response.status == 200){
-      bcvData.value = response.data.current
-      $q.loading.hide()
-    }
-  })
-  .catch(function (error) {
-    if (error.response) {
-      $q.loading.hide()
-      $q.notify({
-        message: 'No se puso contactar con el servidor',
-        color: 'negative',
-        position: 'center',
-      })
-
-    } else if (error.request) {
-      $q.loading.hide()
-      $q.notify({
-        message: 'Error de conexión, por favor, presione "Actualizar"',
-        color: 'negative',
-        position: 'center',
-      })
-    } else {
-      $q.loading.hide()
-      $q.notify({
-        message: 'Error desconocido, por favor, presione "Actualizar"',
-        color: 'negative',
-        position: 'center',
-      })
-    }
-  });
-
-  /*await axios.get('https://pydolarve.org/api/v1/dollar?page=bcv')
-  .then(function (response) {
-    if(response.status == 200){
-      bcvData.value=response.data
-    }
-  })
-  .catch(function (error) {
-    if (error.response) {
-      $q.loading.hide()
-      $q.notify({
-        message: 'No se puso contactar con el servidor',
-        color: 'negative',
-        position: 'center',
-      })
-
-    } else if (error.request) {
-      $q.loading.hide()
-      $q.notify({
-        message: 'Error de conexión, por favor, presione "Actualizar"',
-        color: 'negative',
-        position: 'center',
-      })
-    } else {
-      $q.loading.hide()
-      $q.notify({
-        message: 'Error desconocido, por favor, presione "Actualizar"',
-        color: 'negative',
-        position: 'center',
-      })
-    }
-  });
-
-  await axios.get('https://pydolarve.org/api/v1/dollar?monitor=enparalelovzla')
-  .then(function (response) {
-    if(response.status==200){
-        parallelData.value = response.data;
-        $q.loading.hide()
-      }
-  })
-  .catch(function (error) {
-    if (error.response) {
-      $q.loading.hide()
-      $q.notify({
-        message: 'No se puso contactar con el servidor',
-        color: 'negative',
-        position: 'center',
-      })
-
-    } else if (error.request) {
-      $q.loading.hide()
-      $q.notify({
-        message: 'Error de conexión, por favor, presione "Actualizar"',
-        color: 'negative',
-        position: 'center',
-      })
-    } else {
-      $q.loading.hide()
-      $q.notify({
-        message: 'Error desconocido, por favor, presione "Actualizar"',
-        color: 'negative',
-        position: 'center',
-      })
-    }
-  });*/
-
-  promedioValue.value = ((bcvData.value.usd + parallelData.value.promedio)/2).toFixed(2);
+   promedioValue.value = ((bcvData.value.usd + parallelData.value.promedio)/2).toFixed(2);
   /*if (bcvData.value.monitors.usd.color == 'green' && parallelData.value.color == 'green')
       {
         colorPromedio.value = 'green';
@@ -473,7 +412,7 @@ async function showCharge(){
       };*/
 
     //Data BCV
-    consultHourBcv.value = parallelData.value.fechaActualizacion;
+    consultHourBcv.value = bcvData.value.fecha_consulta;
     OfficialValue.value = bcvData.value.usd.toFixed(2);
     OfficialEURvalue.value = bcvData.value.eur.toFixed(2);
     //colorBcv.value = bcvData.value.monitors.usd.color;
@@ -561,17 +500,54 @@ export default defineComponent({
         BCVamountEUR.value = null;
         $q.loading.show()
 
-          await axios.get('https://ve.dolarapi.com/v1/dolares')
+ await axios.get(process.env.SUPABASE_URL + '/rest/v1/rpc/obtener_ultima_tasa', {
+    headers: {
+      'apikey': process.env.SUPABASE_KEY,
+      'Authorization': 'Bearer ' + process.env.SUPABASE_KEY
+    }
+  })
   .then(function (response) {
     if(response.status == 200){
-      //bcvData.value = response.data[0];
+      bcvData.value = response.data[0];
+    }
+  })
+  .catch(function (error) {
+    if (error.response) {
+      $q.loading.hide()
+      $q.notify({
+        message: 'No se pudo contactar con el servidor',
+        color: 'negative',
+        position: 'center',
+      })
+
+    } else if (error.request) {
+      $q.loading.hide()
+      $q.notify({
+        message: 'Error de conexión, por favor, presione "Actualizar"',
+        color: 'negative',
+        position: 'center',
+      })
+    } else {
+      $q.loading.hide()
+      $q.notify({
+        message: 'Error desconocido, por favor, presione "Actualizar"',
+        color: 'negative',
+        position: 'center',
+      })
+    }
+  });
+
+  await axios.get('https://ve.dolarapi.com/v1/dolares')
+  .then(function (response) {
+    if(response.status == 200){
       parallelData.value = response.data[1];
+      $q.loading.hide()
     }
   }).catch(function (error) {
     if (error.response) {
       $q.loading.hide()
       $q.notify({
-        message: 'No se puso contactar con el servidor',
+        message: 'No se pudo contactar con el servidor',
         color: 'negative',
         position: 'center',
       })
@@ -592,104 +568,6 @@ export default defineComponent({
       })
     }
   });
-
-  await axios.get('https://api.dolarvzla.com/public/exchange-rate')
-  .then(function (response) {
-    if(response.status == 200){
-      bcvData.value = response.data.current
-      $q.loading.hide()
-    }
-  })
-  .catch(function (error) {
-    if (error.response) {
-      $q.loading.hide()
-      $q.notify({
-        message: 'No se puso contactar con el servidor',
-        color: 'negative',
-        position: 'center',
-      })
-
-    } else if (error.request) {
-      $q.loading.hide()
-      $q.notify({
-        message: 'Error de conexión, por favor, presione "Actualizar"',
-        color: 'negative',
-        position: 'center',
-      })
-    } else {
-      $q.loading.hide()
-      $q.notify({
-        message: 'Error desconocido, por favor, presione "Actualizar"',
-        color: 'negative',
-        position: 'center',
-      })
-    }
-  });
-
-  /*await axios.get('https://pydolarve.org/api/v1/dollar?page=bcv')
-  .then(function (response) {
-    if(response.status == 200){
-      bcvData.value=response.data
-    }
-  })
-  .catch(function (error) {
-    if (error.response) {
-      $q.loading.hide()
-      $q.notify({
-        message: 'No se puso contactar con el servidor',
-        color: 'negative',
-        position: 'center',
-      })
-
-    } else if (error.request) {
-      $q.loading.hide()
-      $q.notify({
-        message: 'Error de conexión, por favor, presione "Actualizar"',
-        color: 'negative',
-        position: 'center',
-      })
-    } else {
-      $q.loading.hide()
-      $q.notify({
-        message: 'Error desconocido, por favor, presione "Actualizar"',
-        color: 'negative',
-        position: 'center',
-      })
-    }
-  });
-
-  await axios.get('https://pydolarve.org/api/v1/dollar?monitor=enparalelovzla')
-  .then(function (response) {
-    if(response.status==200){
-        parallelData.value = response.data;
-        $q.loading.hide()
-      }
-  })
-  .catch(function (error) {
-    if (error.response) {
-      $q.loading.hide()
-      $q.notify({
-        message: 'No se puso contactar con el servidor',
-        color: 'negative',
-        position: 'center',
-      })
-
-    } else if (error.request) {
-      $q.loading.hide()
-      $q.notify({
-        message: 'Error de conexión, por favor, presione "Actualizar"',
-        color: 'negative',
-        position: 'center',
-      })
-    } else {
-      $q.loading.hide()
-      $q.notify({
-        message: 'Error desconocido, por favor, presione "Actualizar"',
-        color: 'negative',
-        position: 'center',
-      })
-    }
-  });*/
 
   promedioValue.value = ((bcvData.value.usd + parallelData.value.promedio)/2).toFixed(2);
   /*if (bcvData.value.monitors.usd.color == 'green' && parallelData.value.color == 'green')
@@ -702,7 +580,7 @@ export default defineComponent({
       };*/
 
     //Data BCV
-    consultHourBcv.value = parallelData.value.fechaActualizacion;
+    consultHourBcv.value = bcvData.value.fecha_consulta;
     OfficialValue.value = bcvData.value.usd.toFixed(2);
     OfficialEURvalue.value = bcvData.value.eur.toFixed(2);
     //colorBcv.value = bcvData.value.monitors.usd.color;

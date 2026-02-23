@@ -1,5 +1,5 @@
 <template>
-  <router-view />
+  <router-view style="padding-top: env(safe-area-inset-top); padding-bottom: env(safe-area-inset-bottom);"/>
 </template>
 
 <script setup>
