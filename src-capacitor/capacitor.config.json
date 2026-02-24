@@ -1,5 +1,19 @@
 {
   "appId": "app.rylovtech.divisaxpress",
   "appName": "DivisaXpress",
-  "webDir": "www"
+  "webDir": "www",
+  "bundledWebRuntime": false,
+  "backgroundColor": "#000000",
+  "plugins": {
+    "StatusBar": {
+      "overlaysWebView": false,
+      "backgroundColor": "#000000",
+      "style": "DARK"
+    },
+    "SplashScreen": {
+      "backgroundColor": "#000000",
+      "launchShowDuration": 2000,
+      "launchAutoHide": true
+    }
+  }
 }

@@ -1,5 +1,5 @@
 <template>
-  <q-page class="font-color" style="background: #0037FF; padding-bottom: 80px;">
+  <q-page class="font-color safe-area-bottom" style="background: #0037FF; padding-bottom: env(safe-area-inset-bottom);">
     <q-tabs
       v-model="tab"
       dense

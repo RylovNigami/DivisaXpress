@@ -17,6 +17,14 @@ background: linear-gradient(180deg,#030000 33%, #090979 66%, #0037ff 100%);
 	padding-right: 8px;
 }
 
+body {
+  background-color: #000000 !important;
+}
+
+html, body, #q-app {
+  background-color: #000000 !important;
+}
+
 .fit {
     width: 101% !important;
     height: 100% !important;

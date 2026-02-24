@@ -1,9 +1,9 @@
 <template>
   <q-layout view="lHh Lpr lFf">
-    <q-header elevated style="background-color: black">
+    <q-header elevated style="background-color: black" class="safe-area-top">
       <q-toolbar>
         <q-btn flat dense round icon="menu" aria-label="Menu" @click="toggleLeftDrawer" />
-        <q-avatar class="q-ml-sm">
+        <q-avatar class="q-ml-sm q-pa-sm">
           <img src="\MainLogo.png">
         </q-avatar>
         <q-toolbar-title>DivisaXpress</q-toolbar-title>

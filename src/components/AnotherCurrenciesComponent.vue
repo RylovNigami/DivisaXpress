@@ -12,7 +12,7 @@
           </q-item-section>
 
           <q-item-section>
-            <h6 style="text-shadow: 1px 1px 4px black;">Euro (€): {{ EUROfficialBcv }} <q-icon :color=EURColorBcv :name="EURSymbolBcv"/><br><div class="text-caption">{{ consultHourBcv }}</div></h6>
+            <h6 style="text-shadow: 1px 1px 4px black;">Euro (€): {{ EUROfficialBcv }} <q-icon :color=EURColorBcv :name="EURSymbolBcv"/><br><div class="text-caption">{{ BcvFormatDate }}</div></h6>
           </q-item-section>
         </template>
 
@@ -65,7 +65,7 @@
             </q-avatar>
           </q-item-section>
           <q-item-section>
-            <h6 style="text-shadow: 1px 1px 4px black;">Yuan (¥): {{ CNYOfficialBcv }} <q-icon :color=CNYColorBcv :name='CNYSymbolBcv'/><br><div class="text-caption">{{ consultHourBcv }}</div></h6>
+            <h6 style="text-shadow: 1px 1px 4px black;">Yuan (¥): {{ CNYOfficialBcv }} <q-icon :color=CNYColorBcv :name='CNYSymbolBcv'/><br><div class="text-caption">{{ BcvFormatDate }}</div></h6>
           </q-item-section>
         </template>
 
@@ -114,7 +114,7 @@
           </q-item-section>
 
           <q-item-section>
-            <h6 style="text-shadow: 1px 1px 4px black;">Rublo (₽): {{ RUBOfficialBcv }} <q-icon :color=RUBColorBcv :name='RUBSymbolBcv'/><br><div class="text-caption">{{ consultHourBcv }}</div></h6>
+            <h6 style="text-shadow: 1px 1px 4px black;">Rublo (₽): {{ RUBOfficialBcv }} <q-icon :color=RUBColorBcv :name='RUBSymbolBcv'/><br><div class="text-caption">{{ BcvFormatDate }}</div></h6>
           </q-item-section>
         </template>
 
@@ -163,7 +163,7 @@
           </q-item-section>
 
           <q-item-section>
-            <h6 style="text-shadow: 1px 1px 4px black;">Lira (₺): {{ TRYOfficialBcv }} <q-icon :color=TRYColorBcv :name='TRYSymbolBcv'/><br><div class="text-caption">{{ consultHourBcv }}</div></h6>
+            <h6 style="text-shadow: 1px 1px 4px black;">Lira (₺): {{ TRYOfficialBcv }} <q-icon :color=TRYColorBcv :name='TRYSymbolBcv'/><br><div class="text-caption">{{ BcvFormatDate }}</div></h6>
           </q-item-section>
         </template>
 
@@ -233,6 +233,24 @@ const TRYAmountBcv = ref();
 const BcvAmountTRY = ref();
 const TRYColorBcv = ref();
 const TRYSymbolBcv = ref();
+
+const BcvFormatDate = computed(() => {
+  if (!consultHourBcv.value) return 'Fecha no disponible';
+
+  // Al pasar el string ISO a new Date(), JavaScript automáticamente
+  // lo convierte a la hora local del teléfono (Venezuela)
+  const fecha = new Date(consultHourBcv.value);
+
+  // Formateamos a dd/mm/yyyy con hora AM/PM
+  return new Intl.DateTimeFormat('es-VE', {
+    day: '2-digit',
+    month: '2-digit',
+    year: 'numeric',
+    hour: '2-digit',
+    minute: '2-digit',
+    hour12: true
+  }).format(fecha);
+});
 
 const computedEurToBs = computed (() => {
   //console.log(EURAmountBcv.value);
@@ -460,6 +478,7 @@ export default defineComponent({
       BcvAmountTRY,
       TRYColorBcv,
       TRYSymbolBcv,
+      BcvFormatDate,
       async showLoading () {
       EURAmountBcv.value = null;
       BcvAmountEUR.value = null;
