@@ -1,7 +1,23 @@
 <template>
-    <div class="q-pt-md row flex-center font-color">
-      <q-btn outline rounded label="Actualizar" @click="showLoading()"/>
+    <div class="q-pt-md row q-pl-lg q-pr-md flex-center font-color">
+      <q-select
+        dense
+        dark
+        borderless
+        v-model="selectedDate"
+        :options="availableDates"
+        label="Fecha de la tasa"
+        class="col-12 col-md-6"
+        emit-value
+        map-options
+        @update:model-value="onDateChange"
+      >
+        <template v-slot:prepend>
+          <q-icon name="event" />
+        </template>
+      </q-select>
     </div>
+
     <div>
       <q-expansion-item @click="returnToZeroBcv()">
         <template v-slot:header>
@@ -169,249 +185,207 @@
 </template>
 
 <script>
-import { computed, defineComponent, ref } from 'vue';
+import { computed, defineComponent, ref, onMounted } from 'vue';
 import { useQuasar } from "quasar";
 import axios from 'axios';
-
-const parallelData = [];
-const bcvData = [];
-const consultHourBcv = ref('');
-const consultHourParallel = ref('');
-const OfficialValue = ref();
-const ParallelValue = ref();
-const promedioValue = ref();
-const USDamountBCV = ref();
-const BCVamountUSD = ref();
-const USDamountParallel = ref();
-const ParallelamountUSD = ref();
-const USDamountPromedio = ref();
-const PromedioamountUSD = ref();
-
-const ParallelFormatDate = computed(() => {
-  if (!consultHourParallel.value) return 'Fecha no disponible';
-
-  // Al pasar el string ISO a new Date(), JavaScript automáticamente
-  // lo convierte a la hora local del teléfono (Venezuela)
-  const fecha = new Date(consultHourParallel.value);
-
-  // Formateamos a dd/mm/yyyy con hora AM/PM
-  return new Intl.DateTimeFormat('es-VE', {
-    day: '2-digit',
-    month: '2-digit',
-    year: 'numeric',
-    hour: '2-digit',
-    minute: '2-digit',
-    hour12: true
-  }).format(fecha);
-});
-
-const BcvFormatDate = computed(() => {
-  if (!consultHourBcv.value) return 'Fecha no disponible';
-
-  // Al pasar el string ISO a new Date(), JavaScript automáticamente
-  // lo convierte a la hora local del teléfono (Venezuela)
-  const fecha = new Date(consultHourBcv.value);
-
-  // Formateamos a dd/mm/yyyy con hora AM/PM
-  return new Intl.DateTimeFormat('es-VE', {
-    day: '2-digit',
-    month: '2-digit',
-    year: 'numeric',
-    hour: '2-digit',
-    minute: '2-digit',
-    hour12: true
-  }).format(fecha);
-});
-
-const computedUSDtoBCV = computed (() => {
-    if (USDamountBCV.value > 0){
-      return (OfficialValue.value * USDamountBCV.value).toFixed(2);
-    };
-  return null;
-});
-
-const computedBCVtoUSD = computed (() => {
-    if (BCVamountUSD.value > 0){
-      return (BCVamountUSD.value / OfficialValue.value).toFixed(2);
-    }
-  return null;
-});
-
-const computedUSDtoParallel = computed (() => {
-    if (USDamountParallel.value > 0){
-      return (ParallelValue.value * USDamountParallel.value).toFixed(2);
-    }
-  return null;
-});
-
-const computedParalleltoUSD = computed (() => {
-    if (ParallelamountUSD.value > 0){
-      return (ParallelamountUSD.value / ParallelValue.value).toFixed(2);
-    }
-  return null;
-});
-
-const computedUSDtoPromedio = computed (() => {
-    if (USDamountPromedio.value > 0){
-      return (promedioValue.value * USDamountPromedio.value).toFixed(2);
-    }
-  return null;
-});
-
-const computedPromediotoUSD = computed (() => {
-    if (PromedioamountUSD.value > 0){
-      return (PromedioamountUSD.value / promedioValue.value).toFixed(2);
-    }
-  return null;
-});
-//const colorBcv = ref('');
-//const colorParallel = ref('');
-//const symbolBcv = ref('');
-//const symbolParallel = ref('');
-//const colorPromedio = ref('');
-//const symbolPromedio = ref('');
-
-function returnToZeroBcv() {
-  USDamountBCV.value = null;
-  BCVamountUSD.value = null;
-};
-
-function returnToZeroParallel() {
-  USDamountParallel.value = null;
-  ParallelamountUSD.value = null;
-};
-
-function returnToZeroPromedio() {
-  USDamountPromedio.value = null;
-  PromedioamountUSD.value = null;
-};
-
-async function showCharge(){
-  const $q = useQuasar()
-
-  $q.loading.show()
-
-  await axios.get(process.env.SUPABASE_URL + '/rest/v1/rpc/obtener_ultima_tasa', {
-    headers: {
-      'apikey': process.env.SUPABASE_KEY,
-      'Authorization': 'Bearer ' + process.env.SUPABASE_KEY
-    }
-  })
-  .then(function (response) {
-    if(response.status == 200){
-      bcvData.value = response.data[0];
-    }
-  })
-  .catch(function (error) {
-    if (error.response) {
-      $q.loading.hide()
-      $q.notify({
-        message: 'No se pudo contactar con el servidor',
-        color: 'negative',
-        position: 'center',
-      })
-
-    } else if (error.request) {
-      $q.loading.hide()
-      $q.notify({
-        message: 'Error de conexión, por favor, presione "Actualizar"',
-        color: 'negative',
-        position: 'center',
-      })
-    } else {
-      $q.loading.hide()
-      $q.notify({
-        message: 'Error desconocido, por favor, presione "Actualizar"',
-        color: 'negative',
-        position: 'center',
-      })
-    }
-  });
-
-  await axios.get(process.env.SUPABASE_URL + '/rest/v1/rpc/obtener_ultima_tasa_binance', {
-    headers: {
-      'apikey': process.env.SUPABASE_KEY,
-      'Authorization': 'Bearer ' + process.env.SUPABASE_KEY
-    }
-  }).then(function (response) {
-    if(response.status == 200){
-      parallelData.value = response.data[0];
-      $q.loading.hide()
-    }
-  }).catch(function (error) {
-    if (error.response) {
-      $q.loading.hide()
-      $q.notify({
-        message: 'No se pudo contactar con el servidor',
-        color: 'negative',
-        position: 'center',
-      })
-
-    } else if (error.request) {
-      $q.loading.hide()
-      $q.notify({
-        message: 'Error de conexión, por favor, presione "Actualizar"',
-        color: 'negative',
-        position: 'center',
-      })
-    } else {
-      $q.loading.hide()
-      $q.notify({
-        message: 'Error desconocido, por favor, presione "Actualizar"',
-        color: 'negative',
-        position: 'center',
-      })
-    }
-  });
-
-   promedioValue.value = ((bcvData.value.usd + parallelData.value.usdt_ves)/2).toFixed(2);
-  /*if (bcvData.value.monitors.usd.color == 'green' && parallelData.value.color == 'green')
-      {
-        colorPromedio.value = 'green';
-        symbolPromedio.value = 'mdi-arrow-up';
-      } else if (bcvData.value.monitors.usd.color == 'red' && parallelData.value.color == 'red'){
-        colorPromedio.value = 'red';
-        symbolPromedio.value = 'mdi-arrow-down'
-      };*/
-
-    //Data BCV
-    consultHourBcv.value = bcvData.value.fecha_consulta;
-    OfficialValue.value = bcvData.value.usd.toFixed(2);
-    //colorBcv.value = bcvData.value.monitors.usd.color;
-    /*switch (colorBcv.value) {
-      case 'green':
-        symbolBcv.value = 'mdi-arrow-up'
-      break;
-      case 'red':
-        symbolBcv.value = 'mdi-arrow-down'
-      break;
-      case 'neutral':
-        symbolBcv.value = 'mdi-minus'
-      break;
-    };*/
-
-    //Data Paralelo
-    consultHourParallel.value = parallelData.value.fecha_consulta;
-    ParallelValue.value = parallelData.value.usdt_ves.toFixed(2);
-    //colorParallel.value = parallelData.value.color;
-    /*switch (colorParallel.value) {
-      case 'green':
-        symbolParallel.value = 'mdi-arrow-up'
-      break;
-      case 'red':
-        symbolParallel.value = 'mdi-arrow-down'
-      break;
-      case 'neutral':
-        symbolParallel.value = 'mdi-minus'
-      break;
-    };*/
-}
-
+import langEs from 'quasar/lang/es'
 
 export default defineComponent({
-  name: 'IndexComponent, App',
+  name: 'IndexComponent',
   setup() {
     const $q = useQuasar();
+    $q.lang.set(langEs);
+
+    const parallelHistory = ref([]);
+    const bcvHistory = ref([]);
+    const availableDates = ref([]);
+    const selectedDate = ref(null);
+
+    const consultHourBcv = ref('');
+    const consultHourParallel = ref('');
+    const OfficialValue = ref();
+    const ParallelValue = ref();
+    const promedioValue = ref();
+
+    const USDamountBCV = ref();
+    const BCVamountUSD = ref();
+    const USDamountParallel = ref();
+    const ParallelamountUSD = ref();
+    const USDamountPromedio = ref();
+    const PromedioamountUSD = ref();
+
+    const ParallelFormatDate = computed(() => {
+      if (!consultHourParallel.value) return 'Fecha no disponible';
+      const fecha = new Date(consultHourParallel.value);
+      return new Intl.DateTimeFormat('es-VE', {
+        day: '2-digit', month: '2-digit', year: 'numeric',
+        hour: '2-digit', minute: '2-digit', hour12: true
+      }).format(fecha);
+    });
+
+    const BcvFormatDate = computed(() => {
+      if (!consultHourBcv.value) return 'Fecha no disponible';
+      const fecha = new Date(consultHourBcv.value);
+      return new Intl.DateTimeFormat('es-VE', {
+        day: '2-digit', month: '2-digit', year: 'numeric',
+        hour: '2-digit', minute: '2-digit', hour12: true
+      }).format(fecha);
+    });
+
+    const computedUSDtoBCV = computed(() => {
+      if (USDamountBCV.value > 0) {
+        return (OfficialValue.value * USDamountBCV.value).toFixed(2);
+      }
+      return null;
+    });
+
+    const computedBCVtoUSD = computed(() => {
+      if (BCVamountUSD.value > 0) {
+        return (BCVamountUSD.value / OfficialValue.value).toFixed(2);
+      }
+      return null;
+    });
+
+    const computedUSDtoParallel = computed(() => {
+      if (USDamountParallel.value > 0) {
+        return (ParallelValue.value * USDamountParallel.value).toFixed(2);
+      }
+      return null;
+    });
+
+    const computedParalleltoUSD = computed(() => {
+      if (ParallelamountUSD.value > 0) {
+        return (ParallelamountUSD.value / ParallelValue.value).toFixed(2);
+      }
+      return null;
+    });
+
+    const computedUSDtoPromedio = computed(() => {
+      if (USDamountPromedio.value > 0) {
+        return (promedioValue.value * USDamountPromedio.value).toFixed(2);
+      }
+      return null;
+    });
+
+    const computedPromediotoUSD = computed(() => {
+      if (PromedioamountUSD.value > 0) {
+        return (PromedioamountUSD.value / promedioValue.value).toFixed(2);
+      }
+      return null;
+    });
+
+    function returnToZeroBcv() {
+      USDamountBCV.value = null;
+      BCVamountUSD.value = null;
+    }
+
+    function returnToZeroParallel() {
+      USDamountParallel.value = null;
+      ParallelamountUSD.value = null;
+    }
+
+    function returnToZeroPromedio() {
+      USDamountPromedio.value = null;
+      PromedioamountUSD.value = null;
+    }
+
+    // Función para actualizar los valores en pantalla basándose en la fecha elegida
+    function updateValuesForDate(dateStr) {
+      if (!dateStr) return;
+
+      const binanceRecord = parallelHistory.value.find(item => item.fecha_consulta.startsWith(dateStr));
+      if (binanceRecord) {
+        consultHourParallel.value = binanceRecord.fecha_consulta;
+        ParallelValue.value = binanceRecord.usdt_ves.toFixed(2);
+      }
+
+      let bcvRecord = bcvHistory.value.find(item => item.fecha_consulta.startsWith(dateStr));
+
+      if (!bcvRecord) {
+        bcvRecord = bcvHistory.value.find(item => item.fecha_consulta <= dateStr);
+      }
+
+      if (bcvRecord) {
+        consultHourBcv.value = bcvRecord.fecha_consulta;
+        OfficialValue.value = bcvRecord.usd.toFixed(2);
+      }
+
+      if (OfficialValue.value && ParallelValue.value) {
+        promedioValue.value = ((parseFloat(OfficialValue.value) + parseFloat(ParallelValue.value)) / 2).toFixed(2);
+      }
+    }
+
+    async function loadHistory() {
+      $q.loading.show();
+      try {
+        const resBcv = await axios.get(import.meta.env.VITE_SUPABASE_URL + '/rest/v1/rpc/obtener_tasas_bcv', {
+          headers: {
+            'apikey': import.meta.env.VITE_SUPABASE_KEY,
+            'Authorization': 'Bearer ' + import.meta.env.VITE_SUPABASE_KEY
+          }
+        });
+
+        const resBinance = await axios.get(import.meta.env.VITE_SUPABASE_URL + '/rest/v1/rpc/obtener_ultimas_tasas_por_dia_binance', {
+          headers: {
+            'apikey': import.meta.env.VITE_SUPABASE_KEY,
+            'Authorization': 'Bearer ' + import.meta.env.VITE_SUPABASE_KEY
+          }
+        });
+
+        if (resBcv.status === 200 && resBinance.status === 200) {
+          bcvHistory.value = Array.isArray(resBcv.data) ? resBcv.data : (resBcv.data?.data || []);
+          parallelHistory.value = Array.isArray(resBinance.data) ? resBinance.data : (resBinance.data?.data || []);
+
+          const datesSet = new Set();
+
+          if (Array.isArray(parallelHistory.value)) {
+            parallelHistory.value.forEach(item => {
+              if (item && item.fecha_consulta) {
+                datesSet.add(item.fecha_consulta.split('T')[0]);
+              }
+            });
+          }
+
+          if (Array.isArray(bcvHistory.value)) {
+            bcvHistory.value.forEach(item => {
+              if (item && item.fecha_consulta) {
+                datesSet.add(item.fecha_consulta.split('T')[0]);
+              }
+            });
+          }
+
+          const sortedDates = Array.from(datesSet).sort().reverse();
+
+          availableDates.value = sortedDates.map(dateStr => {
+            const [year, month, day] = dateStr.split('-');
+            const shortYear = year.slice(-2);
+
+            return {
+              label: `${day}/${month}/${shortYear}`,
+              value: dateStr
+            };
+          });
+
+          if (availableDates.value.length > 0) {
+            selectedDate.value = availableDates.value[0].value;
+            updateValuesForDate(selectedDate.value);
+          }
+        }
+      } catch (error) {
+        console.error('Error al cargar historial:', error);
+        $q.notify({
+          message: 'No se pudo conectar con el servidor para cargar el historial',
+          color: 'negative',
+          position: 'center',
+        });
+      } finally {
+        $q.loading.hide();
+      }
+    }
+
+    onMounted(() => {
+      loadHistory();
+    });
 
     return {
       tab: ref('$ a Bs.'),
@@ -422,10 +396,6 @@ export default defineComponent({
       BCVamountUSD,
       ParallelamountUSD,
       promedioValue,
-      showCharge,
-      returnToZeroBcv,
-      returnToZeroParallel,
-      returnToZeroPromedio,
       OfficialValue,
       ParallelValue,
       computedBCVtoUSD,
@@ -436,144 +406,17 @@ export default defineComponent({
       computedUSDtoPromedio,
       BcvFormatDate,
       ParallelFormatDate,
-      //colorParallel,
-      //colorBcv,
-      //symbolParallel,
-      //symbolBcv,
       consultHourParallel,
       consultHourBcv,
-      //colorPromedio,
-      //symbolPromedio,
-      async showLoading () {
-        USDamountBCV.value = null;
-        BCVamountUSD.value = null;
-
-        USDamountParallel.value = null;
-        ParallelamountUSD.value = null;
-
-        USDamountPromedio.value = null;
-        PromedioamountUSD.value = null;
-
-        $q.loading.show()
-
- await axios.get(process.env.SUPABASE_URL + '/rest/v1/rpc/obtener_ultima_tasa', {
-    headers: {
-      'apikey': process.env.SUPABASE_KEY,
-      'Authorization': 'Bearer ' + process.env.SUPABASE_KEY
-    }
-  })
-  .then(function (response) {
-    if(response.status == 200){
-      bcvData.value = response.data[0];
-    }
-  })
-  .catch(function (error) {
-    if (error.response) {
-      $q.loading.hide()
-      $q.notify({
-        message: 'No se pudo contactar con el servidor',
-        color: 'negative',
-        position: 'center',
-      })
-
-    } else if (error.request) {
-      $q.loading.hide()
-      $q.notify({
-        message: 'Error de conexión, por favor, presione "Actualizar"',
-        color: 'negative',
-        position: 'center',
-      })
-    } else {
-      $q.loading.hide()
-      $q.notify({
-        message: 'Error desconocido, por favor, presione "Actualizar"',
-        color: 'negative',
-        position: 'center',
-      })
-    }
-  });
-
-  await axios.get(process.env.SUPABASE_URL + '/rest/v1/rpc/obtener_ultima_tasa_binance', {
-    headers: {
-      'apikey': process.env.SUPABASE_KEY,
-      'Authorization': 'Bearer ' + process.env.SUPABASE_KEY
-    }
-  }).then(function (response) {
-    if(response.status == 200){
-      parallelData.value = response.data[0];
-      $q.loading.hide()
-    }
-  }).catch(function (error) {
-    if (error.response) {
-      $q.loading.hide()
-      $q.notify({
-        message: 'No se pudo contactar con el servidor',
-        color: 'negative',
-        position: 'center',
-      })
-    } else if (error.request) {
-      $q.loading.hide()
-      $q.notify({
-        message: 'Error de conexión, por favor, presione "Actualizar"',
-        color: 'negative',
-        position: 'center',
-      })
-    } else {
-      $q.loading.hide()
-      $q.notify({
-        message: 'Error desconocido, por favor, presione "Actualizar"',
-        color: 'negative',
-        position: 'center',
-      })
-    }
-  });
-
-  promedioValue.value = ((bcvData.value.usd + parallelData.value.usdt_ves)/2).toFixed(2);
-  /*if (bcvData.value.monitors.usd.color == 'green' && parallelData.value.color == 'green')
-      {
-        colorPromedio.value = 'green';
-        symbolPromedio.value = 'mdi-arrow-up';
-      } else if (bcvData.value.monitors.usd.color == 'red' && parallelData.value.color == 'red'){
-        colorPromedio.value = 'red';
-        symbolPromedio.value = 'mdi-arrow-down'
-      };*/
-
-    //Data BCV
-    consultHourBcv.value = bcvData.value.fecha_consulta;
-    OfficialValue.value = bcvData.value.usd.toFixed(2);
-    //colorBcv.value = bcvData.value.monitors.usd.color;
-    /*switch (colorBcv.value) {
-      case 'green':
-        symbolBcv.value = 'mdi-arrow-up'
-      break;
-      case 'red':
-        symbolBcv.value = 'mdi-arrow-down'
-      break;
-      case 'neutral':
-        symbolBcv.value = 'mdi-minus'
-      break;
-    };*/
-
-    //Data Paralelo
-    consultHourParallel.value = parallelData.value.fecha_consulta;
-    ParallelValue.value = parallelData.value.usdt_ves.toFixed(2);
-    //colorParallel.value = parallelData.value.color;
-    /*switch (colorParallel.value) {
-      case 'green':
-        symbolParallel.value = 'mdi-arrow-up'
-      break;
-      case 'red':
-        symbolParallel.value = 'mdi-arrow-down'
-      break;
-      case 'neutral':
-        symbolParallel.value = 'mdi-minus'
-      break;
-    };*/
+      availableDates,
+      selectedDate,
+      onDateChange(val) {
+        returnToZeroBcv();
+        returnToZeroParallel();
+        returnToZeroPromedio();
+        updateValuesForDate(val);
       }
-    }
-  },
-  async beforeMount() {
-    showCharge();
-  },
-})
+    };
+  }
+});
 </script>

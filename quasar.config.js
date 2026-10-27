@@ -1,7 +1,7 @@
 // Configuration for your app
 // https://v2.quasar.dev/quasar-cli-vite/quasar-config-file
 
-import { defineConfig } from '#q-app/wrappers'
+import { defineConfig } from '#q-app'
 import { fileURLToPath } from 'node:url'
 import * as dotenv from 'dotenv'
 
@@ -70,10 +70,11 @@ export default defineConfig((ctx) => {
 
       // publicPath: '/',
       // analyze: true,
-      env: {
-        SUPABASE_KEY: process.env.SUPABASE_KEY,
-        SUPABASE_URL: process.env.SUPABASE_URL
-      },
+     // ELIMINA ESTO POR COMPLETO DE TU quasar.config.js:
+  // env: {
+  //   SUPABASE_KEY: import.meta.env.VITE_SUPABASE_KEY,
+  //   SUPABASE_URL: import.meta.env.VITE_SUPABASE_URL,
+  // },
       // rawDefine: {}
       // ignorePublicFolder: true,
       // minify: false,

@@ -1,7 +1,23 @@
 <template>
-    <div class="q-pt-md row flex-center font-color">
-      <q-btn outline rounded label="Actualizar" @click="showLoading()"/>
+    <div class="q-pt-md row q-pl-lg q-pr-md flex-center font-color">
+      <q-select
+        dense
+        dark
+        borderless
+        v-model="selectedDate"
+        :options="availableDates"
+        label="Fecha de la tasa"
+        class="col-12 col-md-6"
+        emit-value
+        map-options
+        @update:model-value="onDateChange"
+      >
+        <template v-slot:prepend>
+          <q-icon name="event" />
+        </template>
+      </q-select>
     </div>
+
     <div class="">
       <q-expansion-item @click="EURreturnToZeroBcv()">
         <template v-slot:header>
@@ -57,6 +73,7 @@
           </q-card-section>
         </q-card>
       </q-expansion-item>
+
       <q-expansion-item @click="CNYreturnToZeroBcv()">
         <template v-slot:header>
           <q-item-section avatar class="q-pr-sm">
@@ -105,6 +122,7 @@
           </q-card-section>
         </q-card>
       </q-expansion-item>
+
       <q-expansion-item @click="RUBreturnToZeroBcv()">
         <template v-slot:header>
           <q-item-section avatar class="q-pr-sm">
@@ -154,6 +172,7 @@
           </q-card-section>
         </q-card>
       </q-expansion-item>
+
       <q-expansion-item @click="TRYreturnToZeroBcv()">
         <template v-slot:header>
           <q-item-section avatar class="q-pr-sm">
@@ -207,242 +226,202 @@
 </template>
 
 <script>
-import { computed, defineComponent, ref } from 'vue';
+import { computed, defineComponent, ref, onMounted } from 'vue';
 import { useQuasar } from "quasar";
 import axios from 'axios';
 
-const bcvData = [];
-const consultHourBcv = ref('');
-const EUROfficialBcv = ref();
-const EURAmountBcv = ref();
-const BcvAmountEUR = ref();
-const EURColorBcv = ref();
-const EURSymbolBcv = ref();
-const CNYOfficialBcv = ref();
-const CNYAmountBcv = ref();
-const BcvAmountCNY = ref();
-const CNYColorBcv = ref();
-const CNYSymbolBcv = ref();
-const RUBOfficialBcv = ref();
-const RUBAmountBcv = ref();
-const BcvAmountRUB = ref();
-const RUBColorBcv = ref();
-const RUBSymbolBcv = ref();
-const TRYOfficialBcv = ref();
-const TRYAmountBcv = ref();
-const BcvAmountTRY = ref();
-const TRYColorBcv = ref();
-const TRYSymbolBcv = ref();
-
-const BcvFormatDate = computed(() => {
-  if (!consultHourBcv.value) return 'Fecha no disponible';
-
-  // Al pasar el string ISO a new Date(), JavaScript automáticamente
-  // lo convierte a la hora local del teléfono (Venezuela)
-  const fecha = new Date(consultHourBcv.value);
-
-  // Formateamos a dd/mm/yyyy con hora AM/PM
-  return new Intl.DateTimeFormat('es-VE', {
-    day: '2-digit',
-    month: '2-digit',
-    year: 'numeric',
-    hour: '2-digit',
-    minute: '2-digit',
-    hour12: true
-  }).format(fecha);
-});
-
-const computedEurToBs = computed (() => {
-  //console.log(EURAmountBcv.value);
-    if (EURAmountBcv.value > 0){
-      return (EUROfficialBcv.value * EURAmountBcv.value).toFixed(2);
-    }
-  return null;
-});
-
-const computedBsToEur = computed (() => {
-  if (BcvAmountEUR.value > 0){
-    return (BcvAmountEUR.value / EUROfficialBcv.value).toFixed(2);
-  }
-  return null;
-});
-
-const computedCNYtoBs = computed (() => {
-    if (CNYAmountBcv.value > 0){
-      return (CNYOfficialBcv.value * CNYAmountBcv.value).toFixed(2);
-    }
-  return null;
-});
-
-const computedBsToCNY = computed (() => {
-  if (BcvAmountCNY.value > 0){
-    return (BcvAmountCNY.value / CNYOfficialBcv.value).toFixed(2);
-  }
-  return null;
-});
-
-const computedRUBtoBs = computed (() => {
-    if (RUBAmountBcv.value > 0){
-      return (RUBOfficialBcv.value * RUBAmountBcv.value).toFixed(2);
-    }
-  return null;
-});
-
-const computedBsToRUB = computed (() => {
-  if (BcvAmountRUB.value > 0){
-    return (BcvAmountRUB.value / RUBOfficialBcv.value).toFixed(2);
-  }
-  return null;
-});
-
-const computedTRYtoBs = computed (() => {
-  //console.log(TRYAmountBcv.value);
-    if (TRYAmountBcv.value > 0){
-      return (TRYOfficialBcv.value * TRYAmountBcv.value).toFixed(2);
-    }
-  return null;
-});
-
-const computedBsToTRY = computed (() => {
-  if (BcvAmountTRY.value > 0){
-    return (BcvAmountTRY.value / TRYOfficialBcv.value).toFixed(2);
-  }
-  return null;
-});
-
-
-function EURreturnToZeroBcv() {
-  EURAmountBcv.value = null;
-  BcvAmountEUR.value = null;
-};
-
-function CNYreturnToZeroBcv() {
-  CNYAmountBcv.value = null;
-  BcvAmountCNY.value = null;
-};
-
-function RUBreturnToZeroBcv() {
-  RUBAmountBcv.value = null;
-  BcvAmountRUB.value = null;
-};
-
-function TRYreturnToZeroBcv() {
-  TRYAmountBcv.value = null;
-  BcvAmountTRY.value = null;
-};
-
-async function showCharge(){
-  const $q = useQuasar()
-
-    $q.loading.show()
-
-    await axios.get(process.env.SUPABASE_URL + '/rest/v1/rpc/obtener_ultima_tasa', {
-    headers: {
-      'apikey': process.env.SUPABASE_KEY,
-      'Authorization': 'Bearer ' + process.env.SUPABASE_KEY
-    }
-  })
-  .then(function (response) {
-    if(response.status == 200){
-      bcvData.value = response.data[0];
-      $q.loading.hide();
-    }
-  })
-  .catch(function (error) {
-    if (error.response) {
-      $q.loading.hide()
-      $q.notify({
-        message: 'No se pudo contactar con el servidor',
-        color: 'negative',
-        position: 'center',
-      })
-
-    } else if (error.request) {
-      $q.loading.hide()
-      $q.notify({
-        message: 'Error de conexión, por favor, presione "Actualizar"',
-        color: 'negative',
-        position: 'center',
-      })
-    } else {
-      $q.loading.hide()
-      $q.notify({
-        message: 'Error desconocido, por favor, presione "Actualizar"',
-        color: 'negative',
-        position: 'center',
-      })
-    }
-  });
-
-  //Data BCV
-  consultHourBcv.value = bcvData.value.fecha_consulta;
-
-  //Data Euro
-  EUROfficialBcv.value = bcvData.value.eur.toFixed(2);
-  /*EURColorBcv.value = bcvData.value.monitors.eur.color;
-  switch (EURColorBcv.value) {
-    case 'green':
-      EURSymbolBcv.value = 'mdi-arrow-up'
-    break;
-    case 'red':
-      EURSymbolBcv.value = 'mdi-arrow-down'
-    break;
-    case 'neutral':
-      EURSymbolBcv.value = 'mdi-minus'
-    break;
-  };*/
-
-  //Data Yuan Chino
-  CNYOfficialBcv.value = bcvData.value.cny.toFixed(2);
-  /*CNYColorBcv.value = bcvData.value.monitors.cny.color;
-  switch (CNYColorBcv.value) {
-    case 'green':
-      CNYSymbolBcv.value = 'mdi-arrow-up'
-    break;
-    case 'red':
-      CNYSymbolBcv.value = 'mdi-arrow-down'
-    break;
-    case 'neutral':
-      CNYSymbolBcv.value = 'mdi-minus'
-    break;
-  };*/
-
-  //Data Lira Turca
-  TRYOfficialBcv.value = bcvData.value.try.toFixed(2);
-  /*TRYColorBcv.value = bcvData.value.monitors.try.color;
-  switch (TRYColorBcv.value) {
-    case 'green':
-      TRYSymbolBcv.value = 'mdi-arrow-up'
-    break;
-    case 'red':
-      TRYSymbolBcv.value = 'mdi-arrow-down'
-    break;
-    case 'neutral':
-      TRYSymbolBcv.value = 'mdi-minus'
-    break;
-  };*/
-
-  //Data Rublo Ruso
-  RUBOfficialBcv.value = bcvData.value.rub.toFixed(2);
-  /*RUBColorBcv.value = bcvData.value.monitors.rub.color;
-  switch (RUBColorBcv.value) {
-    case 'green':
-      RUBSymbolBcv.value = 'mdi-arrow-up'
-    break;
-    case 'red':
-      RUBSymbolBcv.value = 'mdi-arrow-down'
-    break;
-    case 'neutral':
-      RUBSymbolBcv.value = 'mdi-minus'
-    break;
-  };*/
-}
-
-
 export default defineComponent({
-  name: "AnotherCurrenciesComponent, App",
+  name: "AnotherCurrenciesComponent",
   setup() {
     const $q = useQuasar();
+
+    const bcvHistory = ref([]);
+    const availableDates = ref([]);
+    const selectedDate = ref(null);
+
+    const consultHourBcv = ref('');
+    const EUROfficialBcv = ref();
+    const EURAmountBcv = ref();
+    const BcvAmountEUR = ref();
+    const EURColorBcv = ref();
+    const EURSymbolBcv = ref();
+    const CNYOfficialBcv = ref();
+    const CNYAmountBcv = ref();
+    const BcvAmountCNY = ref();
+    const CNYColorBcv = ref();
+    const CNYSymbolBcv = ref();
+    const RUBOfficialBcv = ref();
+    const RUBAmountBcv = ref();
+    const BcvAmountRUB = ref();
+    const RUBColorBcv = ref();
+    const RUBSymbolBcv = ref();
+    const TRYOfficialBcv = ref();
+    const TRYAmountBcv = ref();
+    const BcvAmountTRY = ref();
+    const TRYColorBcv = ref();
+    const TRYSymbolBcv = ref();
+
+    const BcvFormatDate = computed(() => {
+      if (!consultHourBcv.value) return 'Fecha no disponible';
+      const fecha = new Date(consultHourBcv.value);
+      return new Intl.DateTimeFormat('es-VE', {
+        day: '2-digit',
+        month: '2-digit',
+        year: 'numeric',
+        hour: '2-digit',
+        minute: '2-digit',
+        hour12: true
+      }).format(fecha);
+    });
+
+    const computedEurToBs = computed(() => {
+      if (EURAmountBcv.value > 0) {
+        return (EUROfficialBcv.value * EURAmountBcv.value).toFixed(2);
+      }
+      return null;
+    });
+
+    const computedBsToEur = computed(() => {
+      if (BcvAmountEUR.value > 0) {
+        return (BcvAmountEUR.value / EUROfficialBcv.value).toFixed(2);
+      }
+      return null;
+    });
+
+    const computedCNYtoBs = computed(() => {
+      if (CNYAmountBcv.value > 0) {
+        return (CNYOfficialBcv.value * CNYAmountBcv.value).toFixed(2);
+      }
+      return null;
+    });
+
+    const computedBsToCNY = computed(() => {
+      if (BcvAmountCNY.value > 0) {
+        return (BcvAmountCNY.value / CNYOfficialBcv.value).toFixed(2);
+      }
+      return null;
+    });
+
+    const computedRUBtoBs = computed(() => {
+      if (RUBAmountBcv.value > 0) {
+        return (RUBOfficialBcv.value * RUBAmountBcv.value).toFixed(2);
+      }
+      return null;
+    });
+
+    const computedBsToRUB = computed(() => {
+      if (BcvAmountRUB.value > 0) {
+        return (BcvAmountRUB.value / RUBOfficialBcv.value).toFixed(2);
+      }
+      return null;
+    });
+
+    const computedTRYtoBs = computed(() => {
+      if (TRYAmountBcv.value > 0) {
+        return (TRYOfficialBcv.value * TRYAmountBcv.value).toFixed(2);
+      }
+      return null;
+    });
+
+    const computedBsToTRY = computed(() => {
+      if (BcvAmountTRY.value > 0) {
+        return (BcvAmountTRY.value / TRYOfficialBcv.value).toFixed(2);
+      }
+      return null;
+    });
+
+    function EURreturnToZeroBcv() {
+      EURAmountBcv.value = null;
+      BcvAmountEUR.value = null;
+    }
+
+    function CNYreturnToZeroBcv() {
+      CNYAmountBcv.value = null;
+      BcvAmountCNY.value = null;
+    }
+
+    function RUBreturnToZeroBcv() {
+      RUBAmountBcv.value = null;
+      BcvAmountRUB.value = null;
+    }
+
+    function TRYreturnToZeroBcv() {
+      TRYAmountBcv.value = null;
+      BcvAmountTRY.value = null;
+    }
+
+    function updateValuesForDate(dateStr) {
+      if (!dateStr || !bcvHistory.value.length) return;
+
+      let bcvRecord = bcvHistory.value.find(item => item && item.fecha_consulta && item.fecha_consulta.startsWith(dateStr));
+
+      if (!bcvRecord) {
+        bcvRecord = bcvHistory.value.find(item => item && item.fecha_consulta && item.fecha_consulta <= dateStr);
+      }
+
+      if (bcvRecord) {
+        consultHourBcv.value = bcvRecord.fecha_consulta;
+
+        if (bcvRecord.eur) EUROfficialBcv.value = bcvRecord.eur.toFixed(2);
+        if (bcvRecord.cny) CNYOfficialBcv.value = bcvRecord.cny.toFixed(2);
+        if (bcvRecord.try) TRYOfficialBcv.value = bcvRecord.try.toFixed(2);
+        if (bcvRecord.rub) RUBOfficialBcv.value = bcvRecord.rub.toFixed(2);
+      }
+    }
+
+    async function loadHistory() {
+      $q.loading.show();
+      try {
+        const resBcv = await axios.get(import.meta.env.VITE_SUPABASE_URL + '/rest/v1/rpc/obtener_tasas_bcv', {
+          headers: {
+            'apikey': import.meta.env.VITE_SUPABASE_KEY,
+            'Authorization': 'Bearer ' + import.meta.env.VITE_SUPABASE_KEY
+          }
+        });
+
+        if (resBcv.status === 200) {
+          bcvHistory.value = Array.isArray(resBcv.data) ? resBcv.data : (resBcv.data?.data || []);
+
+          const datesSet = new Set();
+          if (Array.isArray(bcvHistory.value)) {
+            bcvHistory.value.forEach(item => {
+              if (item && item.fecha_consulta) {
+                datesSet.add(item.fecha_consulta.split('T')[0]);
+              }
+            });
+          }
+
+          const sortedDates = Array.from(datesSet).sort().reverse();
+          availableDates.value = sortedDates.map(dateStr => {
+            const [year, month, day] = dateStr.split('-');
+            const shortYear = year.slice(-2);
+            return {
+              label: `${day}/${month}/${shortYear}`,
+              value: dateStr
+            };
+          });
+
+          if (availableDates.value.length > 0) {
+            selectedDate.value = availableDates.value[0].value;
+            updateValuesForDate(selectedDate.value);
+          }
+        }
+      } catch (error) {
+        console.error('Error al cargar historial de otras divisas:', error);
+        $q.notify({
+          message: 'No se pudo contactar con el servidor',
+          color: 'negative',
+          position: 'center',
+        });
+      } finally {
+        $q.loading.hide();
+      }
+    }
+
+    onMounted(() => {
+      loadHistory();
+    });
+
     return {
       computedEurToBs,
       computedBsToEur,
@@ -452,7 +431,6 @@ export default defineComponent({
       computedBsToRUB,
       computedTRYtoBs,
       computedBsToTRY,
-      showCharge,
       EURreturnToZeroBcv,
       CNYreturnToZeroBcv,
       RUBreturnToZeroBcv,
@@ -479,125 +457,16 @@ export default defineComponent({
       TRYColorBcv,
       TRYSymbolBcv,
       BcvFormatDate,
-      async showLoading () {
-      EURAmountBcv.value = null;
-      BcvAmountEUR.value = null;
-
-      CNYAmountBcv.value = null;
-      BcvAmountCNY.value = null;
-
-      RUBAmountBcv.value = null;
-      BcvAmountRUB.value = null;
-
-      TRYAmountBcv.value = null;
-      BcvAmountTRY.value = null;
-
-        $q.loading.show()
-
-        await axios.get(process.env.SUPABASE_URL + '/rest/v1/rpc/obtener_ultima_tasa', {
-          headers: {
-            'apikey': process.env.SUPABASE_KEY,
-            'Authorization': 'Bearer ' + process.env.SUPABASE_KEY
-          }
-        })
-        .then(function (response) {
-          if(response.status == 200){
-            bcvData.value = response.data[0];
-            $q.loading.hide()
-          }
-        })
-        .catch(function (error) {
-          if (error.response) {
-            $q.loading.hide()
-            $q.notify({
-              message: 'No se pudo contactar con el servidor',
-              color: 'negative',
-              position: 'center',
-            })
-
-          } else if (error.request) {
-            $q.loading.hide()
-            $q.notify({
-              message: 'Error de conexión, por favor, presione "Actualizar"',
-              color: 'negative',
-              position: 'center',
-            })
-          } else {
-            $q.loading.hide()
-            $q.notify({
-              message: 'Error desconocido, por favor, presione "Actualizar"',
-              color: 'negative',
-              position: 'center',
-            })
-          }
-        });
-        //Data BCV
-        consultHourBcv.value = bcvData.value.fecha_consulta;
-
-        //Data Euro
-        EUROfficialBcv.value = bcvData.value.eur.toFixed(2);
-        /*EURColorBcv.value = bcvData.value.monitors.eur.color;
-        switch (EURColorBcv.value) {
-          case 'green':
-            EURSymbolBcv.value = 'mdi-arrow-up'
-          break;
-          case 'red':
-            EURSymbolBcv.value = 'mdi-arrow-down'
-          break;
-          case 'neutral':
-            EURSymbolBcv.value = 'mdi-minus'
-          break;
-        };*/
-
-        //Data Yuan Chino
-        CNYOfficialBcv.value = bcvData.value.cny.toFixed(2);
-        /*CNYColorBcv.value = bcvData.value.monitors.cny.color;
-        switch (CNYColorBcv.value) {
-          case 'green':
-            CNYSymbolBcv.value = 'mdi-arrow-up'
-          break;
-          case 'red':
-            CNYSymbolBcv.value = 'mdi-arrow-down'
-          break;
-          case 'neutral':
-            CNYSymbolBcv.value = 'mdi-minus'
-          break;
-        };*/
-
-        //Data Lira Turca
-        TRYOfficialBcv.value = bcvData.value.try.toFixed(2);
-        /*TRYColorBcv.value = bcvData.value.monitors.try.color;
-        switch (TRYColorBcv.value) {
-          case 'green':
-            TRYSymbolBcv.value = 'mdi-arrow-up'
-          break;
-          case 'red':
-            TRYSymbolBcv.value = 'mdi-arrow-down'
-          break;
-          case 'neutral':
-            TRYSymbolBcv.value = 'mdi-minus'
-          break;
-        };*/
-
-        //Data Rublo Ruso
-        RUBOfficialBcv.value = bcvData.value.rub.toFixed(2);
-        /*RUBColorBcv.value = bcvData.value.monitors.rub.color;
-        switch (RUBColorBcv.value) {
-          case 'green':
-            RUBSymbolBcv.value = 'mdi-arrow-up'
-          break;
-          case 'red':
-            RUBSymbolBcv.value = 'mdi-arrow-down'
-          break;
-          case 'neutral':
-            RUBSymbolBcv.value = 'mdi-minus'
-          break;
-        };*/
+      availableDates,
+      selectedDate,
+      onDateChange(val) {
+        EURreturnToZeroBcv();
+        CNYreturnToZeroBcv();
+        RUBreturnToZeroBcv();
+        TRYreturnToZeroBcv();
+        updateValuesForDate(val);
       }
-    }
-  },
-  async beforeMount() {
-  showCharge();
-  },
+    };
+  }
 });
 </script>

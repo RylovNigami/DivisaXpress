@@ -89,3 +89,36 @@ html, body, #q-app {
 .q-item__label--caption {
   color: rgba(251, 251, 251, 0.54);
 }
+
+.q-field {
+    font-size: 14px;
+}
+
+.q-field__control {
+    color: var(--q-accent);
+    height: 56px;
+    max-width: 100%;
+    background: #000;
+}
+
+.q-list--dark, .q-item--dark {
+    color: #ffffff;
+    border-color: #000;
+    background-color: black;
+}
+
+.q-field--filled.q-field--dark .q-field__control, .q-field--filled.q-field--dark .q-field__control:before {
+    background: #0037ff;
+}
+
+.q-select__dialog-close {
+    color: rgb(255 255 255);
+    background: #83333300;
+    align-self: stretch;
+    border: 0;
+    padding: 0 4px;
+    font-size: 16px;
+    font-weight: 600;
+    text-decoration: none;
+    cursor: pointer;
+}

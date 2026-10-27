@@ -27,9 +27,8 @@
 
 <script>
 import { defineComponent, ref } from 'vue';
-import AnotherCurrenciesComponent from 'components/AnotherCurrenciesComponent.vue';
-import IndexComponent from 'components/IndexComponent.vue';
-
+import AnotherCurrenciesComponent from '../components/AnotherCurrenciesComponent.vue';
+import IndexComponent from '../components/IndexComponent.vue';
 
 export default defineComponent({
   name: 'IndexPage',

@@ -8,7 +8,7 @@
         </q-avatar>
         <q-toolbar-title>DivisaXpress</q-toolbar-title>
 
-        <p class="q-pt-md">V.9.5</p>
+        <p class="q-pt-md"><V class="10.0"></V></p>
       </q-toolbar>
     </q-header>
 
@@ -19,8 +19,34 @@
       class="font-color hero-image"
     >
       <q-list>
+        <!--q-item clickable to="/chart">
+          <q-item-section
+            avatar
+          >
+            <q-avatar style="font-size: 60px;">
+              <img src=public/house.png style="zoom: 50%"/>
+            </q-avatar>
+          </q-item-section>
+          <q-item-section>
+            <q-item-label>Inicio</q-item-label>
+          </q-item-section>
+        </q-item-->
         <q-item-label header> Referencias </q-item-label>
         <EssentialLink v-for="link in linksList" :key="link.title" v-bind="link" />
+        <!--q-item-label header> Graficos </q-item-label>
+        <q-item clickable to="/chart">
+          <q-item-section
+            avatar
+          >
+            <q-avatar style="font-size: 60px;">
+              <img src=public/img37.png />
+            </q-avatar>
+          </q-item-section>
+          <q-item-section>
+            <q-item-label>Historial de Cotizaciones</q-item-label>
+            <q-item-label caption>Graficos e info de las divisas </q-item-label>
+          </q-item-section>
+        </q-item-->
       </q-list>
     </q-drawer>
 
@@ -32,7 +58,7 @@
 
 <script setup>
 import { ref } from 'vue'
-import EssentialLink from 'components/EssentialLink.vue'
+import EssentialLink from '../components/EssentialLink.vue'
 
 const linksList = [
   {
