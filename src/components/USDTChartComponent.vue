@@ -9,7 +9,7 @@
       <q-separator />
 
       <q-card-section>
-        <USDTChartComponent />
+
       </q-card-section>
     </q-card>
   </div>
@@ -22,7 +22,7 @@ import { /*computed,*/ defineComponent/*, ref */} from 'vue';
 export default defineComponent({
   name: 'USDTChartComponent',
   components: {
-    USDTChartComponent: () => import('../components/USDTChartComponent.vue'),
+
   },
   setup() {
     //const $q = useQuasar();

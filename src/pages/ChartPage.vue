@@ -27,8 +27,8 @@
 
 <script>
 import { defineComponent, ref } from 'vue';
-import BCVChartComponent from '../components/BCVChartComponent.vue';
-import USDTChartComponent from '../components/USDTChartComponent.vue';
+import BCVChartComponent from '@/components/BCVChartComponent.vue';
+import USDTChartComponent from '@/components/USDTChartComponent.vue';
 
 export default defineComponent({
   name: 'ChartsPage',

@@ -3,12 +3,12 @@
     <q-header elevated style="background-color: black" class="safe-area-top">
       <q-toolbar>
         <q-btn flat dense round icon="menu" aria-label="Menu" @click="toggleLeftDrawer" />
-        <q-avatar class="q-ml-sm q-pa-sm">
+        <q-avatar class="q-ml-sm ">
           <img src="\MainLogo.png">
         </q-avatar>
         <q-toolbar-title>DivisaXpress</q-toolbar-title>
 
-        <p class="q-pt-md"><V class="10.0"></V></p>
+        <p class="q-pt-md">V10.0</p>
       </q-toolbar>
     </q-header>
 

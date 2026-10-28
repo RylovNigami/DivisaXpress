@@ -83,6 +83,16 @@ export default defineConfig((ctx) => {
 
       // extendViteConf (viteConf) {},
       // viteVuePluginOptions: {},
+      alias: {
+            src: ctx.appPaths.srcDir,
+            app: ctx.appPaths.appDir,
+            components: ctx.appPaths.resolve.src('components'),
+            layouts: ctx.appPaths.resolve.src('layouts'),
+            pages: ctx.appPaths.resolve.src('pages'),
+            assets: ctx.appPaths.resolve.src('assets'),
+            boot: ctx.appPaths.resolve.src('boot'),
+            stores: ctx.appPaths.resolve.src('stores')
+          },
 
       vitePlugins: [
         ['vite-plugin-checker', {

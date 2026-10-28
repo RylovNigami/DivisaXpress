@@ -1,228 +1,229 @@
 <template>
-    <div class="q-pt-md row q-pl-lg q-pr-md flex-center font-color">
-      <q-select
-        dense
-        dark
-        borderless
-        v-model="selectedDate"
-        :options="availableDates"
-        label="Fecha de la tasa"
-        class="col-12 col-md-6"
-        emit-value
-        map-options
-        @update:model-value="onDateChange"
-      >
-        <template v-slot:prepend>
-          <q-icon name="event" />
-        </template>
-      </q-select>
-    </div>
+  <div class="q-pt-md row q-pl-lg q-pr-md flex-center font-color">
+    <q-select
+      dense
+      dark
+      borderless
+      v-model="selectedDate"
+      :options="availableDates"
+      label="Fecha de la tasa"
+      class="col-12 col-md-6"
+      emit-value
+      map-options
+      behavior="menu"
+      @update:model-value="onDateChange"
+    >
+      <template v-slot:prepend>
+        <q-icon name="event" />
+      </template>
+    </q-select>
+  </div>
 
-    <div class="">
-      <q-expansion-item @click="EURreturnToZeroBcv()">
-        <template v-slot:header>
-          <q-item-section avatar class="q-pr-sm">
-            <q-avatar style="font-size: 75px;">
-              <img src="/BcvDolarPNG.png">
-            </q-avatar>
-          </q-item-section>
+  <div class="">
+    <q-expansion-item @click="EURreturnToZeroBcv()">
+      <template v-slot:header>
+        <q-item-section avatar class="q-pr-sm">
+          <q-avatar style="font-size: 75px;">
+            <img src="/BcvDolarPNG.png">
+          </q-avatar>
+        </q-item-section>
 
-          <q-item-section>
-            <h6 style="text-shadow: 1px 1px 4px black;">Euro (€): {{ EUROfficialBcv }} <q-icon :color=EURColorBcv :name="EURSymbolBcv"/><br><div class="text-caption">{{ BcvFormatDate }}</div></h6>
-          </q-item-section>
-        </template>
+        <q-item-section>
+          <h6 style="text-shadow: 1px 1px 4px black;">Euro (€): {{ EUROfficialBcv }} <q-icon :color=EURColorBcv :name="EURSymbolBcv"/><br><div class="text-caption">{{ BcvFormatDate }}</div></h6>
+        </q-item-section>
+      </template>
 
-        <q-card class="transparent">
-          <q-card-section >
-            <q-input
-              class="col q-pb-xl"
-              outlined
-              v-model.trim="EURAmountBcv"
-              dense="dense"
-              hint="Inserte valor € (EUR)"
-              type="number"
-              pattern="[0-9]*\.?[0-9]*"
-              inputmode="decimal"
-              @focus="BcvAmountEUR = null"
-            >
-              <template v-slot:append>
-                <div style="font-size:large;"> € </div >
-              </template>
-              <template v-slot:prepend>
-                  {{ computedBsToEur }}
-                </template>
-            </q-input>
-            <q-input
-              class="col"
-              outlined
-              v-model.trim="BcvAmountEUR"
-              dense="dense"
-              hint="Calculo (Bs.)"
-              inputmode="numeric"
-              type="number"
-              pattern="[0-9]*\.?[0-9]*"
-              @focus="EURAmountBcv = null"
-            >
-              <template v-slot:append>
-                <div style="font-size:large;"> Bs. </div >
-              </template>
-                <template v-slot:prepend>
-                  {{ computedEurToBs }}
-                </template>
-            </q-input>
-          </q-card-section>
-        </q-card>
-      </q-expansion-item>
-
-      <q-expansion-item @click="CNYreturnToZeroBcv()">
-        <template v-slot:header>
-          <q-item-section avatar class="q-pr-sm">
-            <q-avatar style="font-size: 75px;">
-              <img src="/BcvDolarPNG.png">
-            </q-avatar>
-          </q-item-section>
-          <q-item-section>
-            <h6 style="text-shadow: 1px 1px 4px black;">Yuan (¥): {{ CNYOfficialBcv }} <q-icon :color=CNYColorBcv :name='CNYSymbolBcv'/><br><div class="text-caption">{{ BcvFormatDate }}</div></h6>
-          </q-item-section>
-        </template>
-
-        <q-card class="transparent">
-          <q-card-section>
-            <q-input class="col q-pb-xl"
+      <q-card class="transparent">
+        <q-card-section >
+          <q-input
+            class="col q-pb-xl"
             outlined
-            v-model.trim="CNYAmountBcv"
+            v-model.trim="EURAmountBcv"
             dense="dense"
-            hint="Inserte valor ¥ (CNY)"
-            inputmode="decimal"
+            hint="Inserte valor € (EUR)"
             type="number"
             pattern="[0-9]*\.?[0-9]*"
-            @focus="BcvAmountCNY = null"
-            >
-              <template v-slot:append>
-                <div style="font-size:large;"> ¥ </div >
-              </template>
-              <template v-slot:prepend>
-                {{ computedBsToCNY }}
-              </template>
-            </q-input>
-            <q-input class="col" outlined dense="dense" hint="Calculo (Bs.)"
-            v-model.trim="BcvAmountCNY"
             inputmode="decimal"
-            type="number"
-            pattern="[0-9]*\.?[0-9]*"
-            @focus="CNYAmountBcv = null"
-            >
-              <template v-slot:append>
-                <div style="font-size:large;"> Bs. </div >
+            @focus="BcvAmountEUR = null"
+          >
+            <template v-slot:append>
+              <div style="font-size:large;"> € </div>
+            </template>
+            <template v-slot:prepend>
+                {{ computedBsToEur }}
               </template>
-              <template v-slot:prepend>
-                {{ computedCNYtoBs }}
-              </template>
-            </q-input>
-          </q-card-section>
-        </q-card>
-      </q-expansion-item>
-
-      <q-expansion-item @click="RUBreturnToZeroBcv()">
-        <template v-slot:header>
-          <q-item-section avatar class="q-pr-sm">
-            <q-avatar style="font-size: 75px;">
-              <img src="/BcvDolarPNG.png">
-            </q-avatar>
-          </q-item-section>
-
-          <q-item-section>
-            <h6 style="text-shadow: 1px 1px 4px black;">Rublo (₽): {{ RUBOfficialBcv }} <q-icon :color=RUBColorBcv :name='RUBSymbolBcv'/><br><div class="text-caption">{{ BcvFormatDate }}</div></h6>
-          </q-item-section>
-        </template>
-
-        <q-card class="transparent">
-          <q-card-section>
-            <q-input class="col q-pb-xl"
+          </q-input>
+          <q-input
+            class="col"
             outlined
-            v-model.trim="RUBAmountBcv"
+            v-model.trim="BcvAmountEUR"
             dense="dense"
-            hint="Inserte valor ₽ (RUB)"
-            inputmode="decimal"
+            hint="Calculo (Bs.)"
+            inputmode="numeric"
             type="number"
             pattern="[0-9]*\.?[0-9]*"
-            @focus="BcvAmountRUB = null"
-            >
-              <template v-slot:append>
-                <div style="font-size:large;"> ₽ </div >
-              </template>
+            @focus="EURAmountBcv = null"
+          >
+            <template v-slot:append>
+              <div style="font-size:large;"> Bs. </div>
+            </template>
               <template v-slot:prepend>
-                {{ computedBsToRUB }}
+                {{ computedEurToBs }}
               </template>
-            </q-input>
-            <q-input class="col" outlined dense="dense" hint="Calculo (Bs.)"
-            v-model.trim="BcvAmountRUB"
-            inputmode="decimal"
-            type="number"
-            pattern="[0-9]*\.?[0-9]*"
-            @focus="RUBAmountBcv = null"
-            >
-              <template v-slot:append>
-                <div style="font-size:large;"> Bs. </div >
-              </template>
-              <template v-slot:prepend>
-                  {{ computedRUBtoBs }}
-                </template>
-            </q-input>
-          </q-card-section>
-        </q-card>
-      </q-expansion-item>
+          </q-input>
+        </q-card-section>
+      </q-card>
+    </q-expansion-item>
 
-      <q-expansion-item @click="TRYreturnToZeroBcv()">
-        <template v-slot:header>
-          <q-item-section avatar class="q-pr-sm">
-            <q-avatar style="font-size: 75px;">
-              <img src="/BcvDolarPNG.png">
-            </q-avatar>
-          </q-item-section>
+    <q-expansion-item @click="CNYreturnToZeroBcv()">
+      <template v-slot:header>
+        <q-item-section avatar class="q-pr-sm">
+          <q-avatar style="font-size: 75px;">
+            <img src="/BcvDolarPNG.png">
+          </q-avatar>
+        </q-item-section>
+        <q-item-section>
+          <h6 style="text-shadow: 1px 1px 4px black;">Yuan (¥): {{ CNYOfficialBcv }} <q-icon :color=CNYColorBcv :name='CNYSymbolBcv'/><br><div class="text-caption">{{ BcvFormatDate }}</div></h6>
+        </q-item-section>
+      </template>
 
-          <q-item-section>
-            <h6 style="text-shadow: 1px 1px 4px black;">Lira (₺): {{ TRYOfficialBcv }} <q-icon :color=TRYColorBcv :name='TRYSymbolBcv'/><br><div class="text-caption">{{ BcvFormatDate }}</div></h6>
-          </q-item-section>
-        </template>
+      <q-card class="transparent">
+        <q-card-section>
+          <q-input class="col q-pb-xl"
+          outlined
+          v-model.trim="CNYAmountBcv"
+          dense="dense"
+          hint="Inserte valor ¥ (CNY)"
+          inputmode="decimal"
+          type="number"
+          pattern="[0-9]*\.?[0-9]*"
+          @focus="BcvAmountCNY = null"
+          >
+            <template v-slot:append>
+              <div style="font-size:large;"> ¥ </div>
+            </template>
+            <template v-slot:prepend>
+              {{ computedBsToCNY }}
+            </template>
+          </q-input>
+          <q-input class="col" outlined dense="dense" hint="Calculo (Bs.)"
+          v-model.trim="BcvAmountCNY"
+          inputmode="decimal"
+          type="number"
+          pattern="[0-9]*\.?[0-9]*"
+          @focus="CNYAmountBcv = null"
+          >
+            <template v-slot:append>
+              <div style="font-size:large;"> Bs. </div>
+            </template>
+            <template v-slot:prepend>
+              {{ computedCNYtoBs }}
+            </template>
+          </q-input>
+        </q-card-section>
+      </q-card>
+    </q-expansion-item>
 
-        <q-card class="transparent">
-          <q-card-section>
-            <q-input class="col q-pb-xl"
-            outlined
-            v-model.trim="TRYAmountBcv"
-            dense="dense"
-            hint="Inserte valor ₺ (TRY)"
-            inputmode="decimal"
-            type="number"
-            pattern="[0-9]*\.?[0-9]*"
-            @focus="BcvAmountTRY = null"
-            >
-              <template v-slot:append>
-                <div style="font-size:large;"> ₺ </div >
-              </template>
+    <q-expansion-item @click="RUBreturnToZeroBcv()">
+      <template v-slot:header>
+        <q-item-section avatar class="q-pr-sm">
+          <q-avatar style="font-size: 75px;">
+            <img src="/BcvDolarPNG.png">
+          </q-avatar>
+        </q-item-section>
+
+        <q-item-section>
+          <h6 style="text-shadow: 1px 1px 4px black;">Rublo (₽): {{ RUBOfficialBcv }} <q-icon :color=RUBColorBcv :name='RUBSymbolBcv'/><br><div class="text-caption">{{ BcvFormatDate }}</div></h6>
+        </q-item-section>
+      </template>
+
+      <q-card class="transparent">
+        <q-card-section>
+          <q-input class="col q-pb-xl"
+          outlined
+          v-model.trim="RUBAmountBcv"
+          dense="dense"
+          hint="Inserte valor ₽ (RUB)"
+          inputmode="decimal"
+          type="number"
+          pattern="[0-9]*\.?[0-9]*"
+          @focus="BcvAmountRUB = null"
+          >
+            <template v-slot:append>
+              <div style="font-size:large;"> ₽ </div>
+            </template>
+            <template v-slot:prepend>
+              {{ computedBsToRUB }}
+            </template>
+          </q-input>
+          <q-input class="col" outlined dense="dense" hint="Calculo (Bs.)"
+          v-model.trim="BcvAmountRUB"
+          inputmode="decimal"
+          type="number"
+          pattern="[0-9]*\.?[0-9]*"
+          @focus="RUBAmountBcv = null"
+          >
+            <template v-slot:append>
+              <div style="font-size:large;"> Bs. </div>
+            </template>
               <template v-slot:prepend>
-                {{ computedBsToTRY }}
+                {{ computedRUBtoBs }}
               </template>
-            </q-input>
-            <q-input class="col" outlined dense="dense" hint="Calculo (Bs.)"
-            v-model.trim="BcvAmountTRY"
-            inputmode="decimal"
-            type="number"
-            pattern="[0-9]*\.?[0-9]*"
-            @focus="TRYAmountBcv = null"
-            >
-              <template v-slot:append>
-                <div style="font-size:large;"> Bs. </div >
-              </template>
+          </q-input>
+        </q-card-section>
+      </q-card>
+    </q-expansion-item>
+
+    <q-expansion-item @click="TRYreturnToZeroBcv()">
+      <template v-slot:header>
+        <q-item-section avatar class="q-pr-sm">
+          <q-avatar style="font-size: 75px;">
+            <img src="/BcvDolarPNG.png">
+          </q-avatar>
+        </q-item-section>
+
+        <q-item-section>
+          <h6 style="text-shadow: 1px 1px 4px black;">Lira (₺): {{ TRYOfficialBcv }} <q-icon :color=TRYColorBcv :name='TRYSymbolBcv'/><br><div class="text-caption">{{ BcvFormatDate }}</div></h6>
+        </q-item-section>
+      </template>
+
+      <q-card class="transparent">
+        <q-card-section>
+          <q-input class="col q-pb-xl"
+          outlined
+          v-model.trim="TRYAmountBcv"
+          dense="dense"
+          hint="Inserte valor ₺ (TRY)"
+          inputmode="decimal"
+          type="number"
+          pattern="[0-9]*\.?[0-9]*"
+          @focus="BcvAmountTRY = null"
+          >
+            <template v-slot:append>
+              <div style="font-size:large;"> ₺ </div>
+            </template>
+            <template v-slot:prepend>
+              {{ computedBsToTRY }}
+            </template>
+          </q-input>
+          <q-input class="col" outlined dense="dense" hint="Calculo (Bs.)"
+          v-model.trim="BcvAmountTRY"
+          inputmode="decimal"
+          type="number"
+          pattern="[0-9]*\.?[0-9]*"
+          @focus="TRYAmountBcv = null"
+          >
+            <template v-slot:append>
+              <div style="font-size:large;"> Bs. </div>
+            </template>
               <template v-slot:prepend>
-                  {{ computedTRYtoBs }}
-                </template>
-            </q-input>
-          </q-card-section>
-        </q-card>
-      </q-expansion-item>
-    </div>
+                {{ computedTRYtoBs }}
+              </template>
+          </q-input>
+        </q-card-section>
+      </q-card>
+    </q-expansion-item>
+  </div>
 </template>
 
 <script>
@@ -264,6 +265,8 @@ export default defineComponent({
     const BcvFormatDate = computed(() => {
       if (!consultHourBcv.value) return 'Fecha no disponible';
       const fecha = new Date(consultHourBcv.value);
+      // Sumamos 1 día estéticamente para que coincida con la vigencia de la tasa del BCV
+      fecha.setDate(fecha.getDate() + 1);
       return new Intl.DateTimeFormat('es-VE', {
         day: '2-digit',
         month: '2-digit',
@@ -350,13 +353,46 @@ export default defineComponent({
       BcvAmountTRY.value = null;
     }
 
+    // Obtiene la fecha YYYY-MM-DD real en la zona horaria de Venezuela
+    function getVenezuelaDateStr(utcDateStr) {
+      if (!utcDateStr) return '';
+      const date = new Date(utcDateStr);
+      const options = {
+        timeZone: 'America/Caracas',
+        year: 'numeric',
+        month: '2-digit',
+        day: '2-digit'
+      };
+      const formatter = new Intl.DateTimeFormat('en-CA', options);
+      return formatter.format(date);
+    }
+
+    // Calcula la fecha de vigencia real del BCV (+1 día)
+    function getBcvEffectiveDate(utcDateStr) {
+      const localDateStr = getVenezuelaDateStr(utcDateStr);
+      if (!localDateStr) return '';
+      const [year, month, day] = localDateStr.split('-').map(Number);
+
+      const date = new Date(year, month - 1, day);
+      date.setDate(date.getDate() + 1);
+
+      const y = date.getFullYear();
+      const m = String(date.getMonth() + 1).padStart(2, '0');
+      const d = String(date.getDate()).padStart(2, '0');
+      return `${y}-${m}-${d}`;
+    }
+
     function updateValuesForDate(dateStr) {
       if (!dateStr || !bcvHistory.value.length) return;
 
-      let bcvRecord = bcvHistory.value.find(item => item && item.fecha_consulta && item.fecha_consulta.startsWith(dateStr));
+      let bcvRecord = bcvHistory.value.find(item => {
+        return item && item.fecha_consulta && getBcvEffectiveDate(item.fecha_consulta) === dateStr;
+      });
 
       if (!bcvRecord) {
-        bcvRecord = bcvHistory.value.find(item => item && item.fecha_consulta && item.fecha_consulta <= dateStr);
+        bcvRecord = bcvHistory.value.find(item => {
+          return item && item.fecha_consulta && getBcvEffectiveDate(item.fecha_consulta) <= dateStr;
+        });
       }
 
       if (bcvRecord) {
@@ -371,6 +407,7 @@ export default defineComponent({
 
     async function loadHistory() {
       $q.loading.show();
+
       try {
         const resBcv = await axios.get(import.meta.env.VITE_SUPABASE_URL + '/rest/v1/rpc/obtener_tasas_bcv', {
           headers: {
@@ -386,7 +423,8 @@ export default defineComponent({
           if (Array.isArray(bcvHistory.value)) {
             bcvHistory.value.forEach(item => {
               if (item && item.fecha_consulta) {
-                datesSet.add(item.fecha_consulta.split('T')[0]);
+                const effectiveDate = getBcvEffectiveDate(item.fecha_consulta);
+                datesSet.add(effectiveDate);
               }
             });
           }
