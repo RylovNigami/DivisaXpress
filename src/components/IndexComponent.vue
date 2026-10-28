@@ -13,7 +13,7 @@
       behavior="menu"
       @update:model-value="onDateChange"
     >
-      <template v-slot:prepend>
+      <template v-slot:prepend >
         <q-icon name="event" />
       </template>
     </q-select>
@@ -36,8 +36,9 @@
       <q-card class="transparent">
         <q-card-section >
           <q-input
-            class="col q-pb-xl"
-            outlined
+            class="col q-pb-md transparent-input"
+
+            dark
             v-model.trim="USDamountBCV"
             dense="dense"
             hint="Inserte valor $ (USD)"
@@ -47,15 +48,16 @@
             @focus="BCVamountUSD = null"
           >
             <template v-slot:append>
-              <div style="font-size:large;"> $ </div>
+              <div style="font-size:large; padding-right: 10px;"> $ </div>
             </template>
-            <template v-slot:prepend>
+            <template v-slot:prepend >
                 {{ computedBCVtoUSD }}
               </template>
           </q-input>
           <q-input
-            class="col"
-            outlined
+            class="col transparent-input"
+
+            dark
             dense="dense"
             hint="Calculo (Bs.)"
             type="number"
@@ -65,9 +67,9 @@
             @focus="USDamountBCV = null"
           >
             <template v-slot:append>
-              <div style="font-size:large;"> Bs. </div>
+              <div style="font-size:large; padding-right: 10px;"> Bs. </div>
             </template>
-            <template v-slot:prepend>
+            <template v-slot:prepend >
                 {{ computedUSDtoBCV }}
               </template>
           </q-input>
@@ -90,8 +92,9 @@
       <q-card class="transparent">
         <q-card-section>
           <q-input
-            class="col q-pb-xl"
-            outlined
+            class="col q-pb-md transparent-input"
+
+            dark
             v-model.trim="USDamountParallel"
             dense="dense"
             hint="Inserte valor $ (USD)"
@@ -101,15 +104,16 @@
             @focus="ParallelamountUSD = null"
           >
             <template v-slot:append>
-              <div style="font-size:large;"> $ </div>
+              <div style="font-size:large; padding-right: 10px;"> $ </div>
             </template>
-            <template v-slot:prepend>
+            <template v-slot:prepend >
               {{ computedParalleltoUSD }}
             </template>
           </q-input>
           <q-input
-            class="col"
-            outlined
+            class="col transparent-input"
+
+            dark
             dense="dense"
             hint="Calculo (Bs.)"
             type="number"
@@ -119,9 +123,9 @@
             @focus="USDamountParallel = null"
           >
             <template v-slot:append>
-              <div style="font-size:large;"> Bs. </div>
+              <div style="font-size:large; padding-right: 10px;"> Bs. </div>
             </template>
-            <template v-slot:prepend>
+            <template v-slot:prepend >
               {{ computedUSDtoParallel }}
             </template>
           </q-input>
@@ -144,8 +148,9 @@
 
       <q-card class="transparent">
         <q-card-section>
-          <q-input class="col q-pb-xl"
-          outlined
+          <q-input class="col q-pb-md transparent-input"
+
+          dark
           v-model.trim="USDamountPromedio"
           dense="dense"
           hint="Inserte valor $ (USD)"
@@ -155,15 +160,16 @@
           @focus="PromedioamountUSD = null"
           >
             <template v-slot:append>
-              <div style="font-size:large;"> $ </div>
+              <div style="font-size:large; padding-right: 10px;"> $ </div>
             </template>
-            <template v-slot:prepend>
+            <template v-slot:prepend >
                 {{ computedPromediotoUSD }}
               </template>
           </q-input>
           <q-input
-            class="col"
-            outlined
+            class="col transparent-input"
+
+            dark
             dense="dense"
             hint="Calculo (Bs.)"
             type="number"
@@ -173,9 +179,9 @@
             @focus="USDamountPromedio = null"
           >
             <template v-slot:append>
-              <div style="font-size:large;"> Bs. </div>
+              <div style="font-size:large; padding-right: 10px;"> Bs. </div>
             </template>
-            <template v-slot:prepend>
+            <template v-slot:prepend >
                 {{ computedUSDtoPromedio }}
               </template>
           </q-input>

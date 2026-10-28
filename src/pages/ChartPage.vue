@@ -13,7 +13,7 @@
       <q-tab name="BCV" label="BCV" />
       <q-tab name="USDT" label="USDT"/>
     </q-tabs>
-    <q-tab-panels v-model="tab" animated class="hero-image font-color">
+    <q-tab-panels v-model="tab" animated class="font-color hero-image">
       <q-tab-panel name="BCV" class="q-pa-none">
         <BCVChartComponent/>
       </q-tab-panel>

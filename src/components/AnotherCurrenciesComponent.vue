@@ -36,8 +36,8 @@
       <q-card class="transparent">
         <q-card-section >
           <q-input
-            class="col q-pb-xl"
-            outlined
+            class="col q-pb-xl transparent-input"
+            borderless
             v-model.trim="EURAmountBcv"
             dense="dense"
             hint="Inserte valor € (EUR)"
@@ -47,15 +47,15 @@
             @focus="BcvAmountEUR = null"
           >
             <template v-slot:append>
-              <div style="font-size:large;"> € </div>
+              <div style="font-size:large; padding-right: 10px;"> € </div>
             </template>
             <template v-slot:prepend>
                 {{ computedBsToEur }}
               </template>
           </q-input>
           <q-input
-            class="col"
-            outlined
+            class="col transparent-input"
+            borderless
             v-model.trim="BcvAmountEUR"
             dense="dense"
             hint="Calculo (Bs.)"
@@ -65,7 +65,7 @@
             @focus="EURAmountBcv = null"
           >
             <template v-slot:append>
-              <div style="font-size:large;"> Bs. </div>
+              <div style="font-size:large; padding-right: 10px;"> Bs. </div>
             </template>
               <template v-slot:prepend>
                 {{ computedEurToBs }}
@@ -89,8 +89,8 @@
 
       <q-card class="transparent">
         <q-card-section>
-          <q-input class="col q-pb-xl"
-          outlined
+          <q-input class="col q-pb-xl transparent-input"
+          borderless
           v-model.trim="CNYAmountBcv"
           dense="dense"
           hint="Inserte valor ¥ (CNY)"
@@ -100,13 +100,13 @@
           @focus="BcvAmountCNY = null"
           >
             <template v-slot:append>
-              <div style="font-size:large;"> ¥ </div>
+              <div style="font-size:large; padding-right: 10px;"> ¥ </div>
             </template>
             <template v-slot:prepend>
               {{ computedBsToCNY }}
             </template>
           </q-input>
-          <q-input class="col" outlined dense="dense" hint="Calculo (Bs.)"
+          <q-input class="col transparent-input" borderless dense="dense" hint="Calculo (Bs.)"
           v-model.trim="BcvAmountCNY"
           inputmode="decimal"
           type="number"
@@ -114,7 +114,7 @@
           @focus="CNYAmountBcv = null"
           >
             <template v-slot:append>
-              <div style="font-size:large;"> Bs. </div>
+              <div style="font-size:large; padding-right: 10px;"> Bs. </div>
             </template>
             <template v-slot:prepend>
               {{ computedCNYtoBs }}
@@ -139,8 +139,8 @@
 
       <q-card class="transparent">
         <q-card-section>
-          <q-input class="col q-pb-xl"
-          outlined
+          <q-input class="col q-pb-xl transparent-input"
+          borderless
           v-model.trim="RUBAmountBcv"
           dense="dense"
           hint="Inserte valor ₽ (RUB)"
@@ -150,13 +150,13 @@
           @focus="BcvAmountRUB = null"
           >
             <template v-slot:append>
-              <div style="font-size:large;"> ₽ </div>
+              <div style="font-size:large; padding-right: 10px;"> ₽ </div>
             </template>
             <template v-slot:prepend>
               {{ computedBsToRUB }}
             </template>
           </q-input>
-          <q-input class="col" outlined dense="dense" hint="Calculo (Bs.)"
+          <q-input class="col transparent-input" borderless dense="dense" hint="Calculo (Bs.)"
           v-model.trim="BcvAmountRUB"
           inputmode="decimal"
           type="number"
@@ -164,7 +164,7 @@
           @focus="RUBAmountBcv = null"
           >
             <template v-slot:append>
-              <div style="font-size:large;"> Bs. </div>
+              <div style="font-size:large; padding-right: 10px;"> Bs. </div>
             </template>
               <template v-slot:prepend>
                 {{ computedRUBtoBs }}
@@ -189,8 +189,8 @@
 
       <q-card class="transparent">
         <q-card-section>
-          <q-input class="col q-pb-xl"
-          outlined
+          <q-input class="col q-pb-xl transparent-input"
+          borderless
           v-model.trim="TRYAmountBcv"
           dense="dense"
           hint="Inserte valor ₺ (TRY)"
@@ -200,13 +200,13 @@
           @focus="BcvAmountTRY = null"
           >
             <template v-slot:append>
-              <div style="font-size:large;"> ₺ </div>
+              <div style="font-size:large; padding-right: 10px;"> ₺ </div>
             </template>
             <template v-slot:prepend>
               {{ computedBsToTRY }}
             </template>
           </q-input>
-          <q-input class="col" outlined dense="dense" hint="Calculo (Bs.)"
+          <q-input class="col transparent-input" borderless dense="dense" hint="Calculo (Bs.)"
           v-model.trim="BcvAmountTRY"
           inputmode="decimal"
           type="number"
@@ -214,7 +214,7 @@
           @focus="TRYAmountBcv = null"
           >
             <template v-slot:append>
-              <div style="font-size:large;"> Bs. </div>
+              <div style="font-size:large; padding-right: 10px;"> Bs. </div>
             </template>
               <template v-slot:prepend>
                 {{ computedTRYtoBs }}

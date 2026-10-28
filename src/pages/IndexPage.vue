@@ -10,10 +10,10 @@
       narrow-indicator
       style="background-color: black;"
     >
-      <q-tab name="Dólar" label="Dólar" />
+      <q-tab name="Dólar" label="Dólar"/>
       <q-tab name="Otras" label="Otras Divisas"/>
     </q-tabs>
-    <q-tab-panels v-model="tab" animated class="hero-image font-color">
+    <q-tab-panels v-model="tab" animated class="font-color hero-image">
       <q-tab-panel name="Dólar" class="q-pa-none">
         <IndexComponent/>
       </q-tab-panel>
