@@ -1,5 +1,0 @@
-{
-  "buildCommand": "quasar build",
-  "outputDirectory": "dist/spa",
-  "framework": null
-}
