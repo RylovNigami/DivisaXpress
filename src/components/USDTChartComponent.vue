@@ -1,33 +1,39 @@
 <template>
-  <div class="q-pa-md">
-    <!-- Controles de Filtro: Rango de Tiempo -->
-    <div class="row q-col-gutter-md q-mb-md">
-      <div class="col-12">
-        <q-select
-          v-model="selectedRange"
-          :options="rangeOptions"
-          label="Rango de tiempo"
-          dense
-          dark
-          outlined
-          emit-value
-          map-options
-          options-dense
-        />
-      </div>
-    </div>
-
-    <!-- Contenedor del Gráfico con tarjeta transparente -->
-    <q-card flat class="transparent">
-      <q-card-section>
-        <div style="height: 350px; position: relative;">
-          <LineChart v-if="loaded" :data="chartData" :options="chartOptions" class="chart-shadow" />
-          <div v-else class="flex flex-center" style="height: 100%;">
-            <q-spinner color="primary" size="3em" />
+  <div>
+    <!-- Contenedor pegajoso para el filtro anclado debajo de las pestañas -->
+    <q-page-sticky position="top" expand :offset="[0, 35]" style="z-index: 9;">
+      <div class="full-width q-px-md q-py-sm" style="background-color: #030000;">
+        <div class="row q-col-gutter-md">
+          <div class="col-12">
+            <q-select
+              v-model="selectedRange"
+              :options="rangeOptions"
+              label="Rango de tiempo"
+              dense
+              dark
+              outlined
+              emit-value
+              map-options
+              options-dense
+            />
           </div>
         </div>
-      </q-card-section>
-    </q-card>
+      </div>
+    </q-page-sticky>
+
+    <!-- Contenedor del Gráfico con margen superior para no quedar oculto -->
+    <div style="padding-top: 85px;" class="q-pa-md"> <!-- Margen menor porque solo hay 1 selector -->
+      <q-card flat class="transparent">
+        <q-card-section>
+          <div style="height: 350px; position: relative;">
+            <LineChart v-if="loaded" :data="chartData" :options="chartOptions" class="chart-shadow" />
+            <div v-else class="flex flex-center" style="height: 100%;">
+              <q-spinner color="primary" size="3em" />
+            </div>
+          </div>
+        </q-card-section>
+      </q-card>
+    </div>
   </div>
 </template>
 
@@ -84,6 +90,17 @@ export default defineComponent({
     const chartOptions = ref({
       responsive: true,
       maintainAspectRatio: false,
+      elements: {
+        point: {
+          radius: 4,          // Tamaño visual normal del punto en el gráfico
+          hitRadius: 30,      // Área táctil invisible (30px alrededor del punto para los dedos)
+          hoverRadius: 7      // Tamaño visual del punto al momento de ser tocado
+        }
+      },
+      interaction: {
+        mode: 'index',
+        intersect: false,
+      },
       scales: {
         x: {
           ticks: {

@@ -1,5 +1,6 @@
 <template>
-  <div class="q-pt-md row q-pl-lg q-pr-md flex-center font-color">
+  <q-page-sticky position="top" expand :offset="[0, 35]" style="z-index: 9;">
+  <div class="full-width row q-pl-lg q-pr-md q-py-sm flex-center font-color" style="background-color: #030000;">
     <q-select
       dense
       dark
@@ -18,8 +19,9 @@
       </template>
     </q-select>
   </div>
+  </q-page-sticky>
 
-  <div class="">
+  <div style="padding-top: 20px;">
     <q-expansion-item @click="EURreturnToZeroBcv()">
       <template v-slot:header>
         <q-item-section avatar class="q-pr-sm">

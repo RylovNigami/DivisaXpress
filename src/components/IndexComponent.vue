@@ -1,193 +1,198 @@
 <template>
-  <div class="q-pt-md row q-pl-lg q-pr-md flex-center font-color">
-    <q-select
-      dense
-      dark
-      borderless
-      v-model="selectedDate"
-      :options="availableDates"
-      label="Fecha de la tasa"
-      class="col-12 col-md-6"
-      emit-value
-      map-options
-      behavior="menu"
-      @update:model-value="onDateChange"
-    >
-      <template v-slot:prepend >
-        <q-icon name="event" />
-      </template>
-    </q-select>
-  </div>
-
   <div>
-    <q-expansion-item @click="returnToZeroBcv()">
-      <template v-slot:header>
-        <q-item-section avatar class="q-pr-sm">
-          <q-avatar style="font-size: 75px;">
-            <img src="/BcvDolarPNG.png">
-          </q-avatar>
-        </q-item-section>
-
-        <q-item-section>
-          <h6 style="text-shadow: 1px 1px 4px black;">Oficial ($): {{ OfficialValue }} <q-icon :color=colorBcv :name="symbolBcv"/><br><div class="text-caption">{{ BcvFormatDate }}</div></h6>
-        </q-item-section>
-      </template>
-
-      <q-card class="transparent">
-        <q-card-section >
-          <q-input
-            class="col q-pb-md transparent-input"
-
-            dark
-            v-model.trim="USDamountBCV"
-            dense="dense"
-            hint="Inserte valor $ (USD)"
-            type="number"
-            pattern="[0-9]*\.?[0-9]*"
-            inputmode="decimal"
-            @focus="BCVamountUSD = null"
-          >
-            <template v-slot:append>
-              <div style="font-size:large; padding-right: 10px;"> $ </div>
-            </template>
-            <template v-slot:prepend >
-                {{ computedBCVtoUSD }}
-              </template>
-          </q-input>
-          <q-input
-            class="col transparent-input"
-
-            dark
-            dense="dense"
-            hint="Calculo (Bs.)"
-            type="number"
-            pattern="[0-9]*\.?[0-9]*"
-            inputmode="decimal"
-            v-model.trim="BCVamountUSD"
-            @focus="USDamountBCV = null"
-          >
-            <template v-slot:append>
-              <div style="font-size:large; padding-right: 10px;"> Bs. </div>
-            </template>
-            <template v-slot:prepend >
-                {{ computedUSDtoBCV }}
-              </template>
-          </q-input>
-        </q-card-section>
-      </q-card>
-    </q-expansion-item>
-
-    <q-expansion-item @click="returnToZeroParallel()">
-      <template v-slot:header>
-        <q-item-section avatar class="q-pr-sm">
-          <q-avatar style="font-size: 75px;">
-            <img src="/USDT_Logo.png">
-          </q-avatar>
-        </q-item-section>
-        <q-item-section>
-          <h6 style="text-shadow: 1px 1px 4px black;">USDT ($): {{ ParallelValue }} <q-icon :color=colorParallel :name='symbolParallel'/><br><div class="text-caption">{{ ParallelFormatDate }}</div></h6>
-        </q-item-section>
-      </template>
-
-      <q-card class="transparent">
-        <q-card-section>
-          <q-input
-            class="col q-pb-md transparent-input"
-
-            dark
-            v-model.trim="USDamountParallel"
-            dense="dense"
-            hint="Inserte valor $ (USD)"
-            type="number"
-            pattern="[0-9]*\.?[0-9]*"
-            inputmode="decimal"
-            @focus="ParallelamountUSD = null"
-          >
-            <template v-slot:append>
-              <div style="font-size:large; padding-right: 10px;"> $ </div>
-            </template>
-            <template v-slot:prepend >
-              {{ computedParalleltoUSD }}
-            </template>
-          </q-input>
-          <q-input
-            class="col transparent-input"
-
-            dark
-            dense="dense"
-            hint="Calculo (Bs.)"
-            type="number"
-            pattern="[0-9]*\.?[0-9]*"
-            inputmode="decimal"
-            v-model.trim="ParallelamountUSD"
-            @focus="USDamountParallel = null"
-          >
-            <template v-slot:append>
-              <div style="font-size:large; padding-right: 10px;"> Bs. </div>
-            </template>
-            <template v-slot:prepend >
-              {{ computedUSDtoParallel }}
-            </template>
-          </q-input>
-        </q-card-section>
-      </q-card>
-    </q-expansion-item>
-
-    <q-expansion-item @click="returnToZeroPromedio()">
-      <template v-slot:header>
-        <q-item-section avatar class="q-pr-sm">
-          <q-avatar style="font-size: 75px;">
-            <img src="/promedio.png">
-          </q-avatar>
-        </q-item-section>
-
-        <q-item-section>
-          <h6 style="text-shadow: 1px 1px 4px black;" class="text-no-wrap">Promedio ($): {{ promedioValue }} <q-icon :color=colorPromedio :name='symbolPromedio'/><br><div class="text-caption">{{ ParallelFormatDate }}</div></h6>
-        </q-item-section>
-      </template>
-
-      <q-card class="transparent">
-        <q-card-section>
-          <q-input class="col q-pb-md transparent-input"
-
+    <!-- 1. Selector pegajoso anclado debajo de las pestañas -->
+    <q-page-sticky position="top" expand :offset="[0, 35]" style="z-index: 9;">
+      <div class="full-width row q-pl-lg q-pr-md q-py-sm flex-center font-color" style="background-color: #030000;">
+        <q-select
+          dense
           dark
-          v-model.trim="USDamountPromedio"
-          dense="dense"
-          hint="Inserte valor $ (USD)"
-          type="number"
-          pattern="[0-9]*\.?[0-9]*"
-          inputmode="decimal"
-          @focus="PromedioamountUSD = null"
-          >
-            <template v-slot:append>
-              <div style="font-size:large; padding-right: 10px;"> $ </div>
-            </template>
-            <template v-slot:prepend >
-                {{ computedPromediotoUSD }}
-              </template>
-          </q-input>
-          <q-input
-            class="col transparent-input"
+          borderless
+          v-model="selectedDate"
+          :options="availableDates"
+          label="Fecha de la tasa"
+          class="col-12 col-md-6"
+          emit-value
+          map-options
+          behavior="menu"
+          @update:model-value="onDateChange"
+        >
+          <template v-slot:prepend >
+            <q-icon name="event" />
+          </template>
+        </q-select>
+      </div>
+    </q-page-sticky>
 
+    <!-- 2. Contenedor de las tarjetas con padding-top para que no queden ocultas bajo el selector -->
+    <div style="padding-top: 20px;">
+
+      <!-- TARJETA OFICIAL BCV -->
+      <q-expansion-item @click="returnToZeroBcv()">
+        <template v-slot:header>
+          <q-item-section avatar class="q-pr-sm">
+            <q-avatar style="font-size: 75px;">
+              <img src="/BcvDolarPNG.png">
+            </q-avatar>
+          </q-item-section>
+
+          <q-item-section>
+            <h6 style="text-shadow: 1px 1px 4px black;">Oficial ($): {{ OfficialValue }} <q-icon :color=colorBcv :name="symbolBcv"/><br><div class="text-caption">{{ BcvFormatDate }}</div></h6>
+          </q-item-section>
+        </template>
+
+        <q-card class="transparent">
+          <q-card-section >
+            <q-input
+              class="col q-pb-md transparent-input"
+              dark
+              v-model.trim="USDamountBCV"
+              dense="dense"
+              hint="Inserte valor $ (USD)"
+              type="number"
+              pattern="[0-9]*\.?[0-9]*"
+              inputmode="decimal"
+              @focus="BCVamountUSD = null"
+            >
+              <template v-slot:append>
+                <div style="font-size:large; padding-right: 10px;"> $ </div>
+              </template>
+              <template v-slot:prepend >
+                  {{ computedBCVtoUSD }}
+                </template>
+            </q-input>
+            <q-input
+              class="col transparent-input"
+              dark
+              dense="dense"
+              hint="Calculo (Bs.)"
+              type="number"
+              pattern="[0-9]*\.?[0-9]*"
+              inputmode="decimal"
+              v-model.trim="BCVamountUSD"
+              @focus="USDamountBCV = null"
+            >
+              <template v-slot:append>
+                <div style="font-size:large; padding-right: 10px;"> Bs. </div>
+              </template>
+              <template v-slot:prepend >
+                  {{ computedUSDtoBCV }}
+                </template>
+            </q-input>
+          </q-card-section>
+        </q-card>
+      </q-expansion-item>
+
+      <!-- TARJETA PARALELO USDT -->
+      <q-expansion-item @click="returnToZeroParallel()">
+        <template v-slot:header>
+          <q-item-section avatar class="q-pr-sm">
+            <q-avatar style="font-size: 75px;">
+              <img src="/USDT_Logo.png">
+            </q-avatar>
+          </q-item-section>
+          <q-item-section>
+            <h6 style="text-shadow: 1px 1px 4px black;">USDT ($): {{ ParallelValue }} <q-icon :color=colorParallel :name='symbolParallel'/><br><div class="text-caption">{{ ParallelFormatDate }}</div></h6>
+          </q-item-section>
+        </template>
+
+        <q-card class="transparent">
+          <q-card-section>
+            <q-input
+              class="col q-pb-md transparent-input"
+              dark
+              v-model.trim="USDamountParallel"
+              dense="dense"
+              hint="Inserte valor $ (USD)"
+              type="number"
+              pattern="[0-9]*\.?[0-9]*"
+              inputmode="decimal"
+              @focus="ParallelamountUSD = null"
+            >
+              <template v-slot:append>
+                <div style="font-size:large; padding-right: 10px;"> $ </div>
+              </template>
+              <template v-slot:prepend >
+                {{ computedParalleltoUSD }}
+              </template>
+            </q-input>
+            <q-input
+              class="col transparent-input"
+              dark
+              dense="dense"
+              hint="Calculo (Bs.)"
+              type="number"
+              pattern="[0-9]*\.?[0-9]*"
+              inputmode="decimal"
+              v-model.trim="ParallelamountUSD"
+              @focus="USDamountParallel = null"
+            >
+              <template v-slot:append>
+                <div style="font-size:large; padding-right: 10px;"> Bs. </div>
+              </template>
+              <template v-slot:prepend >
+                {{ computedUSDtoParallel }}
+              </template>
+            </q-input>
+          </q-card-section>
+        </q-card>
+      </q-expansion-item>
+
+      <!-- TARJETA PROMEDIO -->
+      <q-expansion-item @click="returnToZeroPromedio()">
+        <template v-slot:header>
+          <q-item-section avatar class="q-pr-sm">
+            <q-avatar style="font-size: 75px;">
+              <img src="/promedio.png">
+            </q-avatar>
+          </q-item-section>
+
+          <q-item-section>
+            <h6 style="text-shadow: 1px 1px 4px black;" class="text-no-wrap">Promedio ($): {{ promedioValue }} <q-icon :color=colorPromedio :name='symbolPromedio'/><br><div class="text-caption">{{ ParallelFormatDate }}</div></h6>
+          </q-item-section>
+        </template>
+
+        <q-card class="transparent">
+          <q-card-section>
+            <q-input class="col q-pb-md transparent-input"
             dark
+            v-model.trim="USDamountPromedio"
             dense="dense"
-            hint="Calculo (Bs.)"
+            hint="Inserte valor $ (USD)"
             type="number"
             pattern="[0-9]*\.?[0-9]*"
             inputmode="decimal"
-            v-model.trim="PromedioamountUSD"
-            @focus="USDamountPromedio = null"
-          >
-            <template v-slot:append>
-              <div style="font-size:large; padding-right: 10px;"> Bs. </div>
-            </template>
-            <template v-slot:prepend >
-                {{ computedUSDtoPromedio }}
+            @focus="PromedioamountUSD = null"
+            >
+              <template v-slot:append>
+                <div style="font-size:large; padding-right: 10px;"> $ </div>
               </template>
-          </q-input>
-        </q-card-section>
-      </q-card>
-    </q-expansion-item>
+              <template v-slot:prepend >
+                  {{ computedPromediotoUSD }}
+                </template>
+            </q-input>
+            <q-input
+              class="col transparent-input"
+              dark
+              dense="dense"
+              hint="Calculo (Bs.)"
+              type="number"
+              pattern="[0-9]*\.?[0-9]*"
+              inputmode="decimal"
+              v-model.trim="PromedioamountUSD"
+              @focus="USDamountPromedio = null"
+            >
+              <template v-slot:append>
+                <div style="font-size:large; padding-right: 10px;"> Bs. </div>
+              </template>
+              <template v-slot:prepend >
+                  {{ computedUSDtoPromedio }}
+                </template>
+            </q-input>
+          </q-card-section>
+        </q-card>
+      </q-expansion-item>
+
+    </div>
   </div>
 </template>
 

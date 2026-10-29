@@ -1,70 +1,69 @@
 <template>
-  <div class="q-pa-md">
-    <!-- Títulos centrados y con sombreado -->
-    <!--div class="text-h6 text-center shadow-text">Historial de Tasas Oficiales (BCV)</div>
-    <div class="text-subtitle2 text-center q-mb-md shadow-text">Evolución y comparación de monedas oficiales</div>
-
-    <q-separator dark class="q-mb-md" /-->
-
-    <!-- Controles de Filtros: Monedas y Rango de Tiempo -->
-    <div class="row q-col-gutter-md q-mb-md">
-      <!-- Selector de Monedas -->
-      <div class="col-12 col-md-8">
-        <q-select
-          v-model="selectedCurrencies"
-          :options="currencyOptions"
-          label="Seleccionar monedas a graficar"
-          multiple
-          dense
-          dark
-          outlined
-          emit-value
-          map-options
-          options-dense
-        >
-          <template v-slot:selected-item="scope">
-            <q-chip
+  <div>
+    <!-- Contenedor pegajoso para los filtros anclado debajo de las pestañas -->
+    <q-page-sticky position="top" expand :offset="[0, 35]" style="z-index: 9;">
+      <div class="full-width q-px-md q-py-sm" style="background-color: #030000;">
+        <div class="row q-col-gutter-md">
+          <!-- Selector de Monedas -->
+          <div class="col-12 col-md-8">
+            <q-select
+              v-model="selectedCurrencies"
+              :options="currencyOptions"
+              label="Seleccionar monedas a graficar"
+              multiple
               dense
-              removable
-              @remove="scope.removeAtIndex(scope.index)"
-              color="orange"
-              text-color="white"
-              class="q-ma-xs"
+              dark
+              outlined
+              emit-value
+              map-options
+              options-dense
             >
-              {{ scope.opt.label }}
-            </q-chip>
-          </template>
-        </q-select>
-      </div>
+              <template v-slot:selected-item="scope">
+                <q-chip
+                  dense
+                  removable
+                  @remove="scope.removeAtIndex(scope.index)"
+                  color="orange"
+                  text-color="white"
+                  class="q-ma-xs"
+                >
+                  {{ scope.opt.label }}
+                </q-chip>
+              </template>
+            </q-select>
+          </div>
 
-      <!-- Selector de Rango de Tiempo -->
-      <div class="col-12 col-md-4">
-        <q-select
-          v-model="selectedRange"
-          :options="rangeOptions"
-          label="Rango de tiempo"
-          dense
-          dark
-          outlined
-          emit-value
-          map-options
-          options-dense
-        />
-      </div>
-    </div>
-
-    <!-- Contenedor del Gráfico con tarjeta transparente -->
-    <q-card flat class="transparent">
-      <q-card-section>
-        <div style="height: 350px; position: relative;">
-          <!-- Aplicamos la clase chart-shadow para proyectar sombra en las cifras del canvas -->
-          <LineChart v-if="loaded" :data="chartData" :options="chartOptions" class="chart-shadow" />
-          <div v-else class="flex flex-center" style="height: 100%;">
-            <q-spinner color="primary" size="3em" />
+          <!-- Selector de Rango de Tiempo -->
+          <div class="col-12 col-md-4">
+            <q-select
+              v-model="selectedRange"
+              :options="rangeOptions"
+              label="Rango de tiempo"
+              dense
+              dark
+              outlined
+              emit-value
+              map-options
+              options-dense
+            />
           </div>
         </div>
-      </q-card-section>
-    </q-card>
+      </div>
+    </q-page-sticky>
+
+    <!-- Contenedor del Gráfico con margen superior para no quedar oculto -->
+    <div style="padding-top: 110px;" class="q-pa-md"> <!-- Ajusta el 140px si los selectores ocupan más espacio vertical -->
+      <q-card flat class="transparent">
+        <q-card-section>
+          <div style="height: 350px; position: relative;">
+            <LineChart v-if="loaded" :data="chartData" :options="chartOptions" class="chart-shadow" />
+            <div v-else class="flex flex-center" style="height: 100%;">
+              <q-spinner color="primary" size="3em" />
+            </div>
+          </div>
+        </q-card-section>
+      </q-card>
+    </div>
   </div>
 </template>
 
@@ -118,7 +117,7 @@ export default defineComponent({
       { label: '1 Semana', value: 7 },
       { label: '1 Mes', value: 30 },
       { label: '3 Meses', value: 90 },
-      { label: 'Todo el historial', value: 0 }
+      { label: '1 año', value: 365 }
     ];
 
     const selectedRange = ref(30);
@@ -131,6 +130,17 @@ export default defineComponent({
     const chartOptions = ref({
       responsive: true,
       maintainAspectRatio: false,
+      elements: {
+        point: {
+          radius: 4,          // Tamaño visual normal del punto en el gráfico
+          hitRadius: 30,      // Área táctil invisible (30px alrededor del punto para los dedos)
+          hoverRadius: 7      // Tamaño visual del punto al momento de ser tocado
+        }
+      },
+      interaction: {
+        mode: 'index',
+        intersect: false,
+      },
       scales: {
         x: {
           ticks: {
