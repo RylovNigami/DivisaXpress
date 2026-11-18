@@ -132,7 +132,7 @@ export default defineComponent({
       maintainAspectRatio: false,
       elements: {
         point: {
-          radius: 4,          // Tamaño visual normal del punto en el gráfico
+          radius: 3,          // Tamaño visual normal del punto en el gráfico
           hitRadius: 30,      // Área táctil invisible (30px alrededor del punto para los dedos)
           hoverRadius: 7      // Tamaño visual del punto al momento de ser tocado
         }
@@ -203,7 +203,7 @@ export default defineComponent({
           data: dataValues,
           borderColor: opt ? opt.color : '#ffffff',
           backgroundColor: opt ? opt.color : '#ffffff',
-          borderWidth: 3,
+          borderWidth: 1,
           tension: 0.2,
           fill: false
         };

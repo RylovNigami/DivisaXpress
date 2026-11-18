@@ -14,68 +14,63 @@
   padding-right: 8px;
 }
 
-/* Forzar que el degradado cubra toda la pantalla de la app sin líneas negras */
+/* Forzar que el degradado cubra toda la pantalla sin romper el WebView de Android */
 html, body, #q-app, body.body--dark {
   background: linear-gradient(180deg, #030000 0%, #001f3f 40%, #0037ff 100%) !important;
-  background-attachment: fixed !important;
-  min-height: 100vh;
+  /* Se eliminó background-attachment: fixed para evitar pantalla negra al abrir teclado en Android */
+  min-height: 100%;
 }
 
 .fit {
-    width: 101% !important;
-    height: 100% !important;
+  width: 101% !important;
+  height: 100% !important;
 }
 
 .q-item__section--main ~ .q-item__section--side {
-	align-items: flex-end;
-	padding-right: 0;
-	padding-left: 0;
+  align-items: flex-end;
+  padding-right: 0;
+  padding-left: 0;
 }
 
+/* Control unificado para mantener transparencia por defecto y evitar bloques negros */
 .q-field__control {
-	color: var(--q-accent);
-	height: 56px;
-	max-width: 100%;
-	//outline: none;
+  color: var(--q-accent);
+  height: 56px;
+  max-width: 100%;
   background: rgba(251, 251, 251, 0.088);
 }
 
 .q-field__bottom {
-	font-size: 12px;
-	min-height: 20px;
-	line-height: 1;
-	color: rgb(255, 254, 254);
-	padding: 8px 12px 0;
-	backface-visibility: hidden;
-}
-
-.q-field {
-	font-size: 24px;
+  font-size: 12px;
+  min-height: 20px;
+  line-height: 1;
+  color: rgb(255, 254, 254);
+  padding: 8px 12px 0;
+  backface-visibility: hidden;
 }
 
 .q-item__section--side {
-	color: #fff;
+  color: #fff;
 }
 
 .q-item__section--side > .q-icon {
-	font-size: 34px;
+  font-size: 34px;
 }
 
 .q-field__marginal {
-	color: rgb(255, 255, 255);
-	font-size: 24px;
+  color: rgb(255, 255, 255);
+  font-size: 24px;
 }
 
 .q-field__native, .q-field__prefix, .q-field__suffix, .q-field__input {
-	font-weight: 400;
-	line-height: 28px;
-	letter-spacing: 0.00937em;
-	text-decoration: inherit;
-	text-transform: inherit;
-	//background: rgba(251, 251, 251, 0.57);
-	color: rgba(254, 254, 254, 0.87);
-	outline: 0;
-	padding: 6px 0;
+  font-weight: 400;
+  line-height: 28px;
+  letter-spacing: 0.00937em;
+  text-decoration: inherit;
+  text-transform: inherit;
+  color: rgba(254, 254, 254, 0.87);
+  outline: 0;
+  padding: 6px 0;
 }
 
 .font-color {
@@ -87,55 +82,48 @@ html, body, #q-app, body.body--dark {
 }
 
 .q-field {
-    font-size: 14px;
-}
-
-.q-field__control {
-    color: var(--q-accent);
-    height: 56px;
-    max-width: 100%;
-    background: #000;
+  font-size: 14px;
 }
 
 .q-list--dark, .q-item--dark {
-    color: #ffffff;
-    border-color: #000;
-    background-color: black;
+  color: #ffffff;
+  border-color: #000;
+  background-color: black;
 }
 
 .q-field--filled.q-field--dark .q-field__control, .q-field--filled.q-field--dark .q-field__control:before {
-    background: #0037ff;
+  background: #0037ff;
 }
 
 .q-select__dialog-close {
-    color: rgb(255 255 255);
-    background: #83333300;
-    align-self: stretch;
-    border: 0;
-    padding: 0 4px;
-    font-size: 16px;
-    font-weight: 600;
-    text-decoration: none;
-    cursor: pointer;
+  color: rgb(255 255 255);
+  background: #83333300;
+  align-self: stretch;
+  border: 0;
+  padding: 0 4px;
+  font-size: 16px;
+  font-weight: 600;
+  text-decoration: none;
+  cursor: pointer;
 }
 
 .q-toolbar__title {
-    flex: 1 1 0%;
-    min-width: 1px;
-    max-width: 100%;
-    font-size: 26px;
-    font-weight: normal;
-    letter-spacing: 0.01em;
-    padding: 0 12px;
+  flex: 1 1 0%;
+  min-width: 1px;
+  max-width: 100%;
+  font-size: 26px;
+  font-weight: normal;
+  letter-spacing: 0.01em;
+  padding: 0 12px;
 }
 
 .q-btn .q-icon, .q-btn .q-spinner {
-    font-size: 2em;
+  font-size: 2em;
 }
 
 .transparent-input .q-field__control {
   background: rgba(255, 255, 255, 0.12) !important; /* Traslúcido elegante */
-  backdrop-filter: blur(4px);
+  /* Se eliminó backdrop-filter: blur(4px) para evitar fallos de repintado en negro en Android */
   border-radius: 8px;
 }
 
@@ -145,6 +133,27 @@ html, body, #q-app, body.body--dark {
 }
 
 .q-field--dense .q-field__before, .q-field--dense .q-field__prepend {
-    padding-right: 6px;
-    padding-left: 6px;
+  padding-right: 6px;
+  padding-left: 6px;
+}
+
+/* Oculta temporalmente los menús flotantes cuando el teclado reduce la pantalla en móvil */
+@media (max-height: 500px) {
+  .q-page-sticky {
+    display: none !important;
+  }
+}
+
+.copy-btn-square {
+  background: rgba(255, 255, 255, 0.12) !important;
+  border-radius: 8px !important;
+  width: 40px;
+  height: 40px;
+  min-width: 40px;
+  min-height: 40px;
+  padding: 0;
+}
+
+.copy-btn-square :deep(.q-icon) {
+  font-size: 18px !important;
 }

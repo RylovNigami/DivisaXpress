@@ -57,8 +57,17 @@
                 <div style="font-size:large; padding-right: 10px;"> $ </div>
               </template>
               <template v-slot:prepend >
-                  {{ computedBCVtoUSD }}
-                </template>
+                {{ computedBCVtoUSD }}
+              </template>
+              <template v-slot:after>
+                <q-btn
+                  flat
+                  color="white"
+                  icon="mdi-content-copy"
+                  class="copy-btn-square q-ml-sm"
+                  @click.stop="copyValue(USDamountBCV || computedBCVtoUSD)"
+                />
+              </template>
             </q-input>
             <q-input
               class="col transparent-input"
@@ -75,8 +84,17 @@
                 <div style="font-size:large; padding-right: 10px;"> Bs. </div>
               </template>
               <template v-slot:prepend >
-                  {{ computedUSDtoBCV }}
-                </template>
+                {{ computedUSDtoBCV }}
+              </template>
+              <template v-slot:after>
+                <q-btn
+                  flat
+                  color="white"
+                  icon="mdi-content-copy"
+                  class="copy-btn-square q-ml-sm"
+                  @click.stop="copyValue(BCVamountUSD || computedUSDtoBCV)"
+                />
+              </template>
             </q-input>
           </q-card-section>
         </q-card>
@@ -114,6 +132,15 @@
               <template v-slot:prepend >
                 {{ computedParalleltoUSD }}
               </template>
+              <template v-slot:after>
+                <q-btn
+                  flat
+                  color="white"
+                  icon="mdi-content-copy"
+                  class="copy-btn-square q-ml-sm"
+                  @click.stop="copyValue(USDamountParallel || computedParalleltoUSD)"
+                />
+              </template>
             </q-input>
             <q-input
               class="col transparent-input"
@@ -131,6 +158,15 @@
               </template>
               <template v-slot:prepend >
                 {{ computedUSDtoParallel }}
+              </template>
+              <template v-slot:after>
+                <q-btn
+                  flat
+                  color="white"
+                  icon="mdi-content-copy"
+                  class="copy-btn-square q-ml-sm"
+                  @click.stop="copyValue(ParallelamountUSD || computedUSDtoParallel)"
+                />
               </template>
             </q-input>
           </q-card-section>
@@ -153,22 +189,32 @@
 
         <q-card class="transparent">
           <q-card-section>
-            <q-input class="col q-pb-md transparent-input"
-            dark
-            v-model.trim="USDamountPromedio"
-            dense="dense"
-            hint="Inserte valor $ (USD)"
-            type="number"
-            pattern="[0-9]*\.?[0-9]*"
-            inputmode="decimal"
-            @focus="PromedioamountUSD = null"
+            <q-input
+              class="col q-pb-md transparent-input"
+              dark
+              v-model.trim="USDamountPromedio"
+              dense="dense"
+              hint="Inserte valor $ (USD)"
+              type="number"
+              pattern="[0-9]*\.?[0-9]*"
+              inputmode="decimal"
+              @focus="PromedioamountUSD = null"
             >
               <template v-slot:append>
                 <div style="font-size:large; padding-right: 10px;"> $ </div>
               </template>
               <template v-slot:prepend >
-                  {{ computedPromediotoUSD }}
-                </template>
+                {{ computedPromediotoUSD }}
+              </template>
+              <template v-slot:after>
+                <q-btn
+                  flat
+                  color="white"
+                  icon="mdi-content-copy"
+                  class="copy-btn-square q-ml-sm"
+                  @click.stop="copyValue(USDamountPromedio || computedPromediotoUSD)"
+                />
+              </template>
             </q-input>
             <q-input
               class="col transparent-input"
@@ -185,8 +231,17 @@
                 <div style="font-size:large; padding-right: 10px;"> Bs. </div>
               </template>
               <template v-slot:prepend >
-                  {{ computedUSDtoPromedio }}
-                </template>
+                {{ computedUSDtoPromedio }}
+              </template>
+              <template v-slot:after>
+                <q-btn
+                  flat
+                  color="white"
+                  icon="mdi-content-copy"
+                  class="copy-btn-square q-ml-sm"
+                  @click.stop="copyValue(PromedioamountUSD || computedUSDtoPromedio)"
+                />
+              </template>
             </q-input>
           </q-card-section>
         </q-card>
@@ -198,7 +253,7 @@
 
 <script>
 import { computed, defineComponent, ref, onMounted } from 'vue';
-import { useQuasar } from "quasar";
+import { useQuasar, copyToClipboard } from "quasar";
 import axios from 'axios';
 import langEs from 'quasar/lang/es'
 
@@ -235,11 +290,10 @@ export default defineComponent({
       }).format(fecha);
     });
 
+    // Fecha real de consulta del BCV (sin el +1 día)
     const BcvFormatDate = computed(() => {
       if (!consultHourBcv.value) return 'Fecha no disponible';
       const fecha = new Date(consultHourBcv.value);
-      // Muestra la fecha visualmente +1 día para reflejar la vigencia BCV
-      fecha.setDate(fecha.getDate() + 1);
       return new Intl.DateTimeFormat('es-VE', {
         day: '2-digit', month: '2-digit', year: 'numeric',
         hour: '2-digit', minute: '2-digit', hour12: true
@@ -303,6 +357,43 @@ export default defineComponent({
       PromedioamountUSD.value = null;
     }
 
+    function copyValue(val) {
+      if (!val) {
+        $q.notify({
+          message: 'No hay ningún monto para copiar',
+          position: 'center',
+          timeout: 1200,
+          textColor: 'black',
+          icon: 'mdi-alert-circle-outline',
+          iconColor: 'black',
+          style: 'background-color: #FCD535; font-weight: 600; border-radius: 8px;'
+        });
+        return;
+      }
+
+      copyToClipboard(String(val))
+        .then(() => {
+          $q.notify({
+            message: `Monto copiado: ${val}`,
+            position: 'center',
+            timeout: 1200,
+            textColor: 'black',
+            icon: 'mdi-check-circle',
+            iconColor: 'black',
+            color: 'warning',
+            style: 'background-color: #FCD535; font-weight: 600; border-radius: 8px;'
+          });
+        })
+        .catch(() => {
+          $q.notify({
+            message: 'Error al copiar al portapapeles',
+            color: 'negative',
+            position: 'center',
+            timeout: 1200
+          });
+        });
+    }
+
     // Obtiene la fecha YYYY-MM-DD real en la zona horaria de Venezuela
     function getVenezuelaDateStr(utcDateStr) {
       if (!utcDateStr) return '';
@@ -317,45 +408,34 @@ export default defineComponent({
       return formatter.format(date);
     }
 
-    // Calcula la fecha en la que la tasa del BCV ENTRÓ EN VIGENCIA (+1 día respecto a su registro)
-    function getBcvEffectiveDate(utcDateStr) {
-      const localDateStr = getVenezuelaDateStr(utcDateStr);
-      if (!localDateStr) return '';
-      const [year, month, day] = localDateStr.split('-').map(Number);
-
-      // Creamos la fecha local y le sumamos 1 día (Vigencia BCV)
-      const date = new Date(year, month - 1, day);
-      date.setDate(date.getDate() + 1);
-
-      const y = date.getFullYear();
-      const m = String(date.getMonth() + 1).padStart(2, '0');
-      const d = String(date.getDate()).padStart(2, '0');
-      return `${y}-${m}-${d}`;
-    }
-
     // Actualiza los valores de pantalla según la fecha elegida en el selector
     function updateValuesForDate(dateStr) {
       if (!dateStr) return;
 
-      // 1. Binance: Busca la tasa registrada exactamente EN esa fecha de calendario real
-      const binanceRecord = parallelHistory.value.find(item => {
+      // 1. Binance: Busca la tasa registrada exactamente en esa fecha (o la anterior más reciente si se consulta el día siguiente)
+      let binanceRecord = parallelHistory.value.find(item => {
         return getVenezuelaDateStr(item.fecha_consulta) === dateStr;
       });
+
+      if (!binanceRecord) {
+        binanceRecord = parallelHistory.value.find(item => {
+          return getVenezuelaDateStr(item.fecha_consulta) <= dateStr;
+        });
+      }
 
       if (binanceRecord) {
         consultHourParallel.value = binanceRecord.fecha_consulta;
         ParallelValue.value = binanceRecord.usdt_ves.toFixed(2);
       }
 
-      // 2. BCV: Busca la tasa que TIENE VIGENCIA para esa fecha exacta (o la anterior más cercana)
+      // 2. BCV: Busca la tasa registrada en esa fecha real (o la anterior más cercana para fines de semana/feriados)
       let bcvRecord = bcvHistory.value.find(item => {
-        return getBcvEffectiveDate(item.fecha_consulta) === dateStr;
+        return getVenezuelaDateStr(item.fecha_consulta) === dateStr;
       });
 
       if (!bcvRecord) {
-        // Regla para fines de semana o feriados: tomar la tasa efectiva más cercana hacia atrás
         bcvRecord = bcvHistory.value.find(item => {
-          return getBcvEffectiveDate(item.fecha_consulta) <= dateStr;
+          return getVenezuelaDateStr(item.fecha_consulta) <= dateStr;
         });
       }
 
@@ -392,27 +472,34 @@ export default defineComponent({
           parallelHistory.value = Array.isArray(resBinance.data) ? resBinance.data : (resBinance.data?.data || []);
 
           const datesSet = new Set();
+          const binanceDates = [];
 
-          // Binance aporta sus fechas reales de captura
+          // 1. Binance aporta sus fechas reales de captura y nos sirve de referencia para el "día en curso"
           if (Array.isArray(parallelHistory.value)) {
             parallelHistory.value.forEach(item => {
               if (item && item.fecha_consulta) {
                 const localDate = getVenezuelaDateStr(item.fecha_consulta);
-                datesSet.add(localDate);
+                if (localDate) {
+                  datesSet.add(localDate);
+                  binanceDates.push(localDate);
+                }
               }
             });
           }
 
-          // BCV aporta sus fechas efectivas de vigencia
+          // 2. BCV aporta sus fechas reales (si ya existe un registro del día siguiente en BD, se incluirá aquí)
           if (Array.isArray(bcvHistory.value)) {
             bcvHistory.value.forEach(item => {
               if (item && item.fecha_consulta) {
-                const effectiveDate = getBcvEffectiveDate(item.fecha_consulta);
-                datesSet.add(effectiveDate);
+                const localDate = getVenezuelaDateStr(item.fecha_consulta);
+                if (localDate) {
+                  datesSet.add(localDate);
+                }
               }
             });
           }
 
+          // Ordenamos todas las fechas disponibles de mayor a menor
           const sortedDates = Array.from(datesSet).sort().reverse();
 
           availableDates.value = sortedDates.map(dateStr => {
@@ -426,7 +513,17 @@ export default defineComponent({
           });
 
           if (availableDates.value.length > 0) {
-            selectedDate.value = availableDates.value[0].value;
+            // Obtenemos la fecha actual en curso verificada con el último registro de Binance
+            const sortedBinanceDates = binanceDates.sort().reverse();
+            const currentDayBinance = sortedBinanceDates.length > 0 ? sortedBinanceDates[0] : null;
+
+            // Preestablecemos el selector en el día en curso (Binance), aunque exista una fecha futura en la lista
+            if (currentDayBinance && sortedDates.includes(currentDayBinance)) {
+              selectedDate.value = currentDayBinance;
+            } else {
+              selectedDate.value = availableDates.value[0].value;
+            }
+
             updateValuesForDate(selectedDate.value);
           }
         }
@@ -469,6 +566,7 @@ export default defineComponent({
       consultHourBcv,
       availableDates,
       selectedDate,
+      copyValue,
       onDateChange(val) {
         returnToZeroBcv();
         returnToZeroParallel();
