@@ -7,7 +7,7 @@
           <img src="/MainLogo.png">
         </q-avatar>
         <q-toolbar-title>DivisaXpress</q-toolbar-title>
-        <p class="q-pt-md">V12.1</p>
+        <p class="q-pt-md">V12.2</p>
       </q-toolbar>
     </q-header>
 

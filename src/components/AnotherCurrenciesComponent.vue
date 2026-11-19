@@ -33,7 +33,16 @@
           </q-item-section>
 
           <q-item-section>
-            <h6 style="text-shadow: 1px 1px 4px black;">Euro (€): {{ EUROfficialBcv }} <q-icon :color="EURColorBcv" :name="EURSymbolBcv"/><br><div class="text-caption">{{ BcvFormatDate }}</div></h6>
+            <h6 style="text-shadow: 1px 1px 4px black; line-height: 1.3;">
+              Euro (€): {{ EUROfficialBcv }}
+
+              <div class="row items-center" style="line-height: 1; margin-top: -2px; margin-bottom: 2px;">
+                <q-icon :color="EURColorBcv" :name="EURSymbolBcv" size="xs" />
+                <span :class="`text-${EURColorBcv}`" class="text-caption text-weight-bold q-ml-xs">{{ EURPercentBcv }}</span>
+              </div>
+
+              <div class="text-caption" style="line-height: 1.2;">{{ BcvFormatDate }}</div>
+            </h6>
           </q-item-section>
         </template>
 
@@ -108,8 +117,18 @@
               <img src="/BcvDolarPNG.png">
             </q-avatar>
           </q-item-section>
+
           <q-item-section>
-            <h6 style="text-shadow: 1px 1px 4px black;">Yuan (¥): {{ CNYOfficialBcv }} <q-icon :color="CNYColorBcv" :name="CNYSymbolBcv"/><br><div class="text-caption">{{ BcvFormatDate }}</div></h6>
+            <h6 style="text-shadow: 1px 1px 4px black; line-height: 1.3;">
+              Yuan (¥): {{ CNYOfficialBcv }}
+
+              <div class="row items-center" style="line-height: 1; margin-top: -2px; margin-bottom: 2px;">
+                <q-icon :color="CNYColorBcv" :name="CNYSymbolBcv" size="xs" />
+                <span :class="`text-${CNYColorBcv}`" class="text-caption text-weight-bold q-ml-xs">{{ CNYPercentBcv }}</span>
+              </div>
+
+              <div class="text-caption" style="line-height: 1.2;">{{ BcvFormatDate }}</div>
+            </h6>
           </q-item-section>
         </template>
 
@@ -186,7 +205,16 @@
           </q-item-section>
 
           <q-item-section>
-            <h6 style="text-shadow: 1px 1px 4px black;">Rublo (₽): {{ RUBOfficialBcv }} <q-icon :color="RUBColorBcv" :name="RUBSymbolBcv"/><br><div class="text-caption">{{ BcvFormatDate }}</div></h6>
+            <h6 style="text-shadow: 1px 1px 4px black; line-height: 1.3;">
+              Rublo (₽): {{ RUBOfficialBcv }}
+
+              <div class="row items-center" style="line-height: 1; margin-top: -2px; margin-bottom: 2px;">
+                <q-icon :color="RUBColorBcv" :name="RUBSymbolBcv" size="xs" />
+                <span :class="`text-${RUBColorBcv}`" class="text-caption text-weight-bold q-ml-xs">{{ RUBPercentBcv }}</span>
+              </div>
+
+              <div class="text-caption" style="line-height: 1.2;">{{ BcvFormatDate }}</div>
+            </h6>
           </q-item-section>
         </template>
 
@@ -263,7 +291,16 @@
           </q-item-section>
 
           <q-item-section>
-            <h6 style="text-shadow: 1px 1px 4px black;">Lira (₺): {{ TRYOfficialBcv }} <q-icon :color="TRYColorBcv" :name="TRYSymbolBcv"/><br><div class="text-caption">{{ BcvFormatDate }}</div></h6>
+            <h6 style="text-shadow: 1px 1px 4px black; line-height: 1.3;">
+              Lira (₺): {{ TRYOfficialBcv }}
+
+              <div class="row items-center" style="line-height: 1; margin-top: -2px; margin-bottom: 2px;">
+                <q-icon :color="TRYColorBcv" :name="TRYSymbolBcv" size="xs" />
+                <span :class="`text-${TRYColorBcv}`" class="text-caption text-weight-bold q-ml-xs">{{ TRYPercentBcv }}</span>
+              </div>
+
+              <div class="text-caption" style="line-height: 1.2;">{{ BcvFormatDate }}</div>
+            </h6>
           </q-item-section>
         </template>
 
@@ -350,26 +387,34 @@ export default defineComponent({
 
     const consultHourBcv = ref('');
     const bcvVigenciaDate = ref('');
+
     const EUROfficialBcv = ref();
     const EURAmountBcv = ref();
     const BcvAmountEUR = ref();
-    const EURColorBcv = ref();
-    const EURSymbolBcv = ref();
+    const EURColorBcv = ref('grey-5');
+    const EURSymbolBcv = ref('mdi-equal');
+    const EURPercentBcv = ref('0.00%');
+
     const CNYOfficialBcv = ref();
     const CNYAmountBcv = ref();
     const BcvAmountCNY = ref();
-    const CNYColorBcv = ref();
-    const CNYSymbolBcv = ref();
+    const CNYColorBcv = ref('grey-5');
+    const CNYSymbolBcv = ref('mdi-equal');
+    const CNYPercentBcv = ref('0.00%');
+
     const RUBOfficialBcv = ref();
     const RUBAmountBcv = ref();
     const BcvAmountRUB = ref();
-    const RUBColorBcv = ref();
-    const RUBSymbolBcv = ref();
+    const RUBColorBcv = ref('grey-5');
+    const RUBSymbolBcv = ref('mdi-equal');
+    const RUBPercentBcv = ref('0.00%');
+
     const TRYOfficialBcv = ref();
     const TRYAmountBcv = ref();
     const BcvAmountTRY = ref();
-    const TRYColorBcv = ref();
-    const TRYSymbolBcv = ref();
+    const TRYColorBcv = ref('grey-5');
+    const TRYSymbolBcv = ref('mdi-equal');
+    const TRYPercentBcv = ref('0.00%');
 
     // Muestra la fecha de vigencia real (Fecha_capturada) + la hora de consulta
     const BcvFormatDate = computed(() => {
@@ -517,6 +562,26 @@ export default defineComponent({
         });
     }
 
+    // Calcula el semáforo (Rojo si sube, Verde si baja, Gris con '=' si queda igual)
+    function calcularVariacion(actual, anterior) {
+      const valActual = parseFloat(actual);
+      const valAnterior = parseFloat(anterior);
+
+      if (isNaN(valActual) || isNaN(valAnterior) || valAnterior === 0) {
+        return { color: 'grey-5', symbol: 'mdi-equal', percent: '0.00%' };
+      }
+
+      const diff = valActual - valAnterior;
+      const pct = ((diff / valAnterior) * 100).toFixed(2);
+
+      if (diff > 0.0001) {
+        return { color: 'red', symbol: 'mdi-arrow-up-bold', percent: `+${pct}%` };
+      } else if (diff < -0.0001) {
+        return { color: 'green', symbol: 'mdi-arrow-down-bold', percent: `${pct}%` };
+      }
+      return { color: 'grey-5', symbol: 'mdi-equal', percent: '0.00%' };
+    }
+
     // Obtiene la fecha YYYY-MM-DD real en la zona horaria de Venezuela
     function getVenezuelaDateStr(utcDateStr) {
       if (!utcDateStr) return '';
@@ -555,13 +620,47 @@ export default defineComponent({
       }
 
       if (bcvRecord) {
+        const bcvDate = getBcvDateStr(bcvRecord);
+        let prevBcvRecord = null;
+
+        // Si es fin de semana/feriado (tasa heredada), se compara consigo misma para mostrar = 0.00%
+        if (bcvDate !== dateStr) {
+          prevBcvRecord = bcvRecord;
+        } else {
+          prevBcvRecord = bcvHistory.value.find(item => getBcvDateStr(item) < bcvDate);
+        }
+
         consultHourBcv.value = bcvRecord.fecha_consulta;
         bcvVigenciaDate.value = dateStr;
 
-        if (bcvRecord.eur) EUROfficialBcv.value = bcvRecord.eur.toFixed(2);
-        if (bcvRecord.cny) CNYOfficialBcv.value = bcvRecord.cny.toFixed(2);
-        if (bcvRecord.try) TRYOfficialBcv.value = bcvRecord.try.toFixed(2);
-        if (bcvRecord.rub) RUBOfficialBcv.value = bcvRecord.rub.toFixed(2);
+        if (bcvRecord.eur) {
+          EUROfficialBcv.value = bcvRecord.eur.toFixed(2);
+          const v = calcularVariacion(bcvRecord.eur, prevBcvRecord?.eur);
+          EURColorBcv.value = v.color;
+          EURSymbolBcv.value = v.symbol;
+          EURPercentBcv.value = v.percent;
+        }
+        if (bcvRecord.cny) {
+          CNYOfficialBcv.value = bcvRecord.cny.toFixed(2);
+          const v = calcularVariacion(bcvRecord.cny, prevBcvRecord?.cny);
+          CNYColorBcv.value = v.color;
+          CNYSymbolBcv.value = v.symbol;
+          CNYPercentBcv.value = v.percent;
+        }
+        if (bcvRecord.rub) {
+          RUBOfficialBcv.value = bcvRecord.rub.toFixed(2);
+          const v = calcularVariacion(bcvRecord.rub, prevBcvRecord?.rub);
+          RUBColorBcv.value = v.color;
+          RUBSymbolBcv.value = v.symbol;
+          RUBPercentBcv.value = v.percent;
+        }
+        if (bcvRecord.try) {
+          TRYOfficialBcv.value = bcvRecord.try.toFixed(2);
+          const v = calcularVariacion(bcvRecord.try, prevBcvRecord?.try);
+          TRYColorBcv.value = v.color;
+          TRYSymbolBcv.value = v.symbol;
+          TRYPercentBcv.value = v.percent;
+        }
       }
     }
 
@@ -675,21 +774,25 @@ export default defineComponent({
       BcvAmountEUR,
       EURColorBcv,
       EURSymbolBcv,
+      EURPercentBcv,
       CNYOfficialBcv,
       CNYAmountBcv,
       BcvAmountCNY,
       CNYColorBcv,
       CNYSymbolBcv,
+      CNYPercentBcv,
       RUBOfficialBcv,
       RUBAmountBcv,
       BcvAmountRUB,
       RUBColorBcv,
       RUBSymbolBcv,
+      RUBPercentBcv,
       TRYOfficialBcv,
       TRYAmountBcv,
       BcvAmountTRY,
       TRYColorBcv,
       TRYSymbolBcv,
+      TRYPercentBcv,
       BcvFormatDate,
       availableDates,
       selectedDate,

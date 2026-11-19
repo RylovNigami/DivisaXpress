@@ -16,7 +16,7 @@
           behavior="menu"
           @update:model-value="onDateChange"
         >
-          <template v-slot:prepend >
+          <template v-slot:prepend>
             <q-icon name="event" />
           </template>
         </q-select>
@@ -36,12 +36,21 @@
           </q-item-section>
 
           <q-item-section>
-            <h6 style="text-shadow: 1px 1px 4px black;">Oficial ($): {{ OfficialValue }} <q-icon :color=colorBcv :name="symbolBcv"/><br><div class="text-caption">{{ BcvFormatDate }}</div></h6>
+            <h6 style="text-shadow: 1px 1px 4px black; line-height: 1.3;">
+              Oficial ($): {{ OfficialValue }}
+
+              <div class="row items-center" style="line-height: 1; margin-top: -2px; margin-bottom: 2px;">
+                <q-icon :color="colorBcv" :name="symbolBcv" size="xs" />
+                <span :class="`text-${colorBcv}`" class="text-caption text-weight-bold q-ml-xs">{{ percentBcv }}</span>
+              </div>
+
+              <div class="text-caption" style="line-height: 1.2;">{{ BcvFormatDate }}</div>
+            </h6>
           </q-item-section>
         </template>
 
         <q-card class="transparent">
-          <q-card-section >
+          <q-card-section>
             <q-input
               class="col q-pb-md transparent-input"
               dark
@@ -56,7 +65,7 @@
               <template v-slot:append>
                 <div style="font-size:large; padding-right: 10px;"> $ </div>
               </template>
-              <template v-slot:prepend >
+              <template v-slot:prepend>
                 {{ computedBCVtoUSD }}
               </template>
               <template v-slot:after>
@@ -83,7 +92,7 @@
               <template v-slot:append>
                 <div style="font-size:large; padding-right: 10px;"> Bs. </div>
               </template>
-              <template v-slot:prepend >
+              <template v-slot:prepend>
                 {{ computedUSDtoBCV }}
               </template>
               <template v-slot:after>
@@ -109,7 +118,16 @@
             </q-avatar>
           </q-item-section>
           <q-item-section>
-            <h6 style="text-shadow: 1px 1px 4px black;">USDT ($): {{ ParallelValue }} <q-icon :color=colorParallel :name='symbolParallel'/><br><div class="text-caption">{{ ParallelFormatDate }}</div></h6>
+            <h6 style="text-shadow: 1px 1px 4px black; line-height: 1.3;">
+              USDT ($): {{ ParallelValue }}
+
+              <div class="row items-center" style="line-height: 1; margin-top: -2px; margin-bottom: 2px;">
+                <q-icon :color="colorParallel" :name="symbolParallel" size="xs" />
+                <span :class="`text-${colorParallel}`" class="text-caption text-weight-bold q-ml-xs">{{ percentParallel }}</span>
+              </div>
+
+              <div class="text-caption" style="line-height: 1.2;">{{ ParallelFormatDate }}</div>
+            </h6>
           </q-item-section>
         </template>
 
@@ -129,7 +147,7 @@
               <template v-slot:append>
                 <div style="font-size:large; padding-right: 10px;"> $ </div>
               </template>
-              <template v-slot:prepend >
+              <template v-slot:prepend>
                 {{ computedParalleltoUSD }}
               </template>
               <template v-slot:after>
@@ -156,7 +174,7 @@
               <template v-slot:append>
                 <div style="font-size:large; padding-right: 10px;"> Bs. </div>
               </template>
-              <template v-slot:prepend >
+              <template v-slot:prepend>
                 {{ computedUSDtoParallel }}
               </template>
               <template v-slot:after>
@@ -183,7 +201,16 @@
           </q-item-section>
 
           <q-item-section>
-            <h6 style="text-shadow: 1px 1px 4px black;" class="text-no-wrap">Promedio ($): {{ promedioValue }} <q-icon :color=colorPromedio :name='symbolPromedio'/><br><div class="text-caption">{{ ParallelFormatDate }}</div></h6>
+            <h6 style="text-shadow: 1px 1px 4px black; line-height: 1.3;" class="text-no-wrap">
+              Promedio ($): {{ promedioValue }}
+
+              <div class="row items-center" style="line-height: 1; margin-top: -2px; margin-bottom: 2px;">
+                <q-icon :color="colorPromedio" :name="symbolPromedio" size="xs" />
+                <span :class="`text-${colorPromedio}`" class="text-caption text-weight-bold q-ml-xs">{{ percentPromedio }}</span>
+              </div>
+
+              <div class="text-caption" style="line-height: 1.2;">{{ ParallelFormatDate }}</div>
+            </h6>
           </q-item-section>
         </template>
 
@@ -203,7 +230,7 @@
               <template v-slot:append>
                 <div style="font-size:large; padding-right: 10px;"> $ </div>
               </template>
-              <template v-slot:prepend >
+              <template v-slot:prepend>
                 {{ computedPromediotoUSD }}
               </template>
               <template v-slot:after>
@@ -230,7 +257,7 @@
               <template v-slot:append>
                 <div style="font-size:large; padding-right: 10px;"> Bs. </div>
               </template>
-              <template v-slot:prepend >
+              <template v-slot:prepend>
                 {{ computedUSDtoPromedio }}
               </template>
               <template v-slot:after>
@@ -274,6 +301,18 @@ export default defineComponent({
     const OfficialValue = ref();
     const ParallelValue = ref();
     const promedioValue = ref();
+
+    const colorBcv = ref('grey-5');
+    const symbolBcv = ref('mdi-equal');
+    const percentBcv = ref('0.00%');
+
+    const colorParallel = ref('grey-5');
+    const symbolParallel = ref('mdi-equal');
+    const percentParallel = ref('0.00%');
+
+    const colorPromedio = ref('grey-5');
+    const symbolPromedio = ref('mdi-equal');
+    const percentPromedio = ref('0.00%');
 
     const USDamountBCV = ref();
     const BCVamountUSD = ref();
@@ -412,6 +451,27 @@ export default defineComponent({
         });
     }
 
+    // Calcula el semáforo (Rojo si sube, Verde si baja, Gris si queda igual) y el porcentaje
+    function calcularVariacion(actual, anterior) {
+      const valActual = parseFloat(actual);
+      const valAnterior = parseFloat(anterior);
+      console.log('calcularVariacion:', valActual, valAnterior);
+
+      if (isNaN(valActual) || isNaN(valAnterior) || valAnterior === 0) {
+        return { color: 'grey-5', symbol: 'mdi-equal', percent: '0.00%' };
+      }
+
+      const diff = valActual - valAnterior;
+      const pct = ((diff / valAnterior) * 100).toFixed(2);
+
+      if (diff > 0.0001) {
+        return { color: 'red', symbol: 'mdi-arrow-up-bold', percent: `+${pct}%` };
+      } else if (diff < -0.0001) {
+        return { color: 'green', symbol: 'mdi-arrow-down-bold', percent: `${pct}%` };
+      }
+      return { color: 'grey-5', symbol: 'mdi-equal', percent: '0.00%' };
+    }
+
     // Obtiene la fecha YYYY-MM-DD real en la zona horaria de Venezuela
     function getVenezuelaDateStr(utcDateStr) {
       if (!utcDateStr) return '';
@@ -439,7 +499,7 @@ export default defineComponent({
     function updateValuesForDate(dateStr) {
       if (!dateStr) return;
 
-      // 1. Binance: Busca la tasa registrada exactamente en esa fecha (o la anterior más reciente si se consulta el día siguiente)
+      // 1. Binance: Busca la tasa registrada exactamente en esa fecha (o la anterior más reciente)
       let binanceRecord = parallelHistory.value.find(item => {
         return getVenezuelaDateStr(item.fecha_consulta) === dateStr;
       });
@@ -450,12 +510,23 @@ export default defineComponent({
         });
       }
 
+      let prevBinanceRecord = null;
       if (binanceRecord) {
+        const binanceDate = getVenezuelaDateStr(binanceRecord.fecha_consulta);
+        prevBinanceRecord = parallelHistory.value.find(item => {
+          return getVenezuelaDateStr(item.fecha_consulta) < binanceDate;
+        });
+
         consultHourParallel.value = binanceRecord.fecha_consulta;
         ParallelValue.value = binanceRecord.usdt_ves.toFixed(2);
+
+        const varParallel = calcularVariacion(binanceRecord.usdt_ves, prevBinanceRecord?.usdt_ves);
+        colorParallel.value = varParallel.color;
+        symbolParallel.value = varParallel.symbol;
+        percentParallel.value = varParallel.percent;
       }
 
-      // 2. BCV: Busca la tasa cuya Fecha_capturada coincida con la fecha elegida (o la anterior más cercana en fines de semana/feriados)
+      // 2. BCV: Busca la tasa cuya Fecha_capturada coincida con la fecha elegida (o la anterior más cercana)
       let bcvRecord = bcvHistory.value.find(item => {
         return getBcvDateStr(item) === dateStr;
       });
@@ -466,15 +537,39 @@ export default defineComponent({
         });
       }
 
+      let prevBcvRecord = null;
       if (bcvRecord) {
+        const bcvDate = getBcvDateStr(bcvRecord);
+        // Si la tasa es heredada (fin de semana/feriado), se compara consigo misma para dar 0.00% (=)
+        if (bcvDate !== dateStr) {
+          prevBcvRecord = bcvRecord;
+        } else {
+          prevBcvRecord = bcvHistory.value.find(item => getBcvDateStr(item) < bcvDate);
+        }
+
         consultHourBcv.value = bcvRecord.fecha_consulta;
-        bcvVigenciaDate.value = dateStr; // Garantiza que la fecha mostrada coincida con el día consultado
+        bcvVigenciaDate.value = dateStr;
         OfficialValue.value = bcvRecord.usd.toFixed(2);
+
+        const varBcv = calcularVariacion(bcvRecord.usd, prevBcvRecord?.usd);
+        colorBcv.value = varBcv.color;
+        symbolBcv.value = varBcv.symbol;
+        percentBcv.value = varBcv.percent;
       }
 
       // 3. Promedio
       if (OfficialValue.value && ParallelValue.value) {
-        promedioValue.value = ((parseFloat(OfficialValue.value) + parseFloat(ParallelValue.value)) / 2).toFixed(2);
+        const promActual = (parseFloat(OfficialValue.value) + parseFloat(ParallelValue.value)) / 2;
+        promedioValue.value = promActual.toFixed(2);
+
+        const promAnterior = (prevBcvRecord && prevBinanceRecord)
+          ? (parseFloat(prevBcvRecord.usd) + parseFloat(prevBinanceRecord.usdt_ves)) / 2
+          : null;
+
+        const varProm = calcularVariacion(promActual, promAnterior);
+        colorPromedio.value = varProm.color;
+        symbolPromedio.value = varProm.symbol;
+        percentPromedio.value = varProm.percent;
       }
     }
 
@@ -582,6 +677,15 @@ export default defineComponent({
       promedioValue,
       OfficialValue,
       ParallelValue,
+      colorBcv,
+      symbolBcv,
+      percentBcv,
+      colorParallel,
+      symbolParallel,
+      percentParallel,
+      colorPromedio,
+      symbolPromedio,
+      percentPromedio,
       computedBCVtoUSD,
       computedUSDtoBCV,
       computedUSDtoParallel,
