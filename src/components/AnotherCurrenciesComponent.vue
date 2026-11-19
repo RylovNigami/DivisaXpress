@@ -349,6 +349,7 @@ export default defineComponent({
     const selectedDate = ref(null);
 
     const consultHourBcv = ref('');
+    const bcvVigenciaDate = ref('');
     const EUROfficialBcv = ref();
     const EURAmountBcv = ref();
     const BcvAmountEUR = ref();
@@ -370,18 +371,38 @@ export default defineComponent({
     const TRYColorBcv = ref();
     const TRYSymbolBcv = ref();
 
-    // Fecha real de consulta del BCV (sin el +1 día)
+    // Muestra la fecha de vigencia real (Fecha_capturada) + la hora de consulta
     const BcvFormatDate = computed(() => {
-      if (!consultHourBcv.value) return 'Fecha no disponible';
-      const fecha = new Date(consultHourBcv.value);
-      return new Intl.DateTimeFormat('es-VE', {
-        day: '2-digit',
-        month: '2-digit',
-        year: 'numeric',
-        hour: '2-digit',
-        minute: '2-digit',
-        hour12: true
-      }).format(fecha);
+      if (!consultHourBcv.value && !bcvVigenciaDate.value) return 'Fecha no disponible';
+
+      let fechaTexto = '';
+      if (bcvVigenciaDate.value && bcvVigenciaDate.value.includes('-')) {
+        const [year, month, day] = bcvVigenciaDate.value.split('-');
+        fechaTexto = `${day}/${month}/${year}`;
+      }
+
+      if (consultHourBcv.value) {
+        const fecha = new Date(consultHourBcv.value);
+        const horaTexto = new Intl.DateTimeFormat('es-VE', {
+          hour: '2-digit',
+          minute: '2-digit',
+          hour12: true
+        }).format(fecha);
+
+        if (fechaTexto) {
+          return `${fechaTexto}, ${horaTexto}`;
+        }
+        return new Intl.DateTimeFormat('es-VE', {
+          day: '2-digit',
+          month: '2-digit',
+          year: 'numeric',
+          hour: '2-digit',
+          minute: '2-digit',
+          hour12: true
+        }).format(fecha);
+      }
+
+      return fechaTexto;
     });
 
     const computedEurToBs = computed(() => {
@@ -483,7 +504,6 @@ export default defineComponent({
             textColor: 'black',
             icon: 'mdi-check-circle',
             iconColor: 'black',
-            color: 'warning',
             style: 'background-color: #F3BA2F !important; color: #000000 !important; font-weight: 600; border-radius: 8px;'
           });
         })
@@ -511,22 +531,32 @@ export default defineComponent({
       return formatter.format(date);
     }
 
+    // Prioriza Fecha_capturada (fecha valor oficial BCV); si es NULL (registros viejos), usa fecha_consulta
+    function getBcvDateStr(item) {
+      if (!item) return '';
+      if (item.Fecha_capturada && /^\d{4}-\d{2}-\d{2}/.test(item.Fecha_capturada)) {
+        return item.Fecha_capturada.slice(0, 10);
+      }
+      return getVenezuelaDateStr(item.fecha_consulta);
+    }
+
     function updateValuesForDate(dateStr) {
       if (!dateStr || !bcvHistory.value.length) return;
 
-      // Busca la tasa registrada en esa fecha real (o la anterior más cercana para fines de semana/feriados)
+      // Busca la tasa cuya Fecha_capturada coincida con la fecha elegida (o la anterior más cercana para fines de semana/feriados)
       let bcvRecord = bcvHistory.value.find(item => {
-        return item && item.fecha_consulta && getVenezuelaDateStr(item.fecha_consulta) === dateStr;
+        return getBcvDateStr(item) === dateStr;
       });
 
       if (!bcvRecord) {
         bcvRecord = bcvHistory.value.find(item => {
-          return item && item.fecha_consulta && getVenezuelaDateStr(item.fecha_consulta) <= dateStr;
+          return getBcvDateStr(item) <= dateStr;
         });
       }
 
       if (bcvRecord) {
         consultHourBcv.value = bcvRecord.fecha_consulta;
+        bcvVigenciaDate.value = dateStr;
 
         if (bcvRecord.eur) EUROfficialBcv.value = bcvRecord.eur.toFixed(2);
         if (bcvRecord.cny) CNYOfficialBcv.value = bcvRecord.cny.toFixed(2);
@@ -573,14 +603,12 @@ export default defineComponent({
             });
           }
 
-          // 2. BCV aporta sus fechas reales (incluyendo el día siguiente si ya existe registro en BD)
+          // 2. BCV aporta su Fecha_capturada (incluyendo el día siguiente si ya existe registro en BD)
           if (Array.isArray(bcvHistory.value)) {
             bcvHistory.value.forEach(item => {
-              if (item && item.fecha_consulta) {
-                const localDate = getVenezuelaDateStr(item.fecha_consulta);
-                if (localDate) {
-                  datesSet.add(localDate);
-                }
+              const bcvDate = getBcvDateStr(item);
+              if (bcvDate) {
+                datesSet.add(bcvDate);
               }
             });
           }
@@ -596,12 +624,14 @@ export default defineComponent({
           });
 
           if (availableDates.value.length > 0) {
-            // Verificamos el día en curso según el último registro de Binance
+            const todayVenezuela = getVenezuelaDateStr(new Date().toISOString());
             const sortedBinanceDates = binanceDates.sort().reverse();
             const currentDayBinance = sortedBinanceDates.length > 0 ? sortedBinanceDates[0] : null;
 
-            // Preestablecemos el selector en el día en curso (Binance)
-            if (currentDayBinance && sortedDates.includes(currentDayBinance)) {
+            // Prioridad al iniciar: 1) Hoy en Venezuela si existe registro, 2) Último día de Binance, 3) Primera fecha disponible
+            if (sortedDates.includes(todayVenezuela)) {
+              selectedDate.value = todayVenezuela;
+            } else if (currentDayBinance && sortedDates.includes(currentDayBinance)) {
               selectedDate.value = currentDayBinance;
             } else {
               selectedDate.value = availableDates.value[0].value;
@@ -675,19 +705,3 @@ export default defineComponent({
   }
 });
 </script>
-
-<style scoped>
-.copy-btn-square {
-  background: rgba(255, 255, 255, 0.12) !important;
-  border-radius: 8px !important;
-  width: 40px;
-  height: 40px;
-  min-width: 40px;
-  min-height: 40px;
-  padding: 0;
-}
-
-.copy-btn-square :deep(.q-icon) {
-  font-size: 18px !important;
-}
-</style>
