@@ -17,19 +17,10 @@
 
 <script setup>
 import { ref, onMounted } from 'vue';
-import { Capacitor } from '@capacitor/core';
-import { EdgeToEdge } from '@capawesome/capacitor-android-edge-to-edge-support';
-import { StatusBar, Style } from '@capacitor/status-bar';
 
 const initialLoading = ref(true);
 
-onMounted(async () => {
-  if (Capacitor.isNativePlatform()) {
-    await EdgeToEdge.enable().catch(err => console.error('Error EdgeToEdge:', err));
-    await StatusBar.setBackgroundColor({ color: '#010203' });
-    await StatusBar.setStyle({ style: Style.Dark });
-  }
-
+onMounted(() => {
   // Ocultar la pantalla de carga inicial una vez que los componentes y servicios estén listos
   setTimeout(() => {
     initialLoading.value = false;
