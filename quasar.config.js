@@ -39,21 +39,44 @@ export default defineConfig((ctx) => {
       'material-icons', // optional, you are not bound to it
     ],
     capacitor: {
-    hideSplashscreen: true,
+      hideSplashscreen: true,
 
-    /**
-     * Preparation params with which the Capacitor CLI is called
-     *
-     * @default [ 'sync', ctx.targetName ]
-     */
-    capacitorCliPreparationParams: ['sync', ctx.targetName],
+      /**
+       * Preparation params with which the Capacitor CLI is called
+       *
+       * @default [ 'sync', ctx.targetName ]
+       */
+      capacitorCliPreparationParams: ['sync', ctx.targetName],
 
-    /** If not present, will look for `package.json > name` */
-    appName: ctx.appName,
-    /** If not present, will look for `package.json > version` */
-    version: ctx.version,
-    /** If not present, will look for `package.json > description` */
-    description: ctx.description,
+      /** If not present, will look for `package.json > name` */
+      appName: ctx.appName,
+      /** If not present, will look for `package.json > version` */
+      version: ctx.version,
+      /** If not present, will look for `package.json > description` */
+      description: ctx.description,
+    },
+    electron: {
+      // Lista de scripts preload en /src-electron/ (sin la extensión .js)
+      preloadScripts: [ 'electron-preload' ],
+
+      // Puerto de depuración en modo desarrollo
+      inspectPort: 5858,
+
+      // 'packager' genera una carpeta portable lista para ejecutar (.exe)
+      // 'builder' genera un instalador de Windows (.exe)
+      bundler: 'packager',
+
+      packager: {
+        // Opciones adicionales de electron-packager si las necesitas
+      },
+
+      builder: {
+        appId: 'app.rylovtech.divisaxpress',
+        productName: 'DivisaXpress',
+        win: {
+          target: 'nsis'
+        }
+      }
     },
     // Full list of options: https://v2.quasar.dev/quasar-cli-vite/quasar-config-file#build
     build: {
@@ -82,7 +105,12 @@ export default defineConfig((ctx) => {
       // polyfillModulePreload: true,
       // distDir
 
-      // extendViteConf (viteConf) {},
+      /*extendViteConf(viteConf) {
+        if (ctx.mode.electron) {
+          // do something with viteConf
+          // or return an object to deeply merge with current viteConf
+        }
+      },**/
       // viteVuePluginOptions: {},
       alias: {
             src: ctx.appPaths.srcDir,
@@ -141,17 +169,18 @@ export default defineConfig((ctx) => {
     animations: [],
 
     // https://v2.quasar.dev/quasar-cli-vite/quasar-config-file#sourcefiles
-    // sourceFiles: {
+    sourceFiles: {
     //   rootComponent: 'src/App.vue',
     //   router: 'src/router/index',
     //   store: 'src/store/index',
     //   pwaRegisterServiceWorker: 'src-pwa/register-service-worker',
     //   pwaServiceWorker: 'src-pwa/custom-service-worker',
     //   pwaManifestFile: 'src-pwa/manifest.json',
-    //   electronMain: 'src-electron/electron-main',
-    //   electronPreload: 'src-electron/electron-preload'
+    electronMain: 'src-electron/electron-main',
+    electronPreload: 'src-electron/electron-preload',
+
     //   bexManifestFile: 'src-bex/manifest.json
-    // },
+    },
 
     // https://v2.quasar.dev/quasar-cli-vite/developing-ssr/configuring-ssr
     ssr: {
